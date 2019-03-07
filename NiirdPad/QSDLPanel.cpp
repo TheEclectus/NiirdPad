@@ -25,5 +25,6 @@ QSDLPanel::QSDLPanel(QWidget *parent) :
 
 QSDLPanel::~QSDLPanel()
 {
-
+	SDL_DestroyRenderer(_SDLRenderer);
+	SDL_DestroyWindow(_SDLWindow);
 }

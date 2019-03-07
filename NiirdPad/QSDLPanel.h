@@ -21,5 +21,5 @@ private slots:
 
 public:
 	QSDLPanel(QWidget *parent);
-	~QSDLPanel();
+	virtual ~QSDLPanel();
 };
