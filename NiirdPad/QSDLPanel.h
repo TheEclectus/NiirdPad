@@ -10,9 +10,15 @@ class QSDLPanel : public QWidget
 	Q_OBJECT
 
 private:
-	QTimer *_RefreshTimer;
+	SDL_Color _BackgroundColor = {0, 127, 0, 255};
 
-	SDL_Window *_SDLWindow;
+	QTimer *_RefreshTimer = nullptr;
+	SDL_Window *_SDLWindow = nullptr;
+	SDL_Renderer *_SDLRenderer = nullptr;
+
+private slots:
+	void RenderInternal();
+
 public:
 	QSDLPanel(QWidget *parent);
 	~QSDLPanel();
