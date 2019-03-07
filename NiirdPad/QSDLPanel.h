@@ -16,6 +16,10 @@ private:
 	SDL_Window *_SDLWindow = nullptr;
 	SDL_Renderer *_SDLRenderer = nullptr;
 
+	void Input();
+	void Logic();
+	void Render();
+
 private slots:
 	void ProcessInternal();
 

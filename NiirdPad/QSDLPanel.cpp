@@ -1,5 +1,20 @@
 #include "QSDLPanel.h"
 
+void QSDLPanel::Input()
+{
+
+}
+
+void QSDLPanel::Logic()
+{
+
+}
+
+void QSDLPanel::Render()
+{
+
+}
+
 void QSDLPanel::ProcessInternal()
 {
 	SDL_SetRenderDrawColor(_SDLRenderer, _BackgroundColor.r, _BackgroundColor.g, _BackgroundColor.b, 255);
