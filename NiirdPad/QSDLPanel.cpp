@@ -24,17 +24,19 @@ void QSDLPanel::Logic()
 
 void QSDLPanel::Render()
 {
-	SDL_SetRenderDrawColor(_SDLRenderer, _BackgroundColor.r, _BackgroundColor.g, _BackgroundColor.b, 255);
-	SDL_RenderClear(_SDLRenderer);
-
-	SDL_RenderPresent(_SDLRenderer);
+	
 }
 
 void QSDLPanel::ProcessInternal()
 {
 	Input();
 	Logic();
+
+	// TODO: Consider moving the 3 SDL_* and Render() to a separate function.
+	SDL_SetRenderDrawColor(_SDLRenderer, _BackgroundColor.r, _BackgroundColor.g, _BackgroundColor.b, 255);
+	SDL_RenderClear(_SDLRenderer);
 	Render();
+	SDL_RenderPresent(_SDLRenderer);
 }
 
 QSDLPanel::QSDLPanel(QWidget *parent) :
