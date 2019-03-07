@@ -1,6 +1,6 @@
 #include "QSDLPanel.h"
 
-void QSDLPanel::RenderInternal()
+void QSDLPanel::ProcessInternal()
 {
 	SDL_SetRenderDrawColor(_SDLRenderer, _BackgroundColor.r, _BackgroundColor.g, _BackgroundColor.b, 255);
 	SDL_RenderClear(_SDLRenderer);
@@ -20,7 +20,8 @@ QSDLPanel::QSDLPanel(QWidget *parent) :
 
 	_RefreshTimer = new QTimer(this);
 	_RefreshTimer->setInterval(1000 / 30);
-	this->connect(_RefreshTimer, &QTimer::timeout, this, &QSDLPanel::RenderInternal);
+	this->connect(_RefreshTimer, &QTimer::timeout, this, &QSDLPanel::ProcessInternal);
+	_RefreshTimer->start();
 }
 
 QSDLPanel::~QSDLPanel()

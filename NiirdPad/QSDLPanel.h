@@ -17,7 +17,7 @@ private:
 	SDL_Renderer *_SDLRenderer = nullptr;
 
 private slots:
-	void RenderInternal();
+	void ProcessInternal();
 
 public:
 	QSDLPanel(QWidget *parent);
