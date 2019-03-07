@@ -98,8 +98,8 @@ public:
         actionOpen->setText(QApplication::translate("NiirdPadClass", "Open", nullptr));
         actionSave->setText(QApplication::translate("NiirdPadClass", "Save", nullptr));
         actionSave_As->setText(QApplication::translate("NiirdPadClass", "Save As...", nullptr));
-        actionImport_Project->setText(QApplication::translate("NiirdPadClass", "Import Project", nullptr));
-        actionExport_Project->setText(QApplication::translate("NiirdPadClass", "Export Project", nullptr));
+        actionImport_Project->setText(QApplication::translate("NiirdPadClass", "Import Project...", nullptr));
+        actionExport_Project->setText(QApplication::translate("NiirdPadClass", "Export Project...", nullptr));
         menuFile->setTitle(QApplication::translate("NiirdPadClass", "File", nullptr));
     } // retranslateUi
 
