@@ -53,10 +53,21 @@ QSDLPanel::QSDLPanel(QWidget *parent) :
 	_RefreshTimer->setInterval(1000 / 30);
 	this->connect(_RefreshTimer, &QTimer::timeout, this, &QSDLPanel::ProcessInternal);
 	_RefreshTimer->start();
+
+	this->setAutoFillBackground(true);
 }
 
 QSDLPanel::~QSDLPanel()
 {
 	SDL_DestroyRenderer(_SDLRenderer);
 	SDL_DestroyWindow(_SDLWindow);
+}
+
+void QSDLPanel::SetBackgroundColor(const SDL_Color &Color)
+{
+	_BackgroundColor = Color;
+
+	QPalette NewPalette;
+	NewPalette.setColor(QPalette::ColorRole::Background, QColor(Color.r, Color.g, Color.b));
+	this->setPalette(NewPalette);
 }
