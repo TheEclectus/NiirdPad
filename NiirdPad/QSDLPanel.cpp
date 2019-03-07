@@ -2,7 +2,11 @@
 
 void QSDLPanel::Input()
 {
+	SDL_Event Event;
+	while (SDL_PollEvent(&Event))
+	{
 
+	}
 }
 
 void QSDLPanel::Logic()
@@ -12,15 +16,15 @@ void QSDLPanel::Logic()
 
 void QSDLPanel::Render()
 {
-
-}
-
-void QSDLPanel::ProcessInternal()
-{
 	SDL_SetRenderDrawColor(_SDLRenderer, _BackgroundColor.r, _BackgroundColor.g, _BackgroundColor.b, 255);
 	SDL_RenderClear(_SDLRenderer);
 
 	SDL_RenderPresent(_SDLRenderer);
+}
+
+void QSDLPanel::ProcessInternal()
+{
+	Render();
 }
 
 QSDLPanel::QSDLPanel(QWidget *parent) :
