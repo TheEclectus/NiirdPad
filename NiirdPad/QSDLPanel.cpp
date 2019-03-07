@@ -2,11 +2,19 @@
 
 void QSDLPanel::Input()
 {
-	SDL_Event Event;
+	/*SDL_Event Event;
 	while (SDL_PollEvent(&Event))
 	{
-
-	}
+		if(Event.type == SDL_EventType::SDL_MOUSEBUTTONDOWN)
+			printf_s("Click!\n");
+		else if (Event.type == SDL_EventType::SDL_WINDOWEVENT)
+		{
+			if (Event.window.event == SDL_WindowEventID::SDL_WINDOWEVENT_RESIZED)
+			{
+				printf_s("Resized to %d by %d pixels.\n", Event.window.data1, Event.window.data2);
+			}
+		}
+	}*/
 }
 
 void QSDLPanel::Logic()
@@ -24,6 +32,8 @@ void QSDLPanel::Render()
 
 void QSDLPanel::ProcessInternal()
 {
+	Input();
+	Logic();
 	Render();
 }
 
