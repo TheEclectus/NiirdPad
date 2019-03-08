@@ -42,19 +42,20 @@ void QSDLPanel::ProcessInternal()
 QSDLPanel::QSDLPanel(QWidget *parent) :
 	QWidget(parent)
 {
+	this->setAutoFillBackground(true);
+	SetBackgroundColor({ 0x1E, 0x1E, 0x1E, 0xFF });
+
 	auto WinID = this->winId();
 	_SDLWindow = SDL_CreateWindowFrom((const void*)WinID);
 	_SDLRenderer = SDL_CreateRenderer(_SDLWindow, -1, SDL_RENDERER_ACCELERATED);
 
-	SDL_SetRenderDrawColor(_SDLRenderer, 0, 127, 0, 255);
-	SDL_RenderClear(_SDLRenderer);
+	//SDL_SetRenderDrawColor(_SDLRenderer, 0, 127, 0, 255);
+	//SDL_RenderClear(_SDLRenderer);
 
 	_RefreshTimer = new QTimer(this);
 	_RefreshTimer->setInterval(1000 / 30);
 	this->connect(_RefreshTimer, &QTimer::timeout, this, &QSDLPanel::ProcessInternal);
 	_RefreshTimer->start();
-
-	this->setAutoFillBackground(true);
 }
 
 QSDLPanel::~QSDLPanel()
