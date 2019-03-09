@@ -12,7 +12,9 @@ void QNodeView::Logic()
 
 void QNodeView::Render()
 {
+	RenderBackground();
 
+	RenderForeground();
 }
 
 QNodeView::QNodeView(QWidget *Parent) :
