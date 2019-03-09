@@ -4,7 +4,7 @@
 
 struct QNodeViewCamera
 {
-	SDL_Rect ViewBox;	// Center position and size.
+	SDL_Rect ViewBox = { 0, 0, 0, 0 };	// Center position and size.
 	float Scale = 1.0f;
 };
 

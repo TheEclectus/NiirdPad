@@ -47,14 +47,26 @@ void QNodeView::RenderBackground()
 	// TODO: Draw lines in batches with SDL_RenderDrawLines().
 	for (int i = 0; i <= _Camera.ViewBox.w / GridSize; i++)
 	{
-		int XPosition = XStartOffset + (i * GridSize);
+		int XPosition = (i * GridSize) - XStartOffset;
 		SDL_RenderDrawLine(Renderer, XPosition, 0, XPosition, _Camera.ViewBox.h);
 	}
 }
 
 void QNodeView::RenderForeground()
 {
+	SDL_Point TopLeft = { _Camera.ViewBox.x - (_Camera.ViewBox.w / 2), _Camera.ViewBox.y - (_Camera.ViewBox.h / 2) };
 
+	SDL_Renderer *Renderer = SDLRenderer();
+
+	SDL_SetRenderDrawColor(Renderer, 0xFF, 0x00, 0x00, 0xFF);
+
+	// Top-left is 0,0
+	// Scene space 0,0, offset -30,20, target is 
+	int XOffset = (_Camera.ViewBox.w / 2);
+	int YOffset = (_Camera.ViewBox.h / 2);
+
+	SDL_Rect r = { XOffset, YOffset, 5, 5 };
+	SDL_RenderFillRect(Renderer, &r);
 }
 
 QNodeView::QNodeView(QWidget *Parent) :
