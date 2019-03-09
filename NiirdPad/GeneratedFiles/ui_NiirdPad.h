@@ -45,7 +45,7 @@ public:
     {
         if (NiirdPadClass->objectName().isEmpty())
             NiirdPadClass->setObjectName(QString::fromUtf8("NiirdPadClass"));
-        NiirdPadClass->resize(1043, 400);
+        NiirdPadClass->resize(1043, 644);
         actionNew_Project = new QAction(NiirdPadClass);
         actionNew_Project->setObjectName(QString::fromUtf8("actionNew_Project"));
         actionNew_File = new QAction(NiirdPadClass);
