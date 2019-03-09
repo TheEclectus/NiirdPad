@@ -17,6 +17,16 @@ void QNodeView::Render()
 	RenderForeground();
 }
 
+void QNodeView::RenderBackground()
+{
+
+}
+
+void QNodeView::RenderForeground()
+{
+
+}
+
 QNodeView::QNodeView(QWidget *Parent) :
 	QSDLPanel(Parent)
 {
