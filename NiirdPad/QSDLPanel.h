@@ -21,6 +21,8 @@ protected:
 	virtual void Logic();
 	virtual void Render();
 
+	SDL_Renderer *SDLRenderer() const;
+
 private slots:
 	void ProcessInternal();
 
