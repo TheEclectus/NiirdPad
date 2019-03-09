@@ -36,7 +36,7 @@ void QNodeView::Render()
 
 void QNodeView::RenderBackground()
 {
-	const int GridSize = 75;
+	const int GridSize = 120;
 
 	SDL_Renderer *Renderer = SDLRenderer();
 
