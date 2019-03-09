@@ -16,6 +16,7 @@ private:
 	SDL_Window *_SDLWindow = nullptr;
 	SDL_Renderer *_SDLRenderer = nullptr;
 
+protected:
 	virtual void Input();
 	virtual void Logic();
 	virtual void Render();

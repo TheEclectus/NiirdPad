@@ -19,7 +19,7 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QWidget>
-#include "QSDLPanel.h"
+#include "QNodeView.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -36,7 +36,7 @@ public:
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
     QFrame *frame;
-    QSDLPanel *widget;
+    QNodeView *widget;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QStatusBar *statusBar;
@@ -82,7 +82,7 @@ public:
 
         horizontalLayout->addWidget(frame);
 
-        widget = new QSDLPanel(centralWidget);
+        widget = new QNodeView(centralWidget);
         widget->setObjectName(QString::fromUtf8("widget"));
         QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy1.setHorizontalStretch(20);

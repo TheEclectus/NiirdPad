@@ -65,7 +65,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QSDLPanel" name="widget" native="true">
+     <widget class="QNodeView" name="widget" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>20</horstretch>
@@ -140,9 +140,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QSDLPanel</class>
+   <class>QNodeView</class>
    <extends>QWidget</extends>
-   <header>QSDLPanel.h</header>
+   <header>QNodeView.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
