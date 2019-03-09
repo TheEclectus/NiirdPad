@@ -27,6 +27,11 @@ void QSDLPanel::Render()
 	
 }
 
+SDL_Renderer *QSDLPanel::SDLRenderer() const
+{
+	return _SDLRenderer;
+}
+
 void QSDLPanel::ProcessInternal()
 {
 	Input();
