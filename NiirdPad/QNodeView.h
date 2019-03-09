@@ -11,7 +11,7 @@ struct QNodeViewCamera
 class QNodeView : public QSDLPanel
 {
 protected:
-	SDL_Color _GridLineColor = { 0x1E, 0x1E, 0x1E, 0xFF };
+	SDL_Color _GridLineColor = { 0x33, 0x33, 0x33, 0xFF };
 	QNodeViewCamera _Camera;
 
 	virtual void Input() override;

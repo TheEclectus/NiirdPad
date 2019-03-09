@@ -43,8 +43,9 @@ void QNodeView::RenderBackground()
 	SDL_Point TopLeft = { _Camera.ViewBox.x - (_Camera.ViewBox.w / 2), _Camera.ViewBox.y - (_Camera.ViewBox.h / 2) };
 	int XStartOffset = TopLeft.x % GridSize;
 
+	SDL_SetRenderDrawColor(Renderer, _GridLineColor.r, _GridLineColor.g, _GridLineColor.b, _GridLineColor.a);
 	// TODO: Draw lines in batches with SDL_RenderDrawLines().
-	for (int i = 0; i < _Camera.ViewBox.w / GridSize; i++)
+	for (int i = 0; i <= _Camera.ViewBox.w / GridSize; i++)
 	{
 		int XPosition = XStartOffset + (i * GridSize);
 		SDL_RenderDrawLine(Renderer, XPosition, 0, XPosition, _Camera.ViewBox.h);
