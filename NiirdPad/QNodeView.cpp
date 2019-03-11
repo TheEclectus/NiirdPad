@@ -50,7 +50,7 @@ void QNodeView::Input()
 		// TODO: Doesn't seem to fire unless the mouse is held down. For the time being, this isn't a problem, but mouse down should still be checked for regardless.
 		else if (Event.type == SDL_EventType::SDL_MOUSEMOTION)
 		{
-			if (_InputState.bLeftMouseDown)
+			if (_InputState.bLeftMouseDown || _InputState.bRightMouseDown)
 			{
 				SDL_MouseMotionEvent &MouseEvent = Event.motion;
 			}
