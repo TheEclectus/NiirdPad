@@ -19,6 +19,13 @@ void QNodeView::Input()
 				printf_s("Camera adjusted to %dx%d.\n", _Camera.ViewBox.w, _Camera.ViewBox.h);
 			}
 		}
+		else if (Event.type == SDL_EventType::SDL_MOUSEMOTION)
+		{
+			SDL_MouseMotionEvent &MouseEvent = Event.motion;
+			
+			_InputState.MousePosition = { MouseEvent.x, MouseEvent.y };
+			printf_s("Mouse: %d,%d\n", _InputState.MousePosition.x, _InputState.MousePosition.y);
+		}
 	}
 }
 

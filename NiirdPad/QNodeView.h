@@ -8,11 +8,25 @@ struct QNodeViewCamera
 	float Scale = 1.0f;
 };
 
+struct QNodeViewInputState
+{
+	SDL_Point MousePosition = { -1, -1 };
+
+	bool bMouseDown = false;
+
+	/// <summary>
+	/// Resets all applicable input state information:
+	/// <para>- Currently selected nodes</para>
+	/// </summary>
+	void Reset();
+};
+
 class QNodeView : public QSDLPanel
 {
 protected:
 	SDL_Color _GridLineColor = { 0x33, 0x33, 0x33, 0xFF };
 	QNodeViewCamera _Camera;
+	QNodeViewInputState _InputState;
 
 	virtual void Input() override;
 	virtual void Logic() override;
