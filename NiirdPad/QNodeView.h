@@ -10,9 +10,8 @@ struct QNodeViewCamera
 
 struct QNodeViewInputState
 {
-	SDL_Point MousePosition = { -1, -1 };
-
-	bool bMouseDown = false;
+	bool bLeftMouseDown = false;
+	bool bRightMouseDown = false;
 
 	/// <summary>
 	/// Resets all applicable input state information:

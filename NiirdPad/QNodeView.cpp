@@ -19,12 +19,41 @@ void QNodeView::Input()
 				printf_s("Camera adjusted to %dx%d.\n", _Camera.ViewBox.w, _Camera.ViewBox.h);
 			}
 		}
+		else if (Event.type == SDL_EventType::SDL_MOUSEBUTTONDOWN)
+		{
+			SDL_MouseButtonEvent &MouseEvent = Event.button;
+			if (MouseEvent.button == SDL_BUTTON_LEFT)
+			{
+				_InputState.bLeftMouseDown = true;
+				printf_s("Left mouse down.\n");
+			}
+			else if (MouseEvent.button == SDL_BUTTON_RIGHT)
+			{
+				_InputState.bRightMouseDown = true;
+				printf_s("Right mouse down.\n");
+			}
+		}
+		else if (Event.type == SDL_EventType::SDL_MOUSEBUTTONUP)
+		{
+			SDL_MouseButtonEvent &MouseEvent = Event.button;
+			if (MouseEvent.button == SDL_BUTTON_LEFT)
+			{
+				_InputState.bLeftMouseDown = false;
+				printf_s("Left mouse up.\n");
+			}
+			else if (MouseEvent.button == SDL_BUTTON_RIGHT)
+			{
+				_InputState.bRightMouseDown = false;
+				printf_s("Right mouse up.\n");
+			}
+		}
+		// TODO: Doesn't seem to fire unless the mouse is held down. For the time being, this isn't a problem, but mouse down should still be checked for regardless.
 		else if (Event.type == SDL_EventType::SDL_MOUSEMOTION)
 		{
-			SDL_MouseMotionEvent &MouseEvent = Event.motion;
-			
-			_InputState.MousePosition = { MouseEvent.x, MouseEvent.y };
-			printf_s("Mouse: %d,%d\n", _InputState.MousePosition.x, _InputState.MousePosition.y);
+			if (_InputState.bLeftMouseDown)
+			{
+				SDL_MouseMotionEvent &MouseEvent = Event.motion;
+			}
 		}
 	}
 }
