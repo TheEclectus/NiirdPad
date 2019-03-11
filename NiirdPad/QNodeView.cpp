@@ -33,6 +33,7 @@ void QNodeView::Input()
 				printf_s("Right mouse down.\n");
 			}
 		}
+		// Handle the 'click' event here.
 		else if (Event.type == SDL_EventType::SDL_MOUSEBUTTONUP)
 		{
 			SDL_MouseButtonEvent &MouseEvent = Event.button;
