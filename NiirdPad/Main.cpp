@@ -6,7 +6,7 @@
 int main(int argc, char *argv[])
 {
 	SDL_SetMainReady();
-	SDL_Init(SDL_INIT_VIDEO);
+	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
 	QApplication a(argc, argv);
 	NiirdPad w;
