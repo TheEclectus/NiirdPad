@@ -58,7 +58,7 @@ QSDLPanel::QSDLPanel(QWidget *parent) :
 	//SDL_RenderClear(_SDLRenderer);
 
 	_RefreshTimer = new QTimer(this);
-	_RefreshTimer->setInterval(1000 / 30);
+	_RefreshTimer->setInterval(1000 / 60);
 	this->connect(_RefreshTimer, &QTimer::timeout, this, &QSDLPanel::ProcessInternal);
 	_RefreshTimer->start();
 }

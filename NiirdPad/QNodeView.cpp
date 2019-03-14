@@ -54,6 +54,8 @@ void QNodeView::Input()
 			if (_InputState.bLeftMouseDown || _InputState.bRightMouseDown)
 			{
 				SDL_MouseMotionEvent &MouseEvent = Event.motion;
+				_Camera.ViewBox.x -= MouseEvent.xrel;
+				_Camera.ViewBox.y -= MouseEvent.yrel;
 			}
 		}
 	}
