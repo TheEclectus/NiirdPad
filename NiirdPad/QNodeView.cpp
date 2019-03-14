@@ -25,11 +25,13 @@ void QNodeView::Input()
 			if (MouseEvent.button == SDL_BUTTON_LEFT)
 			{
 				_InputState.bLeftMouseDown = true;
+				_InputState.DownPosition = { MouseEvent.x, MouseEvent.y };
 				printf_s("Left mouse down.\n");
 			}
 			else if (MouseEvent.button == SDL_BUTTON_RIGHT)
 			{
 				_InputState.bRightMouseDown = true;
+				_InputState.DownPosition = { MouseEvent.x, MouseEvent.y };
 				printf_s("Right mouse down.\n");
 			}
 		}
@@ -40,11 +42,13 @@ void QNodeView::Input()
 			if (MouseEvent.button == SDL_BUTTON_LEFT)
 			{
 				_InputState.bLeftMouseDown = false;
+				_InputState.DownPosition = { -1, -1 };
 				printf_s("Left mouse up.\n");
 			}
 			else if (MouseEvent.button == SDL_BUTTON_RIGHT)
 			{
 				_InputState.bRightMouseDown = false;
+				_InputState.DownPosition = { -1, -1 };
 				printf_s("Right mouse up.\n");
 			}
 		}
@@ -54,8 +58,16 @@ void QNodeView::Input()
 			if (_InputState.bLeftMouseDown || _InputState.bRightMouseDown)
 			{
 				SDL_MouseMotionEvent &MouseEvent = Event.motion;
-				_Camera.ViewBox.x -= MouseEvent.xrel;
-				_Camera.ViewBox.y -= MouseEvent.yrel;
+
+				// NEXTTIME: Diffs are always how far the frame was dragged last time.
+
+				int XDiff = _InputState.DownPosition.x - MouseEvent.x;
+				int YDiff = _InputState.DownPosition.y - MouseEvent.y;
+
+				_Camera.ViewBox.x += XDiff;
+				_Camera.ViewBox.y += YDiff;
+				_InputState.DownPosition = { MouseEvent.x, MouseEvent.y };
+				printf_s("Diff:%d,%d\n", XDiff, YDiff);
 			}
 		}
 	}
