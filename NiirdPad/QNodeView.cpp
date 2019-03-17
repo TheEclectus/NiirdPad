@@ -17,7 +17,7 @@ void QNodeView::Input()
 		}
 		else if (Event.type == EVENT_MOUSEMOVE)
 		{
-
+			printf("MouseMove [%c%c%c] (%d, %d)\n", Event.user.code & Qt::MouseButton::LeftButton ? 'L' : ' ', Event.user.code & Qt::MouseButton::MiddleButton ? 'M' : ' ', Event.user.code & Qt::MouseButton::RightButton ? 'R' : ' ', reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2));
 		}
 
 		else if (Event.type == SDL_EventType::SDL_WINDOWEVENT)

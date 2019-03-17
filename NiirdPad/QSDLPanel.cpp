@@ -55,6 +55,22 @@ void QSDLPanel::mouseReleaseEvent(QMouseEvent *event)
 	SDL_PushEvent(&NewEvent);
 }
 
+void QSDLPanel::mouseMoveEvent(QMouseEvent *event)
+{
+	SDL_Event NewEvent;
+	SDL_UserEvent &User = NewEvent.user;
+
+	memset(&NewEvent, 0, sizeof(SDL_Event));
+
+	User.type = EVENT_MOUSEMOVE;
+	User.code = event->buttons();
+	
+	User.data1 = reinterpret_cast<void*>(event->x());
+	User.data2 = reinterpret_cast<void*>(event->y());
+
+	SDL_PushEvent(&NewEvent);
+}
+
 SDL_Renderer *QSDLPanel::SDLRenderer() const
 {
 	return _SDLRenderer;
