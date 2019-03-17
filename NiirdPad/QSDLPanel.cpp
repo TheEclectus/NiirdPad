@@ -1,20 +1,18 @@
 #include "QSDLPanel.h"
 
+#include <QMouseEvent>
+
+void QSDLPanel::_RegisterEvents()
+{
+	uint32_t UserEventsStart = SDL_RegisterEvents(3);
+	EVENT_MOUSEDOWN		= UserEventsStart + 0;
+	EVENT_MOUSEUP		= UserEventsStart + 1;
+	EVENT_MOUSEMOVE		= UserEventsStart + 2;
+}
+
 void QSDLPanel::Input()
 {
-	/*SDL_Event Event;
-	while (SDL_PollEvent(&Event))
-	{
-		if(Event.type == SDL_EventType::SDL_MOUSEBUTTONDOWN)
-			printf_s("Click!\n");
-		else if (Event.type == SDL_EventType::SDL_WINDOWEVENT)
-		{
-			if (Event.window.event == SDL_WindowEventID::SDL_WINDOWEVENT_RESIZED)
-			{
-				printf_s("Resized to %d by %d pixels.\n", Event.window.data1, Event.window.data2);
-			}
-		}
-	}*/
+
 }
 
 void QSDLPanel::Logic()
@@ -25,6 +23,36 @@ void QSDLPanel::Logic()
 void QSDLPanel::Render()
 {
 	
+}
+
+void QSDLPanel::mousePressEvent(QMouseEvent *event)
+{
+	SDL_Event NewEvent;
+	SDL_UserEvent &User = NewEvent.user;
+
+	memset(&NewEvent, 0, sizeof(SDL_Event));
+
+	User.type = EVENT_MOUSEDOWN;
+	User.code = event->button();
+	User.data1 = reinterpret_cast<void*>(event->x());
+	User.data2 = reinterpret_cast<void*>(event->y());
+
+	SDL_PushEvent(&NewEvent);
+}
+
+void QSDLPanel::mouseReleaseEvent(QMouseEvent *event)
+{
+	SDL_Event NewEvent;
+	SDL_UserEvent &User = NewEvent.user;
+	
+	memset(&NewEvent, 0, sizeof(SDL_Event));
+
+	User.type = EVENT_MOUSEUP;
+	User.code = event->button();
+	User.data1 = reinterpret_cast<void*>(event->x());
+	User.data2 = reinterpret_cast<void*>(event->y());
+
+	SDL_PushEvent(&NewEvent);
 }
 
 SDL_Renderer *QSDLPanel::SDLRenderer() const
@@ -47,6 +75,10 @@ void QSDLPanel::ProcessInternal()
 QSDLPanel::QSDLPanel(QWidget *parent) :
 	QWidget(parent)
 {
+	_RegisterEvents();
+
+	this->setMouseTracking(true);
+
 	this->setAutoFillBackground(true);
 	SetBackgroundColor({ 0x1E, 0x1E, 0x1E, 0xFF });
 

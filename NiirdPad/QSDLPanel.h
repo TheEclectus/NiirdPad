@@ -16,10 +16,22 @@ private:
 	SDL_Window *_SDLWindow = nullptr;
 	SDL_Renderer *_SDLRenderer = nullptr;
 
+	void _RegisterEvents();
+
 protected:
+	// .data1 = x, .data2 = y, .code = Qt::MouseButton
+	uint32_t EVENT_MOUSEDOWN;
+	// .data1 = x, .data2 = y, .code = Qt::MouseButton
+	uint32_t EVENT_MOUSEUP;
+
+	uint32_t EVENT_MOUSEMOVE;
+
 	virtual void Input();
 	virtual void Logic();
 	virtual void Render();
+
+	void mousePressEvent(QMouseEvent *event) override;
+	void mouseReleaseEvent(QMouseEvent *event) override;
 
 	SDL_Renderer *SDLRenderer() const;
 
