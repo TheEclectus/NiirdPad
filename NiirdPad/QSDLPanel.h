@@ -5,6 +5,29 @@
 
 #include <SDL.h>
 
+/// <summary>
+/// A QWidget whose hWnd is used to render an SDL context, and register relevant
+/// user events.
+/// </summary>
+/// <remarks>
+/// EVENTS: SDL events -- the mouse and keyboard events in particular -- are extremely
+/// unreliable here. Therefore, I've decided to instead forward Qt's widget-space events 
+/// to SDL as user events:
+///		EVENT_MOUSEDOWN - A mouse-down event.
+///			.data1	- x position in widget
+///			.data2	- y position in widget
+///			.code	- the Qt::MouseButton that was pressed
+///		EVENT_MOUSEUP - A mouse-up event.
+///			.data1	- x position in widget
+///			.data2	- y position in widget
+///			.code	- the Qt::MouseButton that was released
+///		EVENT_MOUSEMOVE - A mouse movement event.
+///			.data1	- x position in widget
+///			.data2	- y position in widget
+///			.code	- the Qt::MouseButtons that are being held while the mouse was moved
+/// Note that it is NOT QSDLPanel's responsibility to implement any application-specific
+/// features, like down mouse click-drags are handled, or mouse movement deltas.
+/// </remarks>
 class QSDLPanel : public QWidget
 {
 	Q_OBJECT
