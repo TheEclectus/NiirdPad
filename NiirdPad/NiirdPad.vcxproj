@@ -138,6 +138,8 @@
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GraphicsBlocks.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="QNodeView.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
