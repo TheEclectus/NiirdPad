@@ -45,6 +45,9 @@
     <ClCompile Include="SDL_FontCache.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GraphicsBlocks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="NiirdPad.h">

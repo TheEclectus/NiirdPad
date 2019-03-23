@@ -41,7 +41,7 @@ void QNodeView::Input()
 
 void QNodeView::Logic()
 {
-
+	
 }
 
 void QNodeView::Render()

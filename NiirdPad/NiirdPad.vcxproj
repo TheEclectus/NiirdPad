@@ -117,6 +117,7 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GraphicsBlocks.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NiirdPad.cpp" />
     <ClCompile Include="QNodeView.cpp" />
