@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include <SDL_rect.h>
+#include <SDL.h>
 
 /// <summary>
 /// A graphical building block class. Has faculties for defining the bounding box
@@ -22,7 +22,7 @@ protected:
 	std::vector<AGraphicsBlock*> _ChildBlocks;
 
 	/// <summary>
-	/// Defines the maximum size of the block. {-1, -1} means no limit.
+	/// Defines the maximum size of the block. -1 in either width or height field means no limit.
 	/// </summary>
 	SDL_Rect _MaximumSize;
 
@@ -52,4 +52,20 @@ public:
 	/// minimum/maximum sizes. 
 	/// </summary>
 	virtual void CalculateSize() = 0;
+
+	/// <summary>
+	/// Renders the AGraphicsBlock to an SDL_Renderer.
+	/// </summary>
+	/// <param name="SDLRenderer"></param>
+	/// <param name="Position"></param>
+	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point &Position) = 0;
+};
+
+class GraphicsBlock_Node : public AGraphicsBlock
+{
+public:
+	GraphicsBlock_Node();
+
+	virtual void CalculateSize() override;
+	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point &Position) override;
 };
