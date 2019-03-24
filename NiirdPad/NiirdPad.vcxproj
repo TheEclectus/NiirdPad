@@ -30,8 +30,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>D:\Programming Libraries\Graphics\SDL2-2.0.9\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Programming Libraries\Graphics\SDL2-2.0.9\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Programming Libraries\Graphics\SDL2_ttf-2.0.15\include;D:\Programming Libraries\Graphics\SDL2-2.0.9\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Programming Libraries\Graphics\SDL2_ttf-2.0.15\lib\x86;D:\Programming Libraries\Graphics\SDL2-2.0.9\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
@@ -68,7 +68,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;SDL2.lib;SDL2main.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <QtMoc>
       <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>

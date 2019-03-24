@@ -38,7 +38,7 @@ protected:
 	SDL_Rect _CalculatedBounds = { 0, 0, 0, 0 };
 
 public:
-	AGraphicsBlock(SDL_Rect &MaximumSize = { 0, 0, -1, -1 }, SDL_Rect &MinimumSize = { 0, 0, 0, 0 });
+	AGraphicsBlock(const SDL_Rect &MaximumSize = { 0, 0, -1, -1 }, const SDL_Rect &MinimumSize = { 0, 0, 0, 0 });
 	virtual ~AGraphicsBlock();
 
 	/// <summary>
@@ -58,7 +58,7 @@ public:
 	/// </summary>
 	/// <param name="SDLRenderer"></param>
 	/// <param name="Position"></param>
-	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point &Position) = 0;
+	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) = 0;
 };
 
 class GraphicsBlock_Node : public AGraphicsBlock
@@ -67,5 +67,5 @@ public:
 	GraphicsBlock_Node();
 
 	virtual void CalculateSize() override;
-	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point &Position) override;
+	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
 };

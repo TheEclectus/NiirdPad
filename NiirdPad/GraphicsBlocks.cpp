@@ -1,6 +1,6 @@
 #include "GraphicsBlocks.h"
 
-AGraphicsBlock::AGraphicsBlock(SDL_Rect &MaximumSize, SDL_Rect &MinimumSize) :
+AGraphicsBlock::AGraphicsBlock(const SDL_Rect &MaximumSize, const SDL_Rect &MinimumSize) :
 	_MaximumSize(MaximumSize),
 	_MinimumSize(MinimumSize)
 {
@@ -37,8 +37,9 @@ void GraphicsBlock_Node::CalculateSize()
 	_CalculatedBounds = { 0, 0, 100, 100 };
 }
 
-void GraphicsBlock_Node::Render(SDL_Renderer *SDLRenderer, SDL_Point &Position)
+void GraphicsBlock_Node::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 {
 	SDL_Rect RenderDest = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
+	SDL_SetRenderDrawColor(SDLRenderer, 0, 255, 0, 255);
 	SDL_RenderDrawRect(SDLRenderer, &RenderDest);
 }

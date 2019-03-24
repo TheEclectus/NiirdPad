@@ -91,6 +91,8 @@ void QNodeView::RenderBackground()
 	}
 }
 
+#include "GraphicsBlocks.h"
+
 void QNodeView::RenderForeground()
 {
 	SDL_Point TopLeft = { _Camera.ViewBox.x - (_Camera.ViewBox.w / 2), _Camera.ViewBox.y - (_Camera.ViewBox.h / 2) };
@@ -106,6 +108,15 @@ void QNodeView::RenderForeground()
 
 	SDL_Rect r = { XOffset, YOffset, 5, 5 };
 	SDL_RenderFillRect(Renderer, &r);
+
+	static GraphicsBlock_Node *NodeBlock = nullptr;
+	if (NodeBlock == nullptr)
+	{
+		NodeBlock = new GraphicsBlock_Node();
+		NodeBlock->CalculateSize();
+	}
+
+	NodeBlock->Render(SDLRenderer(), {0 - _Camera.ViewBox.x, 0 - _Camera.ViewBox.y});
 }
 
 QNodeView::QNodeView(QWidget *Parent) :
