@@ -40,6 +40,6 @@ void GraphicsBlock_Node::CalculateSize()
 void GraphicsBlock_Node::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 {
 	SDL_Rect RenderDest = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
-	SDL_SetRenderDrawColor(SDLRenderer, 0, 255, 0, 255);
-	SDL_RenderDrawRect(SDLRenderer, &RenderDest);
+	SDL_SetRenderDrawColor(SDLRenderer, 80, 80, 80, 255);
+	SDL_RenderFillRect(SDLRenderer, &RenderDest);
 }
