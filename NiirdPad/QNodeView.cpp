@@ -116,7 +116,12 @@ void QNodeView::RenderForeground()
 		NodeBlock->CalculateSize();
 	}
 
-	NodeBlock->Render(SDLRenderer(), {0 - _Camera.ViewBox.x, 0 - _Camera.ViewBox.y});
+	// HACK: Code to render the demonstration GraphicsBlock_Node.
+	SDL_Point BlockRenderPos = { 0, 0 };
+	BlockRenderPos.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x;
+	BlockRenderPos.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y;
+
+	NodeBlock->Render(SDLRenderer(), BlockRenderPos);
 }
 
 QNodeView::QNodeView(QWidget *Parent) :
