@@ -3,6 +3,8 @@
 #include <vector>
 
 #include <SDL.h>
+#include <SDL_ttf.h>
+#include "SDL_FontCache.h"
 
 /// <summary>
 /// A graphical building block class. Has faculties for defining the bounding box
@@ -50,6 +52,7 @@ public:
 	/// <summary>
 	/// Calculates the bounds of the block based on the return values of its children and
 	/// minimum/maximum sizes. 
+	/// Should be called on _ParentBlock when size-affecting changes are made.
 	/// </summary>
 	virtual void CalculateSize() = 0;
 
@@ -59,6 +62,18 @@ public:
 	/// <param name="SDLRenderer"></param>
 	/// <param name="Position"></param>
 	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) = 0;
+};
+
+class GraphicsBlock_Text : public AGraphicsBlock
+{
+protected:
+	std::string _Text;
+public:
+	GraphicsBlock_Text();
+	
+	GraphicsBlock_Text &SetText(const std::string &Text);
+	GraphicsBlock_Text &SetText(const std::string &Text, const int MaxWidth);
+	const std::string &GetText() const;
 };
 
 class GraphicsBlock_Node : public AGraphicsBlock
