@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <vector>
 
 #include <SDL.h>
@@ -70,8 +71,7 @@ public:
 
 	/// <summary>
 	/// Calculates the bounds of the block based on the return values of its children and
-	/// minimum/maximum sizes. 
-	/// Should be called on _ParentBlock when size-affecting changes are made.
+	/// minimum/maximum sizes. Should never call Dirty().
 	/// </summary>
 	virtual void CalculateSize() = 0;
 };
@@ -80,7 +80,9 @@ class GraphicsBlock_Text : public AGraphicsBlock
 {
 protected:
 	FC_Font *_Font = nullptr;
+	SDL_Color _FontColor = { 0, 0, 0, 255 };
 	std::string _Text = "";
+	std::string _CalculatedText = "";
 	/// <summary>
 	/// The maximum width of the rendered text in pixels. -1 means no limit.
 	/// </summary>

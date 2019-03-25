@@ -1,5 +1,7 @@
 #include "GraphicsBlocks.h"
 
+#include <algorithm>
+
 #pragma region AGraphicsBlock
 
 AGraphicsBlock::AGraphicsBlock(const SDL_Rect &MaximumSize, const SDL_Rect &MinimumSize) :
@@ -62,12 +64,44 @@ GraphicsBlock_Text::GraphicsBlock_Text(FC_Font *Font) :
 
 GraphicsBlock_Text &GraphicsBlock_Text::SetText(const std::string &Text)
 {
+	_Text = Text;
 
-
-	if (_ParentBlock)
-		_ParentBlock->CalculateSize();
-
+	Dirty();
 	return *this;
+}
+
+GraphicsBlock_Text &GraphicsBlock_Text::SetText(const std::string &Text, const int MaxWidth)
+{
+	_MaxTextWidth = std::max(-1, MaxWidth);
+
+	return SetText(Text);
+}
+
+void GraphicsBlock_Text::CalculateSize()
+{
+	// TODO: Store preferred alignment.
+	if (_MaxTextWidth == -1)
+	{
+		_CalculatedBounds = FC_GetBounds(_Font, 0.f, 0.f, FC_AlignEnum::FC_ALIGN_LEFT, FC_MakeScale(1.f, 1.f), _Text.c_str());
+	}
+	else
+	{
+		_CalculatedText.clear();
+		_CalculatedText.reserve(_Text.size() * 1.1f);
+		int CharCount = FC_GetWrappedText(_Font, (char*)_CalculatedText.c_str(), _CalculatedText.capacity(), _MaxTextWidth, _Text.c_str());
+		_CalculatedText.shrink_to_fit();
+
+		_CalculatedBounds = FC_GetBounds(_Font, 0.f, 0.f, FC_AlignEnum::FC_ALIGN_LEFT, FC_MakeScale(1.f, 1.f), _Text.c_str());
+	}
+
+	// There shouldn't be any children in a text GraphicsBlock. 
+	//AGraphicsBlock::CalculateSize();
+}
+
+void GraphicsBlock_Text::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
+{
+	FC_Effect Effect = FC_MakeEffect(FC_AlignEnum::FC_ALIGN_LEFT, FC_MakeScale(1.f, 1.f), _FontColor);
+	FC_DrawBoxEffect(_Font, SDLRenderer, _CalculatedBounds, Effect, _Text.c_str());
 }
 
 
