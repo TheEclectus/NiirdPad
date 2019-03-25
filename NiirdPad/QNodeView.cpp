@@ -109,10 +109,10 @@ void QNodeView::RenderForeground()
 	SDL_Rect r = { XOffset, YOffset, 5, 5 };
 	SDL_RenderFillRect(Renderer, &r);
 
-	static GraphicsBlock_Node *NodeBlock = nullptr;
+	static GraphicsBlock_NodeHeader *NodeBlock = nullptr;
 	if (NodeBlock == nullptr)
 	{
-		NodeBlock = new GraphicsBlock_Node();
+		NodeBlock = new GraphicsBlock_NodeHeader(SDLRenderer());
 		NodeBlock->CalculateSize();
 	}
 

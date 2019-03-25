@@ -4,7 +4,8 @@
 
 #pragma region AGraphicsBlock
 
-AGraphicsBlock::AGraphicsBlock(const SDL_Rect &MaximumSize, const SDL_Rect &MinimumSize) :
+AGraphicsBlock::AGraphicsBlock(SDL_Renderer *AssociatedRenderer, const SDL_Rect &MaximumSize, const SDL_Rect &MinimumSize) :
+	_Renderer(AssociatedRenderer),
 	_MaximumSize(MaximumSize),
 	_MinimumSize(MinimumSize)
 {
@@ -22,6 +23,17 @@ AGraphicsBlock::~AGraphicsBlock()
 		_ChildBlocks.clear();
 		
 	}
+}
+
+void AGraphicsBlock::SetPosition(SDL_Point Pos)
+{
+	_CalculatedBounds.x = Pos.x;
+	_CalculatedBounds.y = Pos.y;
+}
+
+const SDL_Rect &AGraphicsBlock::GetBounds() const
+{
+	return _CalculatedBounds;
 }
 
 void AGraphicsBlock::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
@@ -56,7 +68,10 @@ void AGraphicsBlock::Dirty()
 
 #pragma endregion
 
-GraphicsBlock_Text::GraphicsBlock_Text(FC_Font *Font) :
+#pragma region GraphicsBlock_Text
+
+GraphicsBlock_Text::GraphicsBlock_Text(SDL_Renderer *AssociatedRenderer, FC_Font *Font) :
+	AGraphicsBlock(AssociatedRenderer),
 	_Font(Font)
 {
 
@@ -86,12 +101,13 @@ void GraphicsBlock_Text::CalculateSize()
 	}
 	else
 	{
-		_CalculatedText.clear();
-		_CalculatedText.reserve(_Text.size() * 1.1f);
-		int CharCount = FC_GetWrappedText(_Font, (char*)_CalculatedText.c_str(), _CalculatedText.capacity(), _MaxTextWidth, _Text.c_str());
-		_CalculatedText.shrink_to_fit();
+		size_t BufferSize = _Text.size() * 1.1f;
+		char *Buffer = new char[BufferSize];
 
-		_CalculatedBounds = FC_GetBounds(_Font, 0.f, 0.f, FC_AlignEnum::FC_ALIGN_LEFT, FC_MakeScale(1.f, 1.f), _Text.c_str());
+		int CharCount = FC_GetWrappedText(_Font, Buffer, BufferSize, _MaxTextWidth, _Text.c_str());
+		_CalculatedText = Buffer;
+
+		_CalculatedBounds = FC_GetBounds(_Font, 0.f, 0.f, FC_AlignEnum::FC_ALIGN_LEFT, FC_MakeScale(1.f, 1.f), _CalculatedText.c_str());
 	}
 
 	// There shouldn't be any children in a text GraphicsBlock. 
@@ -100,14 +116,52 @@ void GraphicsBlock_Text::CalculateSize()
 
 void GraphicsBlock_Text::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 {
+	SDL_Rect DrawPos = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
+
 	FC_Effect Effect = FC_MakeEffect(FC_AlignEnum::FC_ALIGN_LEFT, FC_MakeScale(1.f, 1.f), _FontColor);
-	FC_DrawBoxEffect(_Font, SDLRenderer, _CalculatedBounds, Effect, _Text.c_str());
+	FC_DrawBoxEffect(_Font, SDLRenderer, DrawPos, Effect, _CalculatedText.c_str());
+
+	AGraphicsBlock::Render(SDLRenderer, Position);
+}
+
+#pragma endregion
+
+GraphicsBlock_NodeHeader::GraphicsBlock_NodeHeader(SDL_Renderer *AssociatedRenderer) :
+	AGraphicsBlock(AssociatedRenderer)
+{
+	_Font = FC_CreateFont();
+	FC_LoadFont(_Font, AssociatedRenderer, "segoeuil.ttf", 14, { 255, 255, 255, 255 }, 0);
+
+	_Label = new GraphicsBlock_Text(AssociatedRenderer, _Font);
+	_Label->SetText("This is just test text. Texticles. 8=====D", 100);
+	AddChild(_Label);
+}
+
+void GraphicsBlock_NodeHeader::CalculateSize()
+{
+	SDL_Rect Size = _Label->GetBounds();
+
+	// Add a padding of 10 pixels on every side.
+	_Label->SetPosition({ 10, 10 });
+
+	Size.w += 20;
+	Size.h += 20;
+
+	_CalculatedBounds = Size;
+}
+
+void GraphicsBlock_NodeHeader::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
+{
+	SDL_Rect DrawPos = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
+	SDL_SetRenderDrawColor(SDLRenderer, 80, 80, 80, 255);
+	SDL_RenderFillRect(SDLRenderer, &DrawPos);
+
+	AGraphicsBlock::Render(SDLRenderer, Position);
 }
 
 
-
-GraphicsBlock_Node::GraphicsBlock_Node() :
-	AGraphicsBlock()
+GraphicsBlock_Node::GraphicsBlock_Node(SDL_Renderer *AssociatedRenderer) :
+	AGraphicsBlock(AssociatedRenderer)
 {
 
 }

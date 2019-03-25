@@ -27,6 +27,7 @@ public:
 protected:
 	AGraphicsBlock *_ParentBlock = nullptr;
 	std::vector<AGraphicsBlock*> _ChildBlocks;
+	SDL_Renderer *_Renderer = nullptr;
 
 	/// <summary>
 	/// Defines the maximum size of the block. -1 in either width or height field means no limit.
@@ -45,8 +46,16 @@ protected:
 	SDL_Rect _CalculatedBounds = { 0, 0, 0, 0 };
 
 public:
-	AGraphicsBlock(const SDL_Rect &MaximumSize = { 0, 0, -1, -1 }, const SDL_Rect &MinimumSize = { 0, 0, 0, 0 });
+	AGraphicsBlock(SDL_Renderer *AssociatedRenderer, const SDL_Rect &MaximumSize = { 0, 0, -1, -1 }, const SDL_Rect &MinimumSize = { 0, 0, 0, 0 });
 	virtual ~AGraphicsBlock();
+
+	/// <summary>
+	/// Set the position of the Block.
+	/// </summary>
+	/// <param name="Pos"></param>
+	void SetPosition(SDL_Point Pos);
+
+	const SDL_Rect &GetBounds() const;
 
 	/// <summary>
 	/// Adds an AGraphicsBlock as a child, ensuring it will be properly assigned this as its parent and cleaned up on destruction.
@@ -88,7 +97,7 @@ protected:
 	/// </summary>
 	int _MaxTextWidth = -1;
 public:
-	GraphicsBlock_Text(FC_Font *Font);
+	GraphicsBlock_Text(SDL_Renderer *AssociatedRenderer, FC_Font *Font);
 	
 	GraphicsBlock_Text &SetText(const std::string &Text);
 	GraphicsBlock_Text &SetText(const std::string &Text, const int MaxWidth);
@@ -101,10 +110,24 @@ public:
 	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
 };
 
+class GraphicsBlock_NodeHeader : public AGraphicsBlock
+{
+protected:
+	FC_Font *_Font = nullptr;
+
+	GraphicsBlock_Text *_Label = nullptr;
+
+public:
+	GraphicsBlock_NodeHeader(SDL_Renderer *AssociatedRenderer);
+
+	virtual void CalculateSize() override;
+	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
+};
+
 class GraphicsBlock_Node : public AGraphicsBlock
 {
 public:
-	GraphicsBlock_Node();
+	GraphicsBlock_Node(SDL_Renderer *AssociatedRenderer);
 
 	virtual void CalculateSize() override;
 	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
