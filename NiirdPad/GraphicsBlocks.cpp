@@ -1,5 +1,7 @@
 #include "GraphicsBlocks.h"
 
+#pragma region AGraphicsBlock
+
 AGraphicsBlock::AGraphicsBlock(const SDL_Rect &MaximumSize, const SDL_Rect &MinimumSize) :
 	_MaximumSize(MaximumSize),
 	_MinimumSize(MinimumSize)
@@ -37,6 +39,26 @@ void AGraphicsBlock::AddChild(AGraphicsBlock *Child)
 	Child->_ParentBlock = this;
 	_ChildBlocks.push_back(Child);
 }
+
+#pragma endregion
+
+GraphicsBlock_Text::GraphicsBlock_Text(FC_Font *Font) :
+	_Font(Font)
+{
+
+}
+
+GraphicsBlock_Text &GraphicsBlock_Text::SetText(const std::string &Text)
+{
+
+
+	if (_ParentBlock)
+		_ParentBlock->CalculateSize();
+
+	return *this;
+}
+
+
 
 GraphicsBlock_Node::GraphicsBlock_Node() :
 	AGraphicsBlock()

@@ -54,6 +54,13 @@ public:
 	void AddChild(AGraphicsBlock *Child);
 
 	/// <summary>
+	/// Signals that the GraphicsBlock must have CalculateSize() called again. Will call
+	/// Dirty() of _ParentBlock unless it is nullptr, at which point CalculateSize() will
+	/// be called.
+	/// </summary>
+	void Dirty();
+
+	/// <summary>
 	/// Renders the AGraphicsBlock to an SDL_Renderer at a specified point. Calls
 	/// Render() on all child AGraphicsBlocks as well with proper offsets.
 	/// </summary>
@@ -72,15 +79,24 @@ public:
 class GraphicsBlock_Text : public AGraphicsBlock
 {
 protected:
-	FC_Font *_Font;
-	std::string _Text;
-	int _MaxTextWidth;
+	FC_Font *_Font = nullptr;
+	std::string _Text = "";
+	/// <summary>
+	/// The maximum width of the rendered text in pixels. -1 means no limit.
+	/// </summary>
+	int _MaxTextWidth = -1;
 public:
-	GraphicsBlock_Text();
+	GraphicsBlock_Text(FC_Font *Font);
 	
 	GraphicsBlock_Text &SetText(const std::string &Text);
 	GraphicsBlock_Text &SetText(const std::string &Text, const int MaxWidth);
 	const std::string &GetText() const;
+
+	GraphicsBlock_Text &SetMaxWidth(const int MaxWidth);
+	const int GetMaxWidth() const;
+
+	virtual void CalculateSize() override;
+	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
 };
 
 class GraphicsBlock_Node : public AGraphicsBlock
