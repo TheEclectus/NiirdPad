@@ -126,11 +126,13 @@ void GraphicsBlock_Text::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 
 #pragma endregion
 
-GraphicsBlock_NodeHeader::GraphicsBlock_NodeHeader(SDL_Renderer *AssociatedRenderer) :
-	AGraphicsBlock(AssociatedRenderer)
+GraphicsBlock_NodeHeader::GraphicsBlock_NodeHeader(SDL_Renderer *AssociatedRenderer, FC_Font *Font) :
+	AGraphicsBlock(AssociatedRenderer),
+	_Font(Font)
 {
-	_Font = FC_CreateFont();
-	FC_LoadFont(_Font, AssociatedRenderer, "segoeuil.ttf", 14, { 255, 255, 255, 255 }, 0);
+	// HACK: Do NOT, under ANY circumstances, keep this in here longer than necessary.
+	/*_Font = FC_CreateFont();
+	FC_LoadFont(_Font, AssociatedRenderer, "segoeuil.ttf", 14, { 255, 255, 255, 255 }, 0);*/
 
 	_Label = new GraphicsBlock_Text(AssociatedRenderer, _Font);
 	_Label->SetText("This is just test text. Texticles. 8=====D", 100);
@@ -160,7 +162,7 @@ void GraphicsBlock_NodeHeader::Render(SDL_Renderer *SDLRenderer, SDL_Point Posit
 }
 
 
-GraphicsBlock_Node::GraphicsBlock_Node(SDL_Renderer *AssociatedRenderer) :
+GraphicsBlock_Node::GraphicsBlock_Node(SDL_Renderer *AssociatedRenderer, FC_Font *HeaderFont) :
 	AGraphicsBlock(AssociatedRenderer)
 {
 

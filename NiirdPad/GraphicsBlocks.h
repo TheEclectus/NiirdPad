@@ -118,7 +118,7 @@ protected:
 	GraphicsBlock_Text *_Label = nullptr;
 
 public:
-	GraphicsBlock_NodeHeader(SDL_Renderer *AssociatedRenderer);
+	GraphicsBlock_NodeHeader(SDL_Renderer *AssociatedRenderer, FC_Font *Font);
 
 	virtual void CalculateSize() override;
 	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
@@ -127,7 +127,7 @@ public:
 class GraphicsBlock_Node : public AGraphicsBlock
 {
 public:
-	GraphicsBlock_Node(SDL_Renderer *AssociatedRenderer);
+	GraphicsBlock_Node(SDL_Renderer *AssociatedRenderer, FC_Font *HeaderFont);
 
 	virtual void CalculateSize() override;
 	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
