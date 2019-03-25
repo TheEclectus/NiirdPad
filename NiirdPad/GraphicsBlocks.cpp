@@ -40,6 +40,18 @@ void AGraphicsBlock::AddChild(AGraphicsBlock *Child)
 	_ChildBlocks.push_back(Child);
 }
 
+void AGraphicsBlock::Dirty()
+{
+	if (_ParentBlock)
+	{
+		_ParentBlock->Dirty();
+	}
+	else
+	{
+		CalculateSize();
+	}
+}
+
 #pragma endregion
 
 GraphicsBlock_Text::GraphicsBlock_Text(FC_Font *Font) :
