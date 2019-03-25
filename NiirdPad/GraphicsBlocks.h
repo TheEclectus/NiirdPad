@@ -10,6 +10,10 @@
 /// A graphical building block class. Has faculties for defining the bounding box
 /// of a graphical object based on its own criteria, and that of blocks within it.
 /// </summary>
+/* 
+	TODO: Consider adding signals and signal handlers that relay a message and data to
+	child Blocks. Thsi would be useful for when fonts or colors are changed.
+*/ 
 class AGraphicsBlock
 {
 public:
@@ -50,24 +54,27 @@ public:
 	void AddChild(AGraphicsBlock *Child);
 
 	/// <summary>
+	/// Renders the AGraphicsBlock to an SDL_Renderer at a specified point. Calls
+	/// Render() on all child AGraphicsBlocks as well with proper offsets.
+	/// </summary>
+	/// <param name="SDLRenderer"></param>
+	/// <param name="Position"></param>
+	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position);
+
+	/// <summary>
 	/// Calculates the bounds of the block based on the return values of its children and
 	/// minimum/maximum sizes. 
 	/// Should be called on _ParentBlock when size-affecting changes are made.
 	/// </summary>
 	virtual void CalculateSize() = 0;
-
-	/// <summary>
-	/// Renders the AGraphicsBlock to an SDL_Renderer.
-	/// </summary>
-	/// <param name="SDLRenderer"></param>
-	/// <param name="Position"></param>
-	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) = 0;
 };
 
 class GraphicsBlock_Text : public AGraphicsBlock
 {
 protected:
+	FC_Font *_Font;
 	std::string _Text;
+	int _MaxTextWidth;
 public:
 	GraphicsBlock_Text();
 	

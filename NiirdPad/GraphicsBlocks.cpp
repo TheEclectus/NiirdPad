@@ -20,6 +20,18 @@ AGraphicsBlock::~AGraphicsBlock()
 	}
 }
 
+void AGraphicsBlock::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
+{
+	if (_ChildBlocks.size() > 0)
+	{
+		for (auto Child : _ChildBlocks)
+		{
+			SDL_Point ChildRenderPos = { Position.x + Child->_CalculatedBounds.x, Position.y + Child->_CalculatedBounds.y };
+			Child->Render(SDLRenderer, ChildRenderPos);
+		}
+	}
+}
+
 void AGraphicsBlock::AddChild(AGraphicsBlock *Child)
 {
 	Child->_ParentBlock = this;
@@ -42,4 +54,6 @@ void GraphicsBlock_Node::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 	SDL_Rect RenderDest = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
 	SDL_SetRenderDrawColor(SDLRenderer, 80, 80, 80, 255);
 	SDL_RenderFillRect(SDLRenderer, &RenderDest);
+
+	AGraphicsBlock::Render(SDLRenderer, Position);
 }
