@@ -2,6 +2,8 @@
 
 #include "QSDLPanel.h"
 
+#include "FontStore.h"
+
 struct QNodeViewCamera
 {
 	SDL_Rect ViewBox = { 0, 0, 0, 0 };	// Center position and size.
@@ -29,6 +31,7 @@ protected:
 	SDL_Color _GridLineColor = { 0x33, 0x33, 0x33, 0xFF };
 	QNodeViewCamera _Camera;
 	QNodeViewInputState _InputState;
+	FontStore _FontStore;
 
 	virtual void Input() override;
 	virtual void Logic() override;

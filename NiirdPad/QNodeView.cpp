@@ -112,6 +112,7 @@ void QNodeView::RenderForeground()
 	static GraphicsBlock_NodeHeader *NodeBlock = nullptr;
 	if (NodeBlock == nullptr)
 	{
+		// NEXTTIME: Define a way to store FC_Fonts to be passed along to GBs.
 		NodeBlock = new GraphicsBlock_NodeHeader(SDLRenderer());
 		NodeBlock->CalculateSize();
 	}
@@ -125,7 +126,8 @@ void QNodeView::RenderForeground()
 }
 
 QNodeView::QNodeView(QWidget *Parent) :
-	QSDLPanel(Parent)
+	QSDLPanel(Parent),
+	_FontStore(this->SDLRenderer())
 {
 
 }
