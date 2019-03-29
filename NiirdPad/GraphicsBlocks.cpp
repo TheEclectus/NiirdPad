@@ -119,8 +119,8 @@ void GraphicsBlock_Text::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 	SDL_Rect DrawPos = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
 
 	FC_Effect Effect = FC_MakeEffect(FC_AlignEnum::FC_ALIGN_LEFT, FC_MakeScale(1.f, 1.f), _FontColor);
-	FC_DrawBoxEffect(_Font, SDLRenderer, DrawPos, Effect, _CalculatedText.c_str());
-
+	auto res = FC_DrawBoxEffect(_Font, SDLRenderer, DrawPos, Effect, _CalculatedText.c_str());
+	
 	AGraphicsBlock::Render(SDLRenderer, Position);
 }
 
@@ -130,10 +130,6 @@ GraphicsBlock_NodeHeader::GraphicsBlock_NodeHeader(SDL_Renderer *AssociatedRende
 	AGraphicsBlock(AssociatedRenderer),
 	_Font(Font)
 {
-	// HACK: Do NOT, under ANY circumstances, keep this in here longer than necessary.
-	/*_Font = FC_CreateFont();
-	FC_LoadFont(_Font, AssociatedRenderer, "segoeuil.ttf", 14, { 255, 255, 255, 255 }, 0);*/
-
 	_Label = new GraphicsBlock_Text(AssociatedRenderer, _Font);
 	_Label->SetText("This is just test text. Texticles. 8=====D", 100);
 	AddChild(_Label);
@@ -141,6 +137,7 @@ GraphicsBlock_NodeHeader::GraphicsBlock_NodeHeader(SDL_Renderer *AssociatedRende
 
 void GraphicsBlock_NodeHeader::CalculateSize()
 {
+	//_Label->CalculateSize();
 	SDL_Rect Size = _Label->GetBounds();
 
 	// Add a padding of 10 pixels on every side.

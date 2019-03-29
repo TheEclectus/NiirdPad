@@ -29,4 +29,5 @@ public:
 	~FontStore();
 
 	FC_Font *GetFont(const Role FontRole);
+	void ResetFonts(const SDL_EventType &Type);
 };

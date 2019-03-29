@@ -36,6 +36,17 @@ void QNodeView::Input()
 				printf_s("Camera adjusted to %dx%d.\n", _Camera.ViewBox.w, _Camera.ViewBox.h);
 			}
 		}
+
+		else if (Event.type == SDL_EventType::SDL_RENDER_TARGETS_RESET)
+		{
+			printf_s("SuS\n");
+			_FontStore.ResetFonts((SDL_EventType)Event.type);
+		}
+		else if (Event.type == SDL_EventType::SDL_RENDER_DEVICE_RESET)
+		{
+			printf_s("sUs\n");
+			_FontStore.ResetFonts((SDL_EventType)Event.type);
+		}
 	}
 }
 
@@ -112,8 +123,7 @@ void QNodeView::RenderForeground()
 	static GraphicsBlock_NodeHeader *NodeBlock = nullptr;
 	if (NodeBlock == nullptr)
 	{
-		// NEXTTIME: Define a way to store FC_Fonts to be passed along to GBs.
-		NodeBlock = new GraphicsBlock_NodeHeader(SDLRenderer());
+		NodeBlock = new GraphicsBlock_NodeHeader(Renderer, _FontStore.GetFont(FontStore::Role::NodeComment));
 		NodeBlock->CalculateSize();
 	}
 
@@ -122,7 +132,7 @@ void QNodeView::RenderForeground()
 	BlockRenderPos.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x;
 	BlockRenderPos.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y;
 
-	NodeBlock->Render(SDLRenderer(), BlockRenderPos);
+	NodeBlock->Render(Renderer, BlockRenderPos);
 }
 
 QNodeView::QNodeView(QWidget *Parent) :
