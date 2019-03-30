@@ -184,9 +184,9 @@ void GraphicsBlock_NodeHeader::Render(SDL_Renderer *SDLRenderer, SDL_Point Posit
 	AGraphicsBlock::Render(SDLRenderer, Position);
 }
 
-void GraphicsBlock_NodeHeader::SetText(const std::string &Text)
+void GraphicsBlock_NodeHeader::SetText(const std::string &Text, const int MaxWidth = -1)
 {
-	_Label->SetText(Text);
+	_Label->SetText(Text, MaxWidth);
 }
 
 #pragma endregion
