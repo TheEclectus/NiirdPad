@@ -122,10 +122,15 @@ public:
 
 	virtual void CalculateSize() override;
 	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
+
+	void SetText(const std::string &Text);
 };
 
 class GraphicsBlock_Node : public AGraphicsBlock
 {
+protected:
+	GraphicsBlock_NodeHeader *_Header = nullptr;
+
 public:
 	GraphicsBlock_Node(SDL_Renderer *AssociatedRenderer, FC_Font *HeaderFont);
 

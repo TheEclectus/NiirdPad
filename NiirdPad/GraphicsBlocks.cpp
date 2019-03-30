@@ -94,6 +94,7 @@ GraphicsBlock_Text::GraphicsBlock_Text(SDL_Renderer *AssociatedRenderer, FC_Font
 GraphicsBlock_Text &GraphicsBlock_Text::SetText(const std::string &Text)
 {
 	_Text = Text;
+	_MaxTextWidth = -1;
 
 	Dirty();
 	return *this;
@@ -101,9 +102,11 @@ GraphicsBlock_Text &GraphicsBlock_Text::SetText(const std::string &Text)
 
 GraphicsBlock_Text &GraphicsBlock_Text::SetText(const std::string &Text, const int MaxWidth)
 {
+	_Text = Text;
 	_MaxTextWidth = std::max(-1, MaxWidth);
 
-	return SetText(Text);
+	Dirty();
+	return *this;
 }
 
 void GraphicsBlock_Text::CalculateSize()
@@ -133,20 +136,27 @@ void GraphicsBlock_Text::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 	SDL_Rect DrawPos = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
 
 	FC_Effect Effect = FC_MakeEffect(FC_AlignEnum::FC_ALIGN_LEFT, FC_MakeScale(1.f, 1.f), _FontColor);
-	auto res = FC_DrawBoxEffect(_Font, SDLRenderer, DrawPos, Effect, _CalculatedText.c_str());
+	if(_MaxTextWidth == -1)
+		auto res = FC_DrawBoxEffect(_Font, SDLRenderer, DrawPos, Effect, _Text.c_str());
+	else
+		auto res = FC_DrawBoxEffect(_Font, SDLRenderer, DrawPos, Effect, _CalculatedText.c_str());
 	
 	AGraphicsBlock::Render(SDLRenderer, Position);
 }
 
 #pragma endregion
 
+#pragma region GraphicsBlock_NodeHeader
+
 GraphicsBlock_NodeHeader::GraphicsBlock_NodeHeader(SDL_Renderer *AssociatedRenderer, FC_Font *Font) :
 	AGraphicsBlock(AssociatedRenderer),
 	_Font(Font)
 {
-	_Label = new GraphicsBlock_Text(AssociatedRenderer, _Font, {255, 255, 255, 255});
-	_Label->SetText("This is just test text. Texticles. 8=====D", 200);
+	_Label = new GraphicsBlock_Text(AssociatedRenderer, _Font, { 255, 255, 255, 255 });
+	//_Label->SetText("sus", 200);
 	AddChild(_Label);
+
+	//Dirty();
 }
 
 void GraphicsBlock_NodeHeader::CalculateSize()
@@ -174,23 +184,38 @@ void GraphicsBlock_NodeHeader::Render(SDL_Renderer *SDLRenderer, SDL_Point Posit
 	AGraphicsBlock::Render(SDLRenderer, Position);
 }
 
+void GraphicsBlock_NodeHeader::SetText(const std::string &Text)
+{
+	_Label->SetText(Text);
+}
+
+#pragma endregion
+
+#pragma region GraphicsBlock_Node
 
 GraphicsBlock_Node::GraphicsBlock_Node(SDL_Renderer *AssociatedRenderer, FC_Font *HeaderFont) :
 	AGraphicsBlock(AssociatedRenderer)
 {
-
+	_Header = new GraphicsBlock_NodeHeader(AssociatedRenderer, HeaderFont);
+	_Header->SetText("Test text.  dzfgzdfg Texticles. 8===========D");
+	AddChild(_Header);
 }
 
 void GraphicsBlock_Node::CalculateSize()
 {
-	_CalculatedBounds = { 0, 0, 100, 100 };
+	_Header->CalculateSize();
+	SDL_Rect HeaderSize = _Header->GetBounds();
+
+	_CalculatedBounds = HeaderSize;
 }
 
 void GraphicsBlock_Node::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 {
-	SDL_Rect RenderDest = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
+	/*SDL_Rect RenderDest = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
 	SDL_SetRenderDrawColor(SDLRenderer, 80, 80, 80, 255);
-	SDL_RenderFillRect(SDLRenderer, &RenderDest);
+	SDL_RenderFillRect(SDLRenderer, &RenderDest);*/
 
 	AGraphicsBlock::Render(SDLRenderer, Position);
 }
+
+#pragma endregion

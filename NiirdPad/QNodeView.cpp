@@ -120,10 +120,10 @@ void QNodeView::RenderForeground()
 	SDL_Rect r = { XOffset, YOffset, 5, 5 };
 	SDL_RenderFillRect(Renderer, &r);
 
-	static GraphicsBlock_NodeHeader *NodeBlock = nullptr;
+	static GraphicsBlock_Node *NodeBlock = nullptr;
 	if (NodeBlock == nullptr)
 	{
-		NodeBlock = new GraphicsBlock_NodeHeader(Renderer, _FontStore.GetFont(FontStore::Role::NodeComment));
+		NodeBlock = new GraphicsBlock_Node(Renderer, _FontStore.GetFont(FontStore::Role::NodeComment));
 		NodeBlock->CalculateSize();
 	}
 
