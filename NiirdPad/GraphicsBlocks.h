@@ -82,7 +82,7 @@ public:
 	/// Calculates the bounds of the block based on the return values of its children and
 	/// minimum/maximum sizes. Should never call Dirty().
 	/// </summary>
-	virtual void CalculateSize() = 0;
+	virtual void CalculateSize();
 };
 
 class GraphicsBlock_Text : public AGraphicsBlock

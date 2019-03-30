@@ -36,18 +36,6 @@ const SDL_Rect &AGraphicsBlock::GetBounds() const
 	return _CalculatedBounds;
 }
 
-void AGraphicsBlock::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
-{
-	if (_ChildBlocks.size() > 0)
-	{
-		for (auto Child : _ChildBlocks)
-		{
-			SDL_Point ChildRenderPos = { Position.x + Child->_CalculatedBounds.x, Position.y + Child->_CalculatedBounds.y };
-			Child->Render(SDLRenderer, ChildRenderPos);
-		}
-	}
-}
-
 void AGraphicsBlock::AddChild(AGraphicsBlock *Child)
 {
 	Child->_ParentBlock = this;
@@ -64,6 +52,31 @@ void AGraphicsBlock::Dirty()
 	{
 		CalculateSize();
 	}
+}
+
+void AGraphicsBlock::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
+{
+	if (_ChildBlocks.size() > 0)
+	{
+		for (auto Child : _ChildBlocks)
+		{
+			SDL_Point ChildRenderPos = { Position.x + Child->_CalculatedBounds.x, Position.y + Child->_CalculatedBounds.y };
+			Child->Render(SDLRenderer, ChildRenderPos);
+		}
+	}
+}
+
+void AGraphicsBlock::CalculateSize()
+{
+	if (_MinimumSize.w && _CalculatedBounds.w < _MinimumSize.w)
+		_CalculatedBounds.w = _MinimumSize.w;
+	if (_MinimumSize.h && _CalculatedBounds.h < _MinimumSize.h)
+		_CalculatedBounds.h = _MinimumSize.h;
+
+	if (_MaximumSize.w && _CalculatedBounds.w < _MaximumSize.w)
+		_CalculatedBounds.w = _MaximumSize.w;
+	if (_MaximumSize.h && _CalculatedBounds.h < _MaximumSize.h)
+		_CalculatedBounds.h = _MaximumSize.h;
 }
 
 #pragma endregion
@@ -137,7 +150,7 @@ GraphicsBlock_NodeHeader::GraphicsBlock_NodeHeader(SDL_Renderer *AssociatedRende
 
 void GraphicsBlock_NodeHeader::CalculateSize()
 {
-	//_Label->CalculateSize();
+	_Label->CalculateSize();
 	SDL_Rect Size = _Label->GetBounds();
 
 	// Add a padding of 10 pixels on every side.
