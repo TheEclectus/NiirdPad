@@ -83,9 +83,10 @@ void AGraphicsBlock::CalculateSize()
 
 #pragma region GraphicsBlock_Text
 
-GraphicsBlock_Text::GraphicsBlock_Text(SDL_Renderer *AssociatedRenderer, FC_Font *Font) :
+GraphicsBlock_Text::GraphicsBlock_Text(SDL_Renderer *AssociatedRenderer, FC_Font *Font, const SDL_Color &Color) :
 	AGraphicsBlock(AssociatedRenderer),
-	_Font(Font)
+	_Font(Font),
+	_FontColor(Color)
 {
 
 }
@@ -143,8 +144,8 @@ GraphicsBlock_NodeHeader::GraphicsBlock_NodeHeader(SDL_Renderer *AssociatedRende
 	AGraphicsBlock(AssociatedRenderer),
 	_Font(Font)
 {
-	_Label = new GraphicsBlock_Text(AssociatedRenderer, _Font);
-	_Label->SetText("This is just test text. Texticles. 8=====D", 100);
+	_Label = new GraphicsBlock_Text(AssociatedRenderer, _Font, {255, 255, 255, 255});
+	_Label->SetText("This is just test text. Texticles. 8=====D", 200);
 	AddChild(_Label);
 }
 
@@ -154,10 +155,11 @@ void GraphicsBlock_NodeHeader::CalculateSize()
 	SDL_Rect Size = _Label->GetBounds();
 
 	// Add a padding of 10 pixels on every side.
-	_Label->SetPosition({ 10, 10 });
-
+	_Label->SetPosition({ 10, 5 });
 	Size.w += 20;
-	Size.h += 20;
+	Size.h += 10;
+
+	Size.h = std::max(Size.h, 25);
 
 	_CalculatedBounds = Size;
 }
@@ -165,7 +167,8 @@ void GraphicsBlock_NodeHeader::CalculateSize()
 void GraphicsBlock_NodeHeader::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 {
 	SDL_Rect DrawPos = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
-	SDL_SetRenderDrawColor(SDLRenderer, 80, 80, 80, 255);
+	//SDL_SetRenderDrawColor(SDLRenderer, 80, 80, 80, 255);
+	SDL_SetRenderDrawColor(SDLRenderer, 65, 65, 65, 255);
 	SDL_RenderFillRect(SDLRenderer, &DrawPos);
 
 	AGraphicsBlock::Render(SDLRenderer, Position);

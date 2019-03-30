@@ -89,7 +89,7 @@ class GraphicsBlock_Text : public AGraphicsBlock
 {
 protected:
 	FC_Font *_Font = nullptr;
-	SDL_Color _FontColor = { 0, 0, 0, 255 };
+	SDL_Color _FontColor;
 	std::string _Text = "";
 	std::string _CalculatedText = "";
 	/// <summary>
@@ -97,7 +97,7 @@ protected:
 	/// </summary>
 	int _MaxTextWidth = -1;
 public:
-	GraphicsBlock_Text(SDL_Renderer *AssociatedRenderer, FC_Font *Font);
+	GraphicsBlock_Text(SDL_Renderer *AssociatedRenderer, FC_Font *Font, const SDL_Color &Color = { 0, 0, 0, 255 });
 	
 	GraphicsBlock_Text &SetText(const std::string &Text);
 	GraphicsBlock_Text &SetText(const std::string &Text, const int MaxWidth);
