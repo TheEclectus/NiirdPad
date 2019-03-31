@@ -40,6 +40,11 @@ protected:
 	SDL_Rect _MinimumSize;
 
 	/// <summary>
+	/// The most-recent size hints passed to CalculateSize().
+	/// </summary>
+	SDL_Rect _SizeHint;
+
+	/// <summary>
 	/// The calculated dimensions and offset from the parent (uppermost block is always 0,0 
 	/// position).
 	/// </summary>

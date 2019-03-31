@@ -68,7 +68,7 @@ void AGraphicsBlock::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 
 void AGraphicsBlock::CalculateSize(int MaxWidthHint, int MaxHeightHint)
 {
-	if (_MinimumSize.w && _CalculatedBounds.w < _MinimumSize.w)
+	/*if (_MinimumSize.w && _CalculatedBounds.w < _MinimumSize.w)
 		_CalculatedBounds.w = _MinimumSize.w;
 	if (_MinimumSize.h && _CalculatedBounds.h < _MinimumSize.h)
 		_CalculatedBounds.h = _MinimumSize.h;
@@ -76,7 +76,9 @@ void AGraphicsBlock::CalculateSize(int MaxWidthHint, int MaxHeightHint)
 	if (_MaximumSize.w && _CalculatedBounds.w < _MaximumSize.w)
 		_CalculatedBounds.w = _MaximumSize.w;
 	if (_MaximumSize.h && _CalculatedBounds.h < _MaximumSize.h)
-		_CalculatedBounds.h = _MaximumSize.h;
+		_CalculatedBounds.h = _MaximumSize.h;*/
+
+	_SizeHint = { 0, 0, MaxWidthHint, MaxHeightHint };
 }
 
 #pragma endregion
