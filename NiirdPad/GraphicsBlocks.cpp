@@ -78,7 +78,7 @@ void AGraphicsBlock::CalculateSize(int MaxWidthHint, int MaxHeightHint)
 	if (_MaximumSize.h && _CalculatedBounds.h < _MaximumSize.h)
 		_CalculatedBounds.h = _MaximumSize.h;*/
 
-	_SizeHint = { 0, 0, MaxWidthHint, MaxHeightHint };
+	_SizeHint = { 0, 0, std::max(-1, MaxWidthHint), std::max(-1, MaxHeightHint) };
 }
 
 #pragma endregion
@@ -96,7 +96,7 @@ GraphicsBlock_Text::GraphicsBlock_Text(SDL_Renderer *AssociatedRenderer, FC_Font
 GraphicsBlock_Text &GraphicsBlock_Text::SetText(const std::string &Text)
 {
 	_Text = Text;
-	_MaxTextWidth = -1;
+	//_MaxTextWidth = -1;
 
 	Dirty();
 	return *this;
@@ -105,7 +105,7 @@ GraphicsBlock_Text &GraphicsBlock_Text::SetText(const std::string &Text)
 GraphicsBlock_Text &GraphicsBlock_Text::SetText(const std::string &Text, const int MaxWidth)
 {
 	_Text = Text;
-	_MaxTextWidth = std::max(-1, MaxWidth);
+	//_MaxTextWidth = std::max(-1, MaxWidth);
 
 	Dirty();
 	return *this;
@@ -113,8 +113,10 @@ GraphicsBlock_Text &GraphicsBlock_Text::SetText(const std::string &Text, const i
 
 void GraphicsBlock_Text::CalculateSize(int MaxWidthHint, int MaxHeightHint)
 {
+	AGraphicsBlock::CalculateSize(MaxWidthHint, MaxHeightHint);
+
 	// TODO: Store preferred alignment.
-	if (_MaxTextWidth == -1)
+	if (_SizeHint.w == -1)
 	{
 		_CalculatedBounds = FC_GetBounds(_Font, 0.f, 0.f, FC_AlignEnum::FC_ALIGN_LEFT, FC_MakeScale(1.f, 1.f), _Text.c_str());
 	}
@@ -123,10 +125,13 @@ void GraphicsBlock_Text::CalculateSize(int MaxWidthHint, int MaxHeightHint)
 		size_t BufferSize = _Text.size() * 1.1f;
 		char *Buffer = new char[BufferSize];
 
-		int CharCount = FC_GetWrappedText(_Font, Buffer, BufferSize, _MaxTextWidth, _Text.c_str());
+		int CharCount = FC_GetWrappedText(_Font, Buffer, BufferSize,_SizeHint.w, _Text.c_str());
 		_CalculatedText = Buffer;
 
 		_CalculatedBounds = FC_GetBounds(_Font, 0.f, 0.f, FC_AlignEnum::FC_ALIGN_LEFT, FC_MakeScale(1.f, 1.f), _CalculatedText.c_str());
+
+		if(_SizeHint.h != -1)
+			_CalculatedBounds.h = _SizeHint.h;
 	}
 
 	// There shouldn't be any children in a text GraphicsBlock. 
@@ -138,7 +143,7 @@ void GraphicsBlock_Text::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 	SDL_Rect DrawPos = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
 
 	FC_Effect Effect = FC_MakeEffect(FC_AlignEnum::FC_ALIGN_LEFT, FC_MakeScale(1.f, 1.f), _FontColor);
-	if(_MaxTextWidth == -1)
+	if(_SizeHint.w == -1)
 		auto res = FC_DrawBoxEffect(_Font, SDLRenderer, DrawPos, Effect, _Text.c_str());
 	else
 		auto res = FC_DrawBoxEffect(_Font, SDLRenderer, DrawPos, Effect, _CalculatedText.c_str());
@@ -163,7 +168,7 @@ GraphicsBlock_NodeHeader::GraphicsBlock_NodeHeader(SDL_Renderer *AssociatedRende
 
 void GraphicsBlock_NodeHeader::CalculateSize(int MaxWidthHint, int MaxHeightHint)
 {
-	_Label->CalculateSize();
+	_Label->CalculateSize(300, -1);
 	SDL_Rect Size = _Label->GetBounds();
 
 	// Add a padding of 10 pixels on every side.

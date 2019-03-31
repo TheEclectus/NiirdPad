@@ -101,7 +101,7 @@ protected:
 	/// <summary>
 	/// The maximum width of the rendered text in pixels. -1 means no limit.
 	/// </summary>
-	int _MaxTextWidth = -1;
+	//int _MaxTextWidth = -1;
 public:
 	GraphicsBlock_Text(SDL_Renderer *AssociatedRenderer, FC_Font *Font, const SDL_Color &Color = { 0, 0, 0, 255 });
 	
