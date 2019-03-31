@@ -96,16 +96,6 @@ GraphicsBlock_Text::GraphicsBlock_Text(SDL_Renderer *AssociatedRenderer, FC_Font
 GraphicsBlock_Text &GraphicsBlock_Text::SetText(const std::string &Text)
 {
 	_Text = Text;
-	//_MaxTextWidth = -1;
-
-	Dirty();
-	return *this;
-}
-
-GraphicsBlock_Text &GraphicsBlock_Text::SetText(const std::string &Text, const int MaxWidth)
-{
-	_Text = Text;
-	//_MaxTextWidth = std::max(-1, MaxWidth);
 
 	Dirty();
 	return *this;
@@ -131,7 +121,7 @@ void GraphicsBlock_Text::CalculateSize(int MaxWidthHint, int MaxHeightHint)
 		_CalculatedBounds = FC_GetBounds(_Font, 0.f, 0.f, FC_AlignEnum::FC_ALIGN_LEFT, FC_MakeScale(1.f, 1.f), _CalculatedText.c_str());
 
 		if(_SizeHint.h != -1)
-			_CalculatedBounds.h = _SizeHint.h;
+			_CalculatedBounds.h = std::min(_CalculatedBounds.h, _SizeHint.h);
 	}
 
 	// There shouldn't be any children in a text GraphicsBlock. 
@@ -168,15 +158,22 @@ GraphicsBlock_NodeHeader::GraphicsBlock_NodeHeader(SDL_Renderer *AssociatedRende
 
 void GraphicsBlock_NodeHeader::CalculateSize(int MaxWidthHint, int MaxHeightHint)
 {
-	_Label->CalculateSize(300, -1);
+	AGraphicsBlock::CalculateSize(MaxWidthHint, MaxHeightHint);
+
+	// The maximum sizes of the header minus the padding.
+	const int MaxLabelWidthSansPadding = (_SizeHint.w == -1 ? DEFAULT_WIDTH : _SizeHint.w) - (PADDING_LEFT + PADDING_RIGHT);
+	const int MaxLabelHeightSansPadding = (_SizeHint.h == -1 ? DEFAULT_HEIGHT : _SizeHint.h) - (PADDING_TOP + PADDING_BOTTOM);
+
+	_Label->CalculateSize(MaxLabelWidthSansPadding, MaxLabelHeightSansPadding);
 	SDL_Rect Size = _Label->GetBounds();
 
-	// Add a padding of 10 pixels on every side.
-	_Label->SetPosition({ 10, 5 });
-	Size.w += 20;
-	Size.h += 10;
+	// Add a padding to position
+	_Label->SetPosition({ PADDING_LEFT, PADDING_TOP });
+	Size.w += PADDING_LEFT + PADDING_RIGHT;
+	Size.h += PADDING_TOP + PADDING_BOTTOM;
 
-	Size.h = std::max(Size.h, 25);
+	Size.w = std::max(Size.w, DEFAULT_WIDTH);
+	Size.h = std::max(Size.h, DEFAULT_HEIGHT);
 
 	_CalculatedBounds = Size;
 }
@@ -191,9 +188,9 @@ void GraphicsBlock_NodeHeader::Render(SDL_Renderer *SDLRenderer, SDL_Point Posit
 	AGraphicsBlock::Render(SDLRenderer, Position);
 }
 
-void GraphicsBlock_NodeHeader::SetText(const std::string &Text, const int MaxWidth)
+void GraphicsBlock_NodeHeader::SetText(const std::string &Text)
 {
-	_Label->SetText(Text, MaxWidth);
+	_Label->SetText(Text);
 }
 
 #pragma endregion

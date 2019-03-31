@@ -106,7 +106,6 @@ public:
 	GraphicsBlock_Text(SDL_Renderer *AssociatedRenderer, FC_Font *Font, const SDL_Color &Color = { 0, 0, 0, 255 });
 	
 	GraphicsBlock_Text &SetText(const std::string &Text);
-	GraphicsBlock_Text &SetText(const std::string &Text, const int MaxWidth);
 	const std::string &GetText() const;
 
 	GraphicsBlock_Text &SetMaxWidth(const int MaxWidth);
@@ -119,8 +118,15 @@ public:
 class GraphicsBlock_NodeHeader : public AGraphicsBlock
 {
 protected:
-	FC_Font *_Font = nullptr;
+	static const int	PADDING_LEFT = 10,
+						PADDING_RIGHT = 10,
+						PADDING_TOP	= 5,
+						PADDING_BOTTOM = 5;
 
+	static const int	DEFAULT_WIDTH = 300,
+						DEFAULT_HEIGHT = 25;
+
+	FC_Font *_Font = nullptr;
 	GraphicsBlock_Text *_Label = nullptr;
 
 public:
@@ -129,7 +135,7 @@ public:
 	virtual void CalculateSize(int MaxWidthHint = -1, int MaxHeightHint = -1) override;
 	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
 
-	void SetText(const std::string &Text, const int MaxWidth = -1);
+	void SetText(const std::string &Text);
 };
 
 class GraphicsBlock_NodeInputSection : public AGraphicsBlock
