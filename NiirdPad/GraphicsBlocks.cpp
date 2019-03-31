@@ -66,7 +66,7 @@ void AGraphicsBlock::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 	}
 }
 
-void AGraphicsBlock::CalculateSize()
+void AGraphicsBlock::CalculateSize(int MaxWidthHint, int MaxHeighHint)
 {
 	if (_MinimumSize.w && _CalculatedBounds.w < _MinimumSize.w)
 		_CalculatedBounds.w = _MinimumSize.w;
@@ -109,7 +109,7 @@ GraphicsBlock_Text &GraphicsBlock_Text::SetText(const std::string &Text, const i
 	return *this;
 }
 
-void GraphicsBlock_Text::CalculateSize()
+void GraphicsBlock_Text::CalculateSize(int MaxWidthHint, int MaxHeighHint)
 {
 	// TODO: Store preferred alignment.
 	if (_MaxTextWidth == -1)
@@ -159,7 +159,7 @@ GraphicsBlock_NodeHeader::GraphicsBlock_NodeHeader(SDL_Renderer *AssociatedRende
 	//Dirty();
 }
 
-void GraphicsBlock_NodeHeader::CalculateSize()
+void GraphicsBlock_NodeHeader::CalculateSize(int MaxWidthHint, int MaxHeighHint)
 {
 	_Label->CalculateSize();
 	SDL_Rect Size = _Label->GetBounds();
@@ -201,7 +201,7 @@ GraphicsBlock_Node::GraphicsBlock_Node(SDL_Renderer *AssociatedRenderer, FC_Font
 	AddChild(_Header);
 }
 
-void GraphicsBlock_Node::CalculateSize()
+void GraphicsBlock_Node::CalculateSize(int MaxWidthHint, int MaxHeighHint)
 {
 	_Header->CalculateSize();
 	SDL_Rect HeaderSize = _Header->GetBounds();
