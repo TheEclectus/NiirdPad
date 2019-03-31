@@ -83,7 +83,7 @@ public:
 	/// minimum/maximum sizes. Should never call Dirty(). If either size hint is not -1,
 	/// then the final calculated size must fit the bounds they define.
 	/// </summary>
-	virtual void CalculateSize(int MaxWidthHint = -1, int MaxHeighHint = -1);
+	virtual void CalculateSize(int MaxWidthHint = -1, int MaxHeightHint = -1);
 };
 
 class GraphicsBlock_Text : public AGraphicsBlock
@@ -107,7 +107,7 @@ public:
 	GraphicsBlock_Text &SetMaxWidth(const int MaxWidth);
 	const int GetMaxWidth() const;
 
-	virtual void CalculateSize(int MaxWidthHint = -1, int MaxHeighHint = -1) override;
+	virtual void CalculateSize(int MaxWidthHint = -1, int MaxHeightHint = -1) override;
 	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
 };
 
@@ -121,7 +121,7 @@ protected:
 public:
 	GraphicsBlock_NodeHeader(SDL_Renderer *AssociatedRenderer, FC_Font *Font);
 
-	virtual void CalculateSize(int MaxWidthHint = -1, int MaxHeighHint = -1) override;
+	virtual void CalculateSize(int MaxWidthHint = -1, int MaxHeightHint = -1) override;
 	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
 
 	void SetText(const std::string &Text, const int MaxWidth = -1);
@@ -140,6 +140,6 @@ protected:
 public:
 	GraphicsBlock_Node(SDL_Renderer *AssociatedRenderer, FC_Font *HeaderFont);
 
-	virtual void CalculateSize(int MaxWidthHint = -1, int MaxHeighHint = -1) override;
+	virtual void CalculateSize(int MaxWidthHint = -1, int MaxHeightHint = -1) override;
 	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
 };
