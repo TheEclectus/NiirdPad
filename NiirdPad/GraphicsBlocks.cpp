@@ -225,6 +225,7 @@ void GraphicsBlock_NodeInputBox::CalculateSize(int MaxWidthHint, int MaxHeightHi
 	_DialogueLabel->CalculateSize(TextWidth);
 
 	SDL_Rect Size = _IndexLabel->GetBounds();
+	_IndexLabel->SetPosition({ PADDING_LEFT, PADDING_TOP });
 
 	_ScriptLabel->SetPosition({ PADDING_LEFT, PADDING_TOP + _IndexLabel->GetBounds().y + _IndexLabel->GetBounds().h });
 	Size.h += _ScriptLabel->GetBounds().h;
@@ -232,9 +233,10 @@ void GraphicsBlock_NodeInputBox::CalculateSize(int MaxWidthHint, int MaxHeightHi
 	_DialogueLabel->SetPosition({ PADDING_LEFT, PADDING_TOP + _ScriptLabel->GetBounds().y + _ScriptLabel->GetBounds().h });
 	Size.h += _DialogueLabel->GetBounds().h;
 
+	Size.w = std::max({ _IndexLabel->GetBounds().w, _ScriptLabel->GetBounds().w, _DialogueLabel->GetBounds().w });
 	Size.w += PADDING_LEFT + PADDING_RIGHT;
-	Size.h += PADDING_TOP + PADDING_BOTTOM;
 
+	Size.h += PADDING_TOP + PADDING_BOTTOM;
 	Size.h = std::max(Size.h, DEFAULT_HEIGHT);
 
 	_CalculatedBounds = Size;
@@ -272,9 +274,23 @@ void GraphicsBlock_NodeInputBox::SetDialogue(const std::string &Text)
 #pragma region GraphicsBlock_NodeInputBoxSection
 
 GraphicsBlock_NodeInputBoxSection::GraphicsBlock_NodeInputBoxSection(SDL_Renderer *AssociatedRenderer, FC_Font *TextFont, FC_Font *ScriptFont, const SDL_Color &TextColor, const SDL_Color &ScriptColor) :
-	AGraphicsBlock(AssociatedRenderer)
+	AGraphicsBlock(AssociatedRenderer),
+	_TextFont(TextFont),
+	_TextColor(TextColor),
+	_ScriptFont(ScriptFont),
+	_ScriptColor(ScriptColor)
 {
 
+}
+
+GraphicsBlock_NodeInputBox *GraphicsBlock_NodeInputBoxSection::AddInputBox()
+{
+	auto NewBox = new GraphicsBlock_NodeInputBox(this->_Renderer, this->_TextFont, this->_ScriptFont);
+
+	AddChild(NewBox);
+	_InputBoxes.push_back(NewBox);
+
+	return NewBox;
 }
 
 void GraphicsBlock_NodeInputBoxSection::CalculateSize(int MaxWidthHint, int MaxHeightHint)
@@ -289,9 +305,9 @@ void GraphicsBlock_NodeInputBoxSection::CalculateSize(int MaxWidthHint, int MaxH
 		const int VertSpacing = (bAddSpacing ? SPACING : 0);
 
 		CurBox->CalculateSize();
+		CurBox->SetPosition({ PADDING_LEFT, PADDING_TOP + Size.h + VertSpacing });
 		Size.w = std::max(Size.w, CurBox->GetBounds().w);
 		Size.h += CurBox->GetBounds().h + VertSpacing;
-		CurBox->SetPosition({ PADDING_LEFT, PADDING_TOP + Size.h + VertSpacing });
 	}
 
 	Size.w += PADDING_LEFT + PADDING_RIGHT;
@@ -325,6 +341,11 @@ GraphicsBlock_Node::GraphicsBlock_Node(SDL_Renderer *AssociatedRenderer, FC_Font
 
 	_Inputs = new GraphicsBlock_NodeInputBoxSection(AssociatedRenderer, HeaderFont, HeaderFont);
 	AddChild(_Inputs);
+	
+	auto NewBox = _Inputs->AddInputBox();
+	NewBox->SetIndex("start");
+	NewBox->SetScript("no script, just testing.");
+	NewBox->SetDialogue("And here begins our story of woe, of Juliet, and her Romeo.");
 }
 
 void GraphicsBlock_Node::CalculateSize(int MaxWidthHint, int MaxHeightHint)

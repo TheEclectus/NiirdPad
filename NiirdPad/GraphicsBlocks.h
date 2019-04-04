@@ -181,11 +181,14 @@ protected:
 	static const int	DEFAULT_WIDTH = 300,
 						DEFAULT_HEIGHT = 45;
 
+	FC_Font *_TextFont, *_ScriptFont;
+	SDL_Color _TextColor, _ScriptColor;
+
 	std::vector<GraphicsBlock_NodeInputBox*> _InputBoxes;
 
 public:
 	GraphicsBlock_NodeInputBoxSection(SDL_Renderer *AssociatedRenderer, FC_Font *TextFont, FC_Font *ScriptFont, const SDL_Color &TextColor = { 255, 255, 255, 255 }, const SDL_Color &ScriptColor = { 235, 195, 85, 255 });
-
+	GraphicsBlock_NodeInputBox *AddInputBox();
 
 	virtual void CalculateSize(int MaxWidthHint = -1, int MaxHeightHint = -1) override;
 	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
