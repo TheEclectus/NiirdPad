@@ -226,6 +226,7 @@ void GraphicsBlock_NodeInputBox::CalculateSize(int MaxWidthHint, int MaxHeightHi
 
 	SDL_Rect Size = _IndexLabel->GetBounds();
 	_IndexLabel->SetPosition({ PADDING_LEFT, PADDING_TOP });
+	Size.h += _IndexLabel->GetBounds().h;
 
 	_ScriptLabel->SetPosition({ PADDING_LEFT, PADDING_TOP + _IndexLabel->GetBounds().y + _IndexLabel->GetBounds().h });
 	Size.h += _ScriptLabel->GetBounds().h;
