@@ -96,7 +96,6 @@ GraphicsBlock_Text::GraphicsBlock_Text(SDL_Renderer *AssociatedRenderer, FC_Font
 GraphicsBlock_Text &GraphicsBlock_Text::SetText(const std::string &Text)
 {
 	_Text = Text;
-
 	Dirty();
 	return *this;
 }
@@ -195,6 +194,126 @@ void GraphicsBlock_NodeHeader::SetText(const std::string &Text)
 
 #pragma endregion
 
+#pragma region GraphicsBlock_NodeInputBox
+
+GraphicsBlock_NodeInputBox::GraphicsBlock_NodeInputBox(SDL_Renderer *AssociatedRenderer, FC_Font *TextFont, FC_Font *ScriptFont, const SDL_Color &TextColor, const SDL_Color &ScriptColor/*, const SDL_Color &VisibilityScriptColor*/) :
+	AGraphicsBlock(AssociatedRenderer),
+	_TextFont(TextFont),
+	_TextColor(TextColor),
+	_ScriptFont(ScriptFont),
+	_ScriptColor(ScriptColor)
+{
+	_IndexLabel = new GraphicsBlock_Text(AssociatedRenderer, TextFont, TextColor);
+	_ScriptLabel = new GraphicsBlock_Text(AssociatedRenderer, ScriptFont, ScriptColor);
+	_DialogueLabel = new GraphicsBlock_Text(AssociatedRenderer, TextFont, TextColor);
+
+	AddChild(_IndexLabel);
+	AddChild(_ScriptLabel);
+	AddChild(_DialogueLabel);
+}
+
+void GraphicsBlock_NodeInputBox::CalculateSize(int MaxWidthHint, int MaxHeightHint)
+{
+	AGraphicsBlock::CalculateSize(MaxWidthHint, MaxHeightHint);
+
+	// The maximum width is determined by _IndexLabel or _ScriptLabel, whichever is larger.
+	//SDL_Rect Size = { 0, 0, 0, 0 };
+	_IndexLabel->CalculateSize();
+	_ScriptLabel->CalculateSize();
+
+	const int TextWidth = std::max(_IndexLabel->GetBounds().w, _ScriptLabel->GetBounds().w) - PADDING_LEFT;
+	_DialogueLabel->CalculateSize(TextWidth);
+
+	SDL_Rect Size = _IndexLabel->GetBounds();
+
+	_ScriptLabel->SetPosition({ PADDING_LEFT, PADDING_TOP + _IndexLabel->GetBounds().y + _IndexLabel->GetBounds().h });
+	Size.h += _ScriptLabel->GetBounds().h;
+
+	_DialogueLabel->SetPosition({ PADDING_LEFT, PADDING_TOP + _ScriptLabel->GetBounds().y + _ScriptLabel->GetBounds().h });
+	Size.h += _DialogueLabel->GetBounds().h;
+
+	Size.w += PADDING_LEFT + PADDING_RIGHT;
+	Size.h += PADDING_TOP + PADDING_BOTTOM;
+
+	Size.h = std::max(Size.h, DEFAULT_HEIGHT);
+
+	_CalculatedBounds = Size;
+}
+
+void GraphicsBlock_NodeInputBox::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
+{
+	SDL_Rect DrawPos = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
+	SDL_SetRenderDrawColor(SDLRenderer, 80, 80, 80, 255);
+	//SDL_SetRenderDrawColor(SDLRenderer, 65, 65, 65, 255);
+	SDL_RenderFillRect(SDLRenderer, &DrawPos);
+	SDL_SetRenderDrawColor(SDLRenderer, 110, 110, 110, 255);
+	SDL_RenderDrawRect(SDLRenderer, &DrawPos);
+
+	AGraphicsBlock::Render(SDLRenderer, Position);
+}
+
+void GraphicsBlock_NodeInputBox::SetIndex(const std::string &Text)
+{
+	_IndexLabel->SetText(Text);
+}
+
+void GraphicsBlock_NodeInputBox::SetScript(const std::string &Text)
+{
+	_ScriptLabel->SetText(Text);
+}
+
+void GraphicsBlock_NodeInputBox::SetDialogue(const std::string &Text)
+{
+	_DialogueLabel->SetText(Text);
+}
+
+#pragma endregion
+
+#pragma region GraphicsBlock_NodeInputBoxSection
+
+GraphicsBlock_NodeInputBoxSection::GraphicsBlock_NodeInputBoxSection(SDL_Renderer *AssociatedRenderer, FC_Font *TextFont, FC_Font *ScriptFont, const SDL_Color &TextColor, const SDL_Color &ScriptColor) :
+	AGraphicsBlock(AssociatedRenderer)
+{
+
+}
+
+void GraphicsBlock_NodeInputBoxSection::CalculateSize(int MaxWidthHint, int MaxHeightHint)
+{
+	SDL_Rect Size = { 0, 0, 0, 0 };
+
+	for (int i = 0; i < _InputBoxes.size(); i++)
+	{
+		auto CurBox = _InputBoxes[i];
+
+		bool bAddSpacing = (_InputBoxes.size() > 1) && (i < (_InputBoxes.size() - 1));
+		const int VertSpacing = (bAddSpacing ? SPACING : 0);
+
+		CurBox->CalculateSize();
+		Size.w = std::max(Size.w, CurBox->GetBounds().w);
+		Size.h += CurBox->GetBounds().h + VertSpacing;
+		CurBox->SetPosition({ PADDING_LEFT, PADDING_TOP + Size.h + VertSpacing });
+	}
+
+	Size.w += PADDING_LEFT + PADDING_RIGHT;
+	Size.h += PADDING_TOP + PADDING_BOTTOM;
+
+	Size.w = std::max(Size.w, DEFAULT_WIDTH);
+	Size.h = std::max(Size.h, DEFAULT_HEIGHT);
+
+	_CalculatedBounds = Size;
+}
+
+void GraphicsBlock_NodeInputBoxSection::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
+{
+	SDL_Rect DrawPos = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
+	SDL_SetRenderDrawColor(SDLRenderer, 80, 80, 80, 255);
+	SDL_RenderFillRect(SDLRenderer, &DrawPos);
+
+	AGraphicsBlock::Render(SDLRenderer, Position);
+}
+
+#pragma endregion
+
 #pragma region GraphicsBlock_Node
 
 GraphicsBlock_Node::GraphicsBlock_Node(SDL_Renderer *AssociatedRenderer, FC_Font *HeaderFont) :
@@ -203,14 +322,27 @@ GraphicsBlock_Node::GraphicsBlock_Node(SDL_Renderer *AssociatedRenderer, FC_Font
 	_Header = new GraphicsBlock_NodeHeader(AssociatedRenderer, HeaderFont);
 	_Header->SetText("Test text.  dzfgzdfg Texticles. 8===========D");
 	AddChild(_Header);
+
+	_Inputs = new GraphicsBlock_NodeInputBoxSection(AssociatedRenderer, HeaderFont, HeaderFont);
+	AddChild(_Inputs);
 }
 
 void GraphicsBlock_Node::CalculateSize(int MaxWidthHint, int MaxHeightHint)
 {
+	SDL_Rect Size = { 0, 0, 0, 0 };
+
 	_Header->CalculateSize();
 	SDL_Rect HeaderSize = _Header->GetBounds();
+	Size.h += HeaderSize.h;
 
-	_CalculatedBounds = HeaderSize;
+	_Inputs->CalculateSize();
+	_Inputs->SetPosition({ 0, Size.h });
+	SDL_Rect InputSectionSize = _Inputs->GetBounds();
+	Size.h += InputSectionSize.h;
+
+	Size.w = std::max(HeaderSize.w, InputSectionSize.w);
+
+	_CalculatedBounds = Size;
 }
 
 void GraphicsBlock_Node::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)

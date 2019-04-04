@@ -10,6 +10,9 @@
 /// <summary>
 /// A graphical building block class. Has faculties for defining the bounding box
 /// of a graphical object based on its own criteria, and that of blocks within it.
+/// 
+/// General design principles:
+/// - Only include data that is absolutely necessary to draw the GraphicsBlock.
 /// </summary>
 /* 
 	TODO: Consider adding signals and signal handlers that relay a message and data to
@@ -138,15 +141,61 @@ public:
 	void SetText(const std::string &Text);
 };
 
-class GraphicsBlock_NodeInputSection : public AGraphicsBlock
+class GraphicsBlock_NodeInputBox : public AGraphicsBlock
 {
-	
+protected:
+	static const int	PADDING_LEFT = 5,
+						PADDING_RIGHT = 5,
+						PADDING_TOP	= 5,
+						PADDING_BOTTOM = 5;
+
+	static const int	DEFAULT_HEIGHT = 35;
+
+	FC_Font *_TextFont, *_ScriptFont;
+	SDL_Color _TextColor, _ScriptColor;// , _VisibilityScriptColor;
+
+	GraphicsBlock_Text *_IndexLabel;
+	GraphicsBlock_Text *_ScriptLabel;
+	GraphicsBlock_Text *_DialogueLabel;
+
+public:
+	GraphicsBlock_NodeInputBox(SDL_Renderer *AssociatedRenderer, FC_Font *TextFont, FC_Font *ScriptFont, const SDL_Color &TextColor = { 255, 255, 255, 255 }, const SDL_Color &ScriptColor = { 235, 195, 85, 255 }/*, const SDL_Color &VisibilityScriptColor = { 173, 216, 230, 255 }*/);
+
+	virtual void CalculateSize(int MaxWidthHint = -1, int MaxHeightHint = -1) override;
+	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
+
+	void SetIndex(const std::string &Text);
+	void SetScript(const std::string &Text);
+	void SetDialogue(const std::string &Text);
+};
+
+class GraphicsBlock_NodeInputBoxSection : public AGraphicsBlock
+{
+protected:
+	static const int	PADDING_LEFT = 5,
+						PADDING_RIGHT = 5,
+						PADDING_TOP	= 5,
+						PADDING_BOTTOM = 5,
+						SPACING = 5;
+
+	static const int	DEFAULT_WIDTH = 300,
+						DEFAULT_HEIGHT = 45;
+
+	std::vector<GraphicsBlock_NodeInputBox*> _InputBoxes;
+
+public:
+	GraphicsBlock_NodeInputBoxSection(SDL_Renderer *AssociatedRenderer, FC_Font *TextFont, FC_Font *ScriptFont, const SDL_Color &TextColor = { 255, 255, 255, 255 }, const SDL_Color &ScriptColor = { 235, 195, 85, 255 });
+
+
+	virtual void CalculateSize(int MaxWidthHint = -1, int MaxHeightHint = -1) override;
+	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
 };
 
 class GraphicsBlock_Node : public AGraphicsBlock
 {
 protected:
 	GraphicsBlock_NodeHeader *_Header = nullptr;
+	GraphicsBlock_NodeInputBoxSection *_Inputs = nullptr;
 
 public:
 	GraphicsBlock_Node(SDL_Renderer *AssociatedRenderer, FC_Font *HeaderFont);
