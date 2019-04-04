@@ -345,7 +345,7 @@ GraphicsBlock_Node::GraphicsBlock_Node(SDL_Renderer *AssociatedRenderer, FC_Font
 	auto NewBox = _Inputs->AddInputBox();
 	NewBox->SetIndex("start");
 	NewBox->SetScript("no script, just testing.");
-	NewBox->SetDialogue("And here begins our story of woe, of Juliet, and her Romeo.");
+	NewBox->SetDialogue("There never was a story of more woe, than that of Juliet, and her Romeo.");
 }
 
 void GraphicsBlock_Node::CalculateSize(int MaxWidthHint, int MaxHeightHint)
