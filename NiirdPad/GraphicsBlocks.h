@@ -149,7 +149,8 @@ protected:
 						PADDING_TOP	= 5,
 						PADDING_BOTTOM = 5;
 
-	static const int	DEFAULT_HEIGHT = 35;
+	static const int	DEFAULT_WIDTH = 200,
+						DEFAULT_HEIGHT = 35;
 
 	FC_Font *_TextFont, *_ScriptFont;
 	SDL_Color _TextColor, _ScriptColor;// , _VisibilityScriptColor;

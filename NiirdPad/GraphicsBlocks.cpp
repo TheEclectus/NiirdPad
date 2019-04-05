@@ -220,8 +220,8 @@ void GraphicsBlock_NodeInputBox::CalculateSize(int MaxWidthHint, int MaxHeightHi
 	//SDL_Rect Size = { 0, 0, 0, 0 };
 	_IndexLabel->CalculateSize();
 	_ScriptLabel->CalculateSize();
-
-	const int TextWidth = std::max(_IndexLabel->GetBounds().w, _ScriptLabel->GetBounds().w) - PADDING_LEFT;
+	const int WidestElement = std::max(_IndexLabel->GetBounds().w, _ScriptLabel->GetBounds().w);
+	const int TextWidth = std::max(WidestElement, DEFAULT_WIDTH) - (PADDING_LEFT + PADDING_RIGHT);
 	_DialogueLabel->CalculateSize(TextWidth);
 
 	SDL_Rect Size = _IndexLabel->GetBounds();
@@ -236,6 +236,7 @@ void GraphicsBlock_NodeInputBox::CalculateSize(int MaxWidthHint, int MaxHeightHi
 
 	Size.w = std::max({ _IndexLabel->GetBounds().w, _ScriptLabel->GetBounds().w, _DialogueLabel->GetBounds().w });
 	Size.w += PADDING_LEFT + PADDING_RIGHT;
+	Size.w = std::max(Size.w, DEFAULT_WIDTH);
 
 	Size.h += PADDING_TOP + PADDING_BOTTOM;
 	Size.h = std::max(Size.h, DEFAULT_HEIGHT);
