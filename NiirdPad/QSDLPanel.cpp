@@ -96,7 +96,7 @@ QSDLPanel::QSDLPanel(QWidget *parent) :
 	this->setMouseTracking(true);
 
 	this->setAutoFillBackground(true);
-	SetBackgroundColor({ 0x1E, 0x1E, 0x1E, 0xFF });
+	SetBackgroundColor({ 42, 42, 42, 0xFF });
 
 	auto WinID = this->winId();
 	_SDLWindow = SDL_CreateWindowFrom((const void*)WinID);

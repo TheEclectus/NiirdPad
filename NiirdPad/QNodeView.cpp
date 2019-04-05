@@ -79,7 +79,7 @@ void QNodeView::mouseMoveEvent(QMouseEvent *event)
 
 void QNodeView::RenderBackground()
 {
-	const int GridSize = 120;
+	const int GridSize = 75;
 
 	SDL_Renderer *Renderer = SDLRenderer();
 

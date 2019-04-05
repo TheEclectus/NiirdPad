@@ -28,7 +28,7 @@ struct QNodeViewInputState
 class QNodeView : public QSDLPanel
 {
 protected:
-	SDL_Color _GridLineColor = { 0x33, 0x33, 0x33, 0xFF };
+	SDL_Color _GridLineColor = { 50, 50, 50, 0xFF };
 	QNodeViewCamera _Camera;
 	QNodeViewInputState _InputState;
 	FontStore _FontStore;
