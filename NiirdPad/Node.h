@@ -1,12 +1,24 @@
 #pragma once
 
+#include <vector>
+
 #include <SDL.h>
 
-/// <summary>
-/// An abstract base class responsible for defining 
-/// </summary>
-class Node
+// GraphicsBlocks.h
+class GraphicsBlock_NodeInputBox;
+class GraphicsBlock_NodeOutputBox;
+
+class NodeInputBox
 {
+private:
+	GraphicsBlock_NodeInputBox *_graphics;
+
+	std::string _reference, _script, _dialogue;
 public:
-	SDL_Rect CalculateSize();
+	NodeInputBox(const std::string &Reference, const std::string &Script = "", const std::string &Dialogue = "");
+
+	void SetAll(const std::string &Reference, std::string &Script, const std::string &Dialogue);
+	void SetReference(const std::string &Reference);
+	void SetScriptLines(const std::string &Script);
+	void SetDialogue(const std::string &Dialogue);
 };

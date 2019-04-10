@@ -155,6 +155,7 @@ protected:
 	FC_Font *_TextFont, *_ScriptFont;
 	SDL_Color _TextColor, _ScriptColor;// , _VisibilityScriptColor;
 
+	// Labels contain text formatted solely for display purposes.
 	GraphicsBlock_Text *_IndexLabel;
 	GraphicsBlock_Text *_ScriptLabel;
 	GraphicsBlock_Text *_DialogueLabel;
