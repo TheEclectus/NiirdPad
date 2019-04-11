@@ -33,12 +33,16 @@ public:
     QAction *actionSave_As;
     QAction *actionImport_Project;
     QAction *actionExport_Project;
+    QAction *actionEditReferenceWindowNew;
+    QAction *actionEditReferenceWindowEdit;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
     QFrame *frame;
     QNodeView *widget;
     QMenuBar *menuBar;
     QMenu *menuFile;
+    QMenu *menuDebug;
+    QMenu *menuEdit_Reference_Window;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *NiirdPadClass)
@@ -60,6 +64,10 @@ public:
         actionImport_Project->setObjectName(QString::fromUtf8("actionImport_Project"));
         actionExport_Project = new QAction(NiirdPadClass);
         actionExport_Project->setObjectName(QString::fromUtf8("actionExport_Project"));
+        actionEditReferenceWindowNew = new QAction(NiirdPadClass);
+        actionEditReferenceWindowNew->setObjectName(QString::fromUtf8("actionEditReferenceWindowNew"));
+        actionEditReferenceWindowEdit = new QAction(NiirdPadClass);
+        actionEditReferenceWindowEdit->setObjectName(QString::fromUtf8("actionEditReferenceWindowEdit"));
         centralWidget = new QWidget(NiirdPadClass);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         horizontalLayout = new QHBoxLayout(centralWidget);
@@ -98,12 +106,17 @@ public:
         menuBar->setGeometry(QRect(0, 0, 1043, 21));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
+        menuDebug = new QMenu(menuBar);
+        menuDebug->setObjectName(QString::fromUtf8("menuDebug"));
+        menuEdit_Reference_Window = new QMenu(menuDebug);
+        menuEdit_Reference_Window->setObjectName(QString::fromUtf8("menuEdit_Reference_Window"));
         NiirdPadClass->setMenuBar(menuBar);
         statusBar = new QStatusBar(NiirdPadClass);
         statusBar->setObjectName(QString::fromUtf8("statusBar"));
         NiirdPadClass->setStatusBar(statusBar);
 
         menuBar->addAction(menuFile->menuAction());
+        menuBar->addAction(menuDebug->menuAction());
         menuFile->addAction(actionNew_Project);
         menuFile->addAction(actionOpen);
         menuFile->addSeparator();
@@ -112,6 +125,9 @@ public:
         menuFile->addSeparator();
         menuFile->addAction(actionImport_Project);
         menuFile->addAction(actionExport_Project);
+        menuDebug->addAction(menuEdit_Reference_Window->menuAction());
+        menuEdit_Reference_Window->addAction(actionEditReferenceWindowNew);
+        menuEdit_Reference_Window->addAction(actionEditReferenceWindowEdit);
 
         retranslateUi(NiirdPadClass);
 
@@ -128,7 +144,11 @@ public:
         actionSave_As->setText(QApplication::translate("NiirdPadClass", "Save As...", nullptr));
         actionImport_Project->setText(QApplication::translate("NiirdPadClass", "Import Project...", nullptr));
         actionExport_Project->setText(QApplication::translate("NiirdPadClass", "Export Project...", nullptr));
+        actionEditReferenceWindowNew->setText(QApplication::translate("NiirdPadClass", "New", nullptr));
+        actionEditReferenceWindowEdit->setText(QApplication::translate("NiirdPadClass", "Edit", nullptr));
         menuFile->setTitle(QApplication::translate("NiirdPadClass", "File", nullptr));
+        menuDebug->setTitle(QApplication::translate("NiirdPadClass", "Debug", nullptr));
+        menuEdit_Reference_Window->setTitle(QApplication::translate("NiirdPadClass", "Edit Reference Window", nullptr));
     } // retranslateUi
 
 };

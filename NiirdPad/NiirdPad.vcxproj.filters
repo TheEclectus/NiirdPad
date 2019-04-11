@@ -51,6 +51,9 @@
     <ClCompile Include="FontStore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="QReferenceEditWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="NiirdPad.h">
@@ -59,9 +62,15 @@
     <QtMoc Include="QSDLPanel.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="QReferenceEditWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="NiirdPad.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="QReferenceEditWindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

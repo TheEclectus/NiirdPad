@@ -98,7 +98,21 @@
     <addaction name="actionImport_Project"/>
     <addaction name="actionExport_Project"/>
    </widget>
+   <widget class="QMenu" name="menuDebug">
+    <property name="title">
+     <string>Debug</string>
+    </property>
+    <widget class="QMenu" name="menuEdit_Reference_Window">
+     <property name="title">
+      <string>Edit Reference Window</string>
+     </property>
+     <addaction name="actionEditReferenceWindowNew"/>
+     <addaction name="actionEditReferenceWindowEdit"/>
+    </widget>
+    <addaction name="menuEdit_Reference_Window"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuDebug"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionNew_Project">
@@ -134,6 +148,16 @@
   <action name="actionExport_Project">
    <property name="text">
     <string>Export Project...</string>
+   </property>
+  </action>
+  <action name="actionEditReferenceWindowNew">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionEditReferenceWindowEdit">
+   <property name="text">
+    <string>Edit</string>
    </property>
   </action>
  </widget>
