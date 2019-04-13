@@ -65,13 +65,24 @@ QReferenceEditWindow::QReferenceEditWindow(QWidget *parent)
 
 QReferenceEditWindow::~QReferenceEditWindow()
 {
+
 }
 
 int QReferenceEditWindow::NewReference(QWidget *Parent, std::string &Result)
 {
 	QReferenceEditWindow RefEdit(Parent);
 	RefEdit.setWindowTitle("New Reference");
-	RefEdit.IsValidReference();
+
+	int Res = RefEdit.exec();
+	if (Res == QDialog::Accepted)
+		Result = RefEdit.ui.txtReferenceEdit->text().toStdString();
+	return Res;
+}
+
+int QReferenceEditWindow::EditReference(QWidget *Parent, std::string &Result)
+{
+	QReferenceEditWindow RefEdit(Parent);
+	RefEdit.setWindowTitle("Edit Reference");
 
 	return RefEdit.exec();
 }

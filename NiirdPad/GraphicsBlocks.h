@@ -31,6 +31,7 @@ protected:
 	AGraphicsBlock *_ParentBlock = nullptr;
 	std::vector<AGraphicsBlock*> _ChildBlocks;
 	SDL_Renderer *_Renderer = nullptr;
+	bool _bIsConstructing = false;
 
 	/// <summary>
 	/// Defines the maximum size of the block. -1 in either width or height field means no limit.
@@ -74,7 +75,8 @@ public:
 	/// <summary>
 	/// Signals that the GraphicsBlock must have CalculateSize() called again. Will call
 	/// Dirty() of _ParentBlock unless it is nullptr, at which point CalculateSize() will
-	/// be called.
+	/// be called. Top-most block will not have CalculateSize() called until _bIsConstructing
+	/// is false, which is set by calling CalculateSize() explicity.
 	/// </summary>
 	void Dirty();
 
@@ -189,8 +191,64 @@ protected:
 	std::vector<GraphicsBlock_NodeInputBox*> _InputBoxes;
 
 public:
-	GraphicsBlock_NodeInputBoxSection(SDL_Renderer *AssociatedRenderer, FC_Font *TextFont, FC_Font *ScriptFont, const SDL_Color &TextColor = { 255, 255, 255, 255 }, const SDL_Color &ScriptColor = { 235, 195, 85, 255 });
+	GraphicsBlock_NodeInputBoxSection(SDL_Renderer *AssociatedRenderer, FC_Font *TextFont, FC_Font *ScriptFont, const SDL_Color &TextColor = { 255, 255, 255, 255 }, const SDL_Color &ScriptColor = { 173, 216, 230, 255 });
 	GraphicsBlock_NodeInputBox *AddInputBox();
+
+	virtual void CalculateSize(int MaxWidthHint = -1, int MaxHeightHint = -1) override;
+	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
+};
+
+class GraphicsBlock_NodeOutputBox : public AGraphicsBlock
+{
+protected:
+	static const int	PADDING_LEFT = 5,
+						PADDING_RIGHT = 5,
+						PADDING_TOP = 5,
+						PADDING_BOTTOM = 5;
+
+	static const int	DEFAULT_WIDTH = 200,
+						DEFAULT_HEIGHT = 35;
+
+	FC_Font *_TextFont, *_ScriptFont;
+	SDL_Color _TextColor, _ScriptColor;// , _VisibilityScriptColor;
+
+	// Labels contain text formatted solely for display purposes.
+	GraphicsBlock_Text *_VisibilityLabel;
+	GraphicsBlock_Text *_OptionLabel;
+	GraphicsBlock_Text *_ScriptLabel;
+
+public:
+	GraphicsBlock_NodeOutputBox(SDL_Renderer *AssociatedRenderer, FC_Font *TextFont, FC_Font *ScriptFont, const SDL_Color &TextColor = { 255, 255, 255, 255 }, const SDL_Color &ScriptColor = { 235, 195, 85, 255 }/*, const SDL_Color &VisibilityScriptColor = { 173, 216, 230, 255 }*/);
+
+	virtual void CalculateSize(int MaxWidthHint = -1, int MaxHeightHint = -1) override;
+	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
+
+	void SetVisibility(const std::string &Text);
+	void SetOption(const std::string &Text);
+	void SetScript(const std::string &Text);
+	
+};
+
+class GraphicsBlock_NodeOutputBoxSection : public AGraphicsBlock
+{
+protected:
+	static const int	PADDING_LEFT = 5,
+						PADDING_RIGHT = 5,
+						PADDING_TOP = 5,
+						PADDING_BOTTOM = 5,
+						SPACING = 5;
+
+	static const int	DEFAULT_WIDTH = 300,
+						DEFAULT_HEIGHT = 45;
+
+	FC_Font *_TextFont, *_ScriptFont, *_VisFont;
+	SDL_Color _TextColor, _ScriptColor, *_VisColor;
+
+	std::vector<GraphicsBlock_NodeOutputBox*> _OutputBoxes;
+
+public:
+	GraphicsBlock_NodeOutputBoxSection(SDL_Renderer *AssociatedRenderer, FC_Font *TextFont, FC_Font *ScriptFont, FC_Font *VisFont, const SDL_Color &TextColor = { 255, 255, 255, 255 }, const SDL_Color &ScriptColor = { 173, 216, 230, 255 }, const SDL_Color &VisColor = { 235, 195, 85, 255 });
+	GraphicsBlock_NodeOutputBox *AddOutputBox();
 
 	virtual void CalculateSize(int MaxWidthHint = -1, int MaxHeightHint = -1) override;
 	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
@@ -201,6 +259,7 @@ class GraphicsBlock_Node : public AGraphicsBlock
 protected:
 	GraphicsBlock_NodeHeader *_Header = nullptr;
 	GraphicsBlock_NodeInputBoxSection *_Inputs = nullptr;
+	GraphicsBlock_NodeOutputBoxSection *_Outputs = nullptr;
 
 public:
 	GraphicsBlock_Node(SDL_Renderer *AssociatedRenderer, FC_Font *HeaderFont);

@@ -121,6 +121,7 @@
     <ClCompile Include="GraphicsBlocks.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NiirdPad.cpp" />
+    <ClCompile Include="Node.cpp" />
     <ClCompile Include="QNodeView.cpp" />
     <ClCompile Include="QReferenceEditWindow.cpp" />
     <ClCompile Include="QSDLPanel.cpp" />
@@ -151,6 +152,7 @@
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
     </QtMoc>
+    <ClInclude Include="ReferenceDatabase.h" />
     <ClInclude Include="SDL_FontCache.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

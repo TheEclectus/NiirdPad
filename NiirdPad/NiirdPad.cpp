@@ -10,6 +10,10 @@ NiirdPad::NiirdPad(QWidget *parent)
 		std::string Res = "";
 		QReferenceEditWindow::NewReference(this, Res);
 	});
+	connect(ui.actionEditReferenceWindowEdit, &QAction::triggered, [this]() {
+		std::string Res = "";
+		QReferenceEditWindow::EditReference(this, Res);
+	});
 	
 	//ui.widget->setFocus();
 	//this->setMouseTracking(true);

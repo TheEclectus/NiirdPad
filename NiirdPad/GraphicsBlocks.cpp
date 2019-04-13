@@ -50,7 +50,8 @@ void AGraphicsBlock::Dirty()
 	}
 	else
 	{
-		CalculateSize();
+		if(!_bIsConstructing)
+			CalculateSize();
 	}
 }
 
@@ -332,11 +333,158 @@ void GraphicsBlock_NodeInputBoxSection::Render(SDL_Renderer *SDLRenderer, SDL_Po
 
 #pragma endregion
 
+#pragma region GraphicsBlock_NodeOutputBox
+
+GraphicsBlock_NodeOutputBox::GraphicsBlock_NodeOutputBox(SDL_Renderer *AssociatedRenderer, FC_Font *TextFont, FC_Font *ScriptFont, const SDL_Color &TextColor, const SDL_Color &ScriptColor/*, const SDL_Color &VisibilityScriptColor*/) :
+	AGraphicsBlock(AssociatedRenderer),
+	_TextFont(TextFont),
+	_TextColor(TextColor),
+	_ScriptFont(ScriptFont),
+	_ScriptColor(ScriptColor)
+{
+	_VisibilityLabel = new GraphicsBlock_Text(AssociatedRenderer, TextFont, TextColor);
+	_ScriptLabel = new GraphicsBlock_Text(AssociatedRenderer, ScriptFont, ScriptColor);
+	_OptionLabel = new GraphicsBlock_Text(AssociatedRenderer, TextFont, TextColor);
+
+	AddChild(_VisibilityLabel);
+	AddChild(_ScriptLabel);
+	AddChild(_OptionLabel);
+}
+
+void GraphicsBlock_NodeOutputBox::CalculateSize(int MaxWidthHint, int MaxHeightHint)
+{
+	AGraphicsBlock::CalculateSize(MaxWidthHint, MaxHeightHint);
+
+	// The maximum width is determined by _IndexLabel or _ScriptLabel, whichever is larger.
+	//SDL_Rect Size = { 0, 0, 0, 0 };
+	_VisibilityLabel->CalculateSize();
+	_ScriptLabel->CalculateSize();
+	const int WidestElement = std::max(_VisibilityLabel->GetBounds().w, _ScriptLabel->GetBounds().w);
+	const int TextWidth = std::max(WidestElement, DEFAULT_WIDTH) - (PADDING_LEFT + PADDING_RIGHT);
+	_OptionLabel->CalculateSize(TextWidth);
+
+	SDL_Rect Size = _VisibilityLabel->GetBounds();
+	_VisibilityLabel->SetPosition({ PADDING_LEFT, PADDING_TOP });
+	Size.h += _VisibilityLabel->GetBounds().h;
+
+	_ScriptLabel->SetPosition({ PADDING_LEFT, PADDING_TOP + _VisibilityLabel->GetBounds().y + _VisibilityLabel->GetBounds().h });
+	Size.h += _ScriptLabel->GetBounds().h;
+
+	_OptionLabel->SetPosition({ PADDING_LEFT, PADDING_TOP + _ScriptLabel->GetBounds().y + _ScriptLabel->GetBounds().h });
+	Size.h += _OptionLabel->GetBounds().h;
+
+	Size.w = std::max({ _VisibilityLabel->GetBounds().w, _ScriptLabel->GetBounds().w, _OptionLabel->GetBounds().w });
+	Size.w += PADDING_LEFT + PADDING_RIGHT;
+	Size.w = std::max(Size.w, DEFAULT_WIDTH);
+
+	Size.h += PADDING_TOP + PADDING_BOTTOM;
+	Size.h = std::max(Size.h, DEFAULT_HEIGHT);
+
+	_CalculatedBounds = Size;
+}
+
+void GraphicsBlock_NodeOutputBox::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
+{
+	SDL_Rect DrawPos = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
+	SDL_SetRenderDrawColor(SDLRenderer, 110, 110, 110, 255);
+	SDL_RenderFillRect(SDLRenderer, &DrawPos);
+	SDL_SetRenderDrawColor(SDLRenderer, 80, 80, 80, 255);
+	SDL_RenderDrawRect(SDLRenderer, &DrawPos);
+
+	AGraphicsBlock::Render(SDLRenderer, Position);
+}
+
+void GraphicsBlock_NodeOutputBox::SetVisibility(const std::string &Text)
+{
+	_VisibilityLabel->SetText(Text);
+}
+
+void GraphicsBlock_NodeOutputBox::SetScript(const std::string &Text)
+{
+	_ScriptLabel->SetText(Text);
+}
+
+void GraphicsBlock_NodeOutputBox::SetOption(const std::string &Text)
+{
+	_VisibilityLabel->SetText(Text);
+}
+
+
+#pragma endregion
+
+#pragma region GraphicsBlock_NodeOutputBoxSection
+
+GraphicsBlock_NodeOutputBoxSection::GraphicsBlock_NodeOutputBoxSection(SDL_Renderer *AssociatedRenderer, FC_Font *TextFont, FC_Font *ScriptFont, FC_Font *VisFont, const SDL_Color &TextColor, const SDL_Color &ScriptColor, const SDL_Color &VisColor) :
+	AGraphicsBlock(AssociatedRenderer),
+	_TextFont(TextFont),
+	_TextColor(TextColor),
+	_ScriptFont(ScriptFont),
+	_ScriptColor(ScriptColor)
+{
+
+}
+
+GraphicsBlock_NodeOutputBox *GraphicsBlock_NodeOutputBoxSection::AddOutputBox()
+{
+	auto NewBox = new GraphicsBlock_NodeOutputBox(this->_Renderer, this->_TextFont, this->_ScriptFont);
+
+	AddChild(NewBox);
+	_OutputBoxes.push_back(NewBox);
+
+	return NewBox;
+}
+
+void GraphicsBlock_NodeOutputBoxSection::CalculateSize(int MaxWidthHint, int MaxHeightHint)
+{
+	SDL_Rect Size = { 0, 0, 0, 0 };
+
+	for (int i = 0; i < _OutputBoxes.size(); i++)
+	{
+		auto CurBox = _OutputBoxes[i];
+
+		bool bAddSpacing = (_OutputBoxes.size() > 1) && (i < (_OutputBoxes.size() - 1));
+		const int VertSpacing = (bAddSpacing ? SPACING : 0);
+
+		CurBox->CalculateSize();
+
+		SDL_Point DestinationPosition = {
+			this->GetBounds().w - (CurBox->GetBounds().w + PADDING_RIGHT),
+			PADDING_TOP + Size.h + VertSpacing
+		};
+
+		CurBox->SetPosition(DestinationPosition);
+		Size.w = std::max(Size.w, CurBox->GetBounds().w);
+		Size.h += CurBox->GetBounds().h + VertSpacing;
+	}
+
+	Size.w += PADDING_LEFT + PADDING_RIGHT;
+	Size.h += PADDING_TOP + PADDING_BOTTOM;
+
+	Size.w = std::max(Size.w, DEFAULT_WIDTH);
+	Size.h = std::max(Size.h, DEFAULT_HEIGHT);
+
+	_CalculatedBounds = Size;
+}
+
+void GraphicsBlock_NodeOutputBoxSection::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
+{
+	SDL_Rect DrawPos = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
+	SDL_SetRenderDrawColor(SDLRenderer, 110, 110, 110, 110);
+	SDL_RenderFillRect(SDLRenderer, &DrawPos);
+
+	AGraphicsBlock::Render(SDLRenderer, Position);
+}
+
+#pragma endregion
+
+
 #pragma region GraphicsBlock_Node
 
 GraphicsBlock_Node::GraphicsBlock_Node(SDL_Renderer *AssociatedRenderer, FC_Font *HeaderFont) :
 	AGraphicsBlock(AssociatedRenderer)
 {
+	_bIsConstructing = true;
+
 	_Header = new GraphicsBlock_NodeHeader(AssociatedRenderer, HeaderFont);
 	_Header->SetText("Test text.  dzfgzdfg Texticles. 8===========D");
 	AddChild(_Header);
@@ -344,10 +492,21 @@ GraphicsBlock_Node::GraphicsBlock_Node(SDL_Renderer *AssociatedRenderer, FC_Font
 	_Inputs = new GraphicsBlock_NodeInputBoxSection(AssociatedRenderer, HeaderFont, HeaderFont);
 	AddChild(_Inputs);
 	
-	auto NewBox = _Inputs->AddInputBox();
-	NewBox->SetIndex("start");
-	NewBox->SetScript("no script, just testing.");
-	NewBox->SetDialogue("There never was a story of more woe, than that of Juliet, and her Romeo.");
+	auto NewInputBox = _Inputs->AddInputBox();
+	NewInputBox->SetIndex("start");
+	NewInputBox->SetScript("no script, just testing.");
+	NewInputBox->SetDialogue("There never was a story of more woe, than that of Juliet, and her Romeo.");
+
+	_Outputs = new GraphicsBlock_NodeOutputBoxSection(AssociatedRenderer, HeaderFont, HeaderFont, HeaderFont);
+	AddChild(_Outputs);
+
+	auto NewOutputBox = _Outputs->AddOutputBox();
+	NewOutputBox->SetVisibility("//showif.has_flag.eated_the_cheese");
+	NewOutputBox->SetScript("dummy test script");
+	NewOutputBox->SetOption("I want to eated the other cheese owo");
+
+	_bIsConstructing = false;
+	CalculateSize();
 }
 
 void GraphicsBlock_Node::CalculateSize(int MaxWidthHint, int MaxHeightHint)
@@ -363,7 +522,12 @@ void GraphicsBlock_Node::CalculateSize(int MaxWidthHint, int MaxHeightHint)
 	SDL_Rect InputSectionSize = _Inputs->GetBounds();
 	Size.h += InputSectionSize.h;
 
-	Size.w = std::max(HeaderSize.w, InputSectionSize.w);
+	_Outputs->CalculateSize();
+	_Outputs->SetPosition({ 0, Size.h });
+	SDL_Rect OutputSectionSize = _Outputs->GetBounds();
+	Size.h += InputSectionSize.h;
+
+	Size.w = std::max({ HeaderSize.w, InputSectionSize.w, OutputSectionSize.w });
 
 	_CalculatedBounds = Size;
 }

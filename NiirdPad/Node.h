@@ -15,7 +15,7 @@ private:
 
 	std::string _reference, _script, _dialogue;
 public:
-	NodeInputBox(const std::string &Reference, const std::string &Script = "", const std::string &Dialogue = "");
+	NodeInputBox(SDL_Renderer *Renderer, const std::string &Reference, const std::string &Script = "", const std::string &Dialogue = "");
 
 	void SetAll(const std::string &Reference, std::string &Script, const std::string &Dialogue);
 	void SetReference(const std::string &Reference);

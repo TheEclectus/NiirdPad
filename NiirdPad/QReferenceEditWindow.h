@@ -21,4 +21,5 @@ public:
 
 	// Dialog for creating a new reference. Result will be filled if the dialog is accepted.
 	static int NewReference(QWidget *Parent, std::string &Result);
+	static int EditReference(QWidget *Parent, std::string &Result);
 };
