@@ -108,6 +108,7 @@ void GraphicsBlock_Text::CalculateSize(int MaxWidthHint, int MaxHeightHint)
 	// TODO: Store preferred alignment.
 	if (_SizeHint.w == -1)
 	{
+		_CalculatedText = _Text;
 		_CalculatedBounds = FC_GetBounds(_Font, 0.f, 0.f, FC_AlignEnum::FC_ALIGN_LEFT, FC_MakeScale(1.f, 1.f), _Text.c_str());
 	}
 	else
@@ -133,10 +134,17 @@ void GraphicsBlock_Text::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 	SDL_Rect DrawPos = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
 
 	FC_Effect Effect = FC_MakeEffect(FC_AlignEnum::FC_ALIGN_LEFT, FC_MakeScale(1.f, 1.f), _FontColor);
-	if(_SizeHint.w == -1)
+	auto res = FC_DrawBoxEffect(_Font, SDLRenderer, DrawPos, Effect, _CalculatedText.c_str());
+	//SDL_SetRenderDrawColor(SDLRenderer, 0, 255, 0, 255);
+	//SDL_RenderDrawRect(SDLRenderer, &res);
+
+	//SDL_SetRenderDrawColor(SDLRenderer, 255, 0, 0, 255);
+	//SDL_RenderDrawRect(SDLRenderer, &_CalculatedBounds);
+	
+	/*if(_SizeHint.w == -1)
 		auto res = FC_DrawBoxEffect(_Font, SDLRenderer, DrawPos, Effect, _Text.c_str());
 	else
-		auto res = FC_DrawBoxEffect(_Font, SDLRenderer, DrawPos, Effect, _CalculatedText.c_str());
+		auto res = FC_DrawBoxEffect(_Font, SDLRenderer, DrawPos, Effect, _CalculatedText.c_str());*/
 	
 	AGraphicsBlock::Render(SDLRenderer, Position);
 }
@@ -226,21 +234,26 @@ void GraphicsBlock_NodeInputBox::CalculateSize(int MaxWidthHint, int MaxHeightHi
 	_DialogueLabel->CalculateSize(TextWidth);
 
 	SDL_Rect Size = _IndexLabel->GetBounds();
+	Size.h += PADDING_TOP;
 	_IndexLabel->SetPosition({ PADDING_LEFT, PADDING_TOP });
-	Size.h += _IndexLabel->GetBounds().h;
+	//Size.h += _IndexLabel->GetBounds().h;
 
-	_ScriptLabel->SetPosition({ PADDING_LEFT, PADDING_TOP + _IndexLabel->GetBounds().y + _IndexLabel->GetBounds().h });
+	Size.h += TEXT_SPACING;
+	//_ScriptLabel->SetPosition({ PADDING_LEFT, PADDING_TOP + _IndexLabel->GetBounds().y + _IndexLabel->GetBounds().h });
+	_ScriptLabel->SetPosition({ PADDING_LEFT, Size.h });
 	Size.h += _ScriptLabel->GetBounds().h;
 
-	_DialogueLabel->SetPosition({ PADDING_LEFT, PADDING_TOP + _ScriptLabel->GetBounds().y + _ScriptLabel->GetBounds().h });
+	Size.h += TEXT_SPACING;
+	//_DialogueLabel->SetPosition({ PADDING_LEFT, PADDING_TOP + _ScriptLabel->GetBounds().y + _ScriptLabel->GetBounds().h });
+	_DialogueLabel->SetPosition({ PADDING_LEFT, Size.h });
 	Size.h += _DialogueLabel->GetBounds().h;
+
+	Size.h += PADDING_BOTTOM;
+	Size.h = std::max(Size.h, DEFAULT_HEIGHT);
 
 	Size.w = std::max({ _IndexLabel->GetBounds().w, _ScriptLabel->GetBounds().w, _DialogueLabel->GetBounds().w });
 	Size.w += PADDING_LEFT + PADDING_RIGHT;
 	Size.w = std::max(Size.w, DEFAULT_WIDTH);
-
-	Size.h += PADDING_TOP + PADDING_BOTTOM;
-	Size.h = std::max(Size.h, DEFAULT_HEIGHT);
 
 	_CalculatedBounds = Size;
 }
@@ -335,14 +348,14 @@ void GraphicsBlock_NodeInputBoxSection::Render(SDL_Renderer *SDLRenderer, SDL_Po
 
 #pragma region GraphicsBlock_NodeOutputBox
 
-GraphicsBlock_NodeOutputBox::GraphicsBlock_NodeOutputBox(SDL_Renderer *AssociatedRenderer, FC_Font *TextFont, FC_Font *ScriptFont, const SDL_Color &TextColor, const SDL_Color &ScriptColor/*, const SDL_Color &VisibilityScriptColor*/) :
+GraphicsBlock_NodeOutputBox::GraphicsBlock_NodeOutputBox(SDL_Renderer *AssociatedRenderer, FC_Font *TextFont, FC_Font *ScriptFont, const SDL_Color &TextColor, const SDL_Color &ScriptColor, const SDL_Color &VisibilityScriptColor) :
 	AGraphicsBlock(AssociatedRenderer),
 	_TextFont(TextFont),
 	_TextColor(TextColor),
 	_ScriptFont(ScriptFont),
 	_ScriptColor(ScriptColor)
 {
-	_VisibilityLabel = new GraphicsBlock_Text(AssociatedRenderer, TextFont, TextColor);
+	_VisibilityLabel = new GraphicsBlock_Text(AssociatedRenderer, TextFont, VisibilityScriptColor);
 	_ScriptLabel = new GraphicsBlock_Text(AssociatedRenderer, ScriptFont, ScriptColor);
 	_OptionLabel = new GraphicsBlock_Text(AssociatedRenderer, TextFont, TextColor);
 
@@ -364,21 +377,24 @@ void GraphicsBlock_NodeOutputBox::CalculateSize(int MaxWidthHint, int MaxHeightH
 	_OptionLabel->CalculateSize(TextWidth);
 
 	SDL_Rect Size = _VisibilityLabel->GetBounds();
+	Size.h += PADDING_TOP;
 	_VisibilityLabel->SetPosition({ PADDING_LEFT, PADDING_TOP });
-	Size.h += _VisibilityLabel->GetBounds().h;
+	//Size.h += _VisibilityLabel->GetBounds().h;
 
-	_ScriptLabel->SetPosition({ PADDING_LEFT, PADDING_TOP + _VisibilityLabel->GetBounds().y + _VisibilityLabel->GetBounds().h });
+	Size.h += TEXT_SPACING;
+	_ScriptLabel->SetPosition({ PADDING_LEFT, Size.h });
 	Size.h += _ScriptLabel->GetBounds().h;
 
-	_OptionLabel->SetPosition({ PADDING_LEFT, PADDING_TOP + _ScriptLabel->GetBounds().y + _ScriptLabel->GetBounds().h });
+	Size.h += TEXT_SPACING;
+	_OptionLabel->SetPosition({ PADDING_LEFT, Size.h });
 	Size.h += _OptionLabel->GetBounds().h;
+
+	Size.h += PADDING_BOTTOM;
+	Size.h = std::max(Size.h, DEFAULT_HEIGHT);
 
 	Size.w = std::max({ _VisibilityLabel->GetBounds().w, _ScriptLabel->GetBounds().w, _OptionLabel->GetBounds().w });
 	Size.w += PADDING_LEFT + PADDING_RIGHT;
 	Size.w = std::max(Size.w, DEFAULT_WIDTH);
-
-	Size.h += PADDING_TOP + PADDING_BOTTOM;
-	Size.h = std::max(Size.h, DEFAULT_HEIGHT);
 
 	_CalculatedBounds = Size;
 }
@@ -406,7 +422,7 @@ void GraphicsBlock_NodeOutputBox::SetScript(const std::string &Text)
 
 void GraphicsBlock_NodeOutputBox::SetOption(const std::string &Text)
 {
-	_VisibilityLabel->SetText(Text);
+	_OptionLabel->SetText(Text);
 }
 
 

@@ -149,7 +149,8 @@ protected:
 	static const int	PADDING_LEFT = 5,
 						PADDING_RIGHT = 5,
 						PADDING_TOP	= 5,
-						PADDING_BOTTOM = 5;
+						PADDING_BOTTOM = 5,
+						TEXT_SPACING = 3;
 
 	static const int	DEFAULT_WIDTH = 200,
 						DEFAULT_HEIGHT = 35;
@@ -204,7 +205,8 @@ protected:
 	static const int	PADDING_LEFT = 5,
 						PADDING_RIGHT = 5,
 						PADDING_TOP = 5,
-						PADDING_BOTTOM = 5;
+						PADDING_BOTTOM = 5,
+						TEXT_SPACING = 3;
 
 	static const int	DEFAULT_WIDTH = 200,
 						DEFAULT_HEIGHT = 35;
@@ -218,7 +220,7 @@ protected:
 	GraphicsBlock_Text *_ScriptLabel;
 
 public:
-	GraphicsBlock_NodeOutputBox(SDL_Renderer *AssociatedRenderer, FC_Font *TextFont, FC_Font *ScriptFont, const SDL_Color &TextColor = { 255, 255, 255, 255 }, const SDL_Color &ScriptColor = { 235, 195, 85, 255 }/*, const SDL_Color &VisibilityScriptColor = { 173, 216, 230, 255 }*/);
+	GraphicsBlock_NodeOutputBox(SDL_Renderer *AssociatedRenderer, FC_Font *TextFont, FC_Font *ScriptFont, const SDL_Color &TextColor = { 255, 255, 255, 255 }, const SDL_Color &ScriptColor = { 173, 216, 230, 255 }, const SDL_Color &VisibilityScriptColor = { 235, 195, 85, 255 } );
 
 	virtual void CalculateSize(int MaxWidthHint = -1, int MaxHeightHint = -1) override;
 	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
