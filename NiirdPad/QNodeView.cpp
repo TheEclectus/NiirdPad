@@ -9,17 +9,35 @@ void QNodeView::Input()
 	{
 		if (Event.type == EVENT_MOUSEDOWN)
 		{
+			if (Event.user.code == Qt::MouseButton::LeftButton)
+				_InputState.DownPosition[0] = { reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2) };
+			else if (Event.user.code == Qt::MouseButton::RightButton)
+				_InputState.DownPosition[1] = { reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2) };
+			else if (Event.user.code == Qt::MouseButton::MiddleButton)
+				_InputState.DownPosition[2] = { reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2) };
 			//printf("MouseDown (%d, %d)\n", reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2));
 		}
 		else if (Event.type == EVENT_MOUSEUP)
 		{
+			if (Event.user.code == Qt::MouseButton::LeftButton)
+				_InputState.DownPosition[0] = { -1, -1 };
+			else if (Event.user.code == Qt::MouseButton::RightButton)
+				_InputState.DownPosition[1] = { -1, -1 };
+			else if (Event.user.code == Qt::MouseButton::MiddleButton)
+				_InputState.DownPosition[2] = { -1, -1 };
 			//printf("MouseUp (%d, %d)\n", reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2));
 		}
 		else if (Event.type == EVENT_MOUSEMOVE)
 		{
-			
 			_InputState.Position = { reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2) };
 			//printf("MouseMove [%c%c%c] (%d, %d)\n", Event.user.code & Qt::MouseButton::LeftButton ? 'L' : ' ', Event.user.code & Qt::MouseButton::MiddleButton ? 'M' : ' ', Event.user.code & Qt::MouseButton::RightButton ? 'R' : ' ', reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2));
+			//NEXTTIME: finally implement the scrolling!
+			if (Event.user.code & Qt::MouseButton::MiddleButton)
+			{
+				SDL_Point Delta = { _InputState.DownPosition[2].x - _InputState.Position.x, _InputState.DownPosition[2].y - _InputState.Position.y };
+				printf_s("%d %d\n", Delta.x, Delta.y);
+			}
+			
 		}
 
 		else if (Event.type == SDL_EventType::SDL_WINDOWEVENT)

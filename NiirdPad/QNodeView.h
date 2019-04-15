@@ -16,7 +16,7 @@ struct QNodeViewInputState
 	bool bRightMouseDown = false;
 
 	SDL_Point Position = { -1, -1 };
-	SDL_Point DownPosition = { -1, -1 };
+	SDL_Point DownPosition[3] = { { -1, -1 }, { -1, -1 }, { -1, -1 } };
 
 	/// <summary>
 	/// Resets all applicable input state information:
