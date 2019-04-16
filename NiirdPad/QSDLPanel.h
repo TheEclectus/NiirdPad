@@ -34,6 +34,7 @@ class QSDLPanel : public QWidget
 
 private:
 	SDL_Color _BackgroundColor = {0, 0, 0, 255};
+	SDL_Point _LastMousePosition = { INT32_MIN, INT32_MIN };
 
 	QTimer *_RefreshTimer = nullptr;
 	SDL_Window *_SDLWindow = nullptr;
@@ -76,4 +77,6 @@ public:
 	/// </summary>
 	/// <param name="Color"></param>
 	void SetBackgroundColor(const SDL_Color &Color);
+
+	const SDL_Point &GetMousePosition() const;
 };

@@ -64,9 +64,22 @@ void QSDLPanel::mouseMoveEvent(QMouseEvent *event)
 
 	User.type = EVENT_MOUSEMOVE;
 	User.code = event->buttons();
-	
-	User.data1 = reinterpret_cast<void*>(event->x());
-	User.data2 = reinterpret_cast<void*>(event->y());
+
+	int DeltaX = event->x() - _LastMousePosition.x;
+	int DeltaY = event->y() - _LastMousePosition.y;
+
+	if (_LastMousePosition.x == INT32_MIN && _LastMousePosition.y == INT32_MIN)
+	{
+		User.data1 = nullptr;
+		User.data2 = nullptr;
+	}
+	else
+	{
+		User.data1 = reinterpret_cast<void*>(DeltaX);
+		User.data2 = reinterpret_cast<void*>(DeltaY);
+	}
+
+	_LastMousePosition = { event->x(), event->y() };
 
 	SDL_PushEvent(&NewEvent);
 }
@@ -124,4 +137,9 @@ void QSDLPanel::SetBackgroundColor(const SDL_Color &Color)
 	QPalette NewPalette;
 	NewPalette.setColor(QPalette::ColorRole::Background, QColor(Color.r, Color.g, Color.b));
 	this->setPalette(NewPalette);
+}
+
+const SDL_Point &QSDLPanel::GetMousePosition() const
+{
+	return _LastMousePosition;
 }

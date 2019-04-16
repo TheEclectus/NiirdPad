@@ -29,13 +29,15 @@ void QNodeView::Input()
 		}
 		else if (Event.type == EVENT_MOUSEMOVE)
 		{
-			_InputState.Position = { reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2) };
+			_InputState.Position = GetMousePosition();// { reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2) };
 			//printf("MouseMove [%c%c%c] (%d, %d)\n", Event.user.code & Qt::MouseButton::LeftButton ? 'L' : ' ', Event.user.code & Qt::MouseButton::MiddleButton ? 'M' : ' ', Event.user.code & Qt::MouseButton::RightButton ? 'R' : ' ', reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2));
 			//NEXTTIME: finally implement the scrolling!
 			if (Event.user.code & Qt::MouseButton::MiddleButton)
 			{
-				SDL_Point Delta = { _InputState.DownPosition[2].x - _InputState.Position.x, _InputState.DownPosition[2].y - _InputState.Position.y };
-				printf_s("%d %d\n", Delta.x, Delta.y);
+				SDL_Point Delta = { reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2) };
+				//printf_s("%d %d\n", Delta.x, Delta.y);
+				_Camera.ViewBox.x -= Delta.x;
+				_Camera.ViewBox.y -= Delta.y;
 			}
 			
 		}
@@ -127,16 +129,6 @@ void QNodeView::RenderForeground()
 	SDL_Point TopLeft = { _Camera.ViewBox.x - (_Camera.ViewBox.w / 2), _Camera.ViewBox.y - (_Camera.ViewBox.h / 2) };
 
 	SDL_Renderer *Renderer = SDLRenderer();
-
-	SDL_SetRenderDrawColor(Renderer, 0xFF, 0x00, 0x00, 0xFF);
-
-	// Top-left is 0,0
-	// Scene space 0,0, offset -30,20, target is 
-	int XOffset = (_Camera.ViewBox.w / 2);
-	int YOffset = (_Camera.ViewBox.h / 2);
-
-	SDL_Rect r = { XOffset, YOffset, 5, 5 };
-	SDL_RenderFillRect(Renderer, &r);
 
 	static GraphicsBlock_Node *NodeBlock = nullptr;
 	if (NodeBlock == nullptr)
