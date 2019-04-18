@@ -34,13 +34,40 @@ namespace TUScript
 				}
 			} PendingDialogue;
 
+			struct Option
+			{
+				std::string Pointer = "";
+				std::vector<std::string> VisibilityScripts = {}, Functions = {};
+				std::string Text = "";
+
+				bool operator==(const Option &RHS) const
+				{
+					return (
+						Pointer == RHS.Pointer &&
+						VisibilityScripts == RHS.VisibilityScripts &&
+						Functions == RHS.Functions &&
+						Text == RHS.Text
+						);
+				}
+				bool operator!=(const Option &RHS) const
+				{
+					return !operator==(RHS);
+				}
+			} PendingOption;
+
 			std::string Comment = "";
 			std::vector<Dialogue> Dialogues;
+			std::vector<Option> Options;
 
 			void PushPendingDialogue()
 			{
 				Dialogues.push_back(PendingDialogue);
 				PendingDialogue = Dialogue{};
+			}
+			void PushPendingOption()
+			{
+				Options.push_back(PendingOption);
+				PendingOption = Option{};
 			}
 			bool operator==(const Fragment &RHS) const
 			{
@@ -73,11 +100,14 @@ namespace TUScript
 	};
 
 	struct Whitespace : pegtl::sor<pegtl::one<' '>, pegtl::one<'\t'>> {};
+	struct AnyWhitespace : pegtl::star<Whitespace> {};
 	template<class T>
-	struct WrapWhitespace : pegtl::seq<pegtl::star<Whitespace>, T, pegtl::star<Whitespace>> {};
+	struct WrapWhitespace : pegtl::seq<AnyWhitespace, T, AnyWhitespace> {};
 	struct RestOfLine : pegtl::until<pegtl::at<pegtl::one<'\n'>>> {};
 	struct ReferenceChar : pegtl::sor<pegtl::alnum, pegtl::one<'_'>> {};
 	struct ScriptLineChar : pegtl::sor< pegtl::alnum, pegtl::one<'_'>, pegtl::one<' '>, pegtl::one<'/'> > {};
+	struct TextChar : pegtl::not_one<'/', '\n'> {};
+	struct VisScriptChar : pegtl::sor<pegtl::alnum, pegtl::one<'_'>, pegtl::one<'.'>> {};
 
 	struct CommentPrefix : TAO_PEGTL_STRING(">>") {};
 	struct CommentGlobalContents : RestOfLine {};
@@ -97,12 +127,33 @@ namespace TUScript
 	struct DialogueChunkContent : RestOfLine {};
 	struct DialogueChunk : pegtl::seq< DialogueChunkHeader, WrapWhitespace<DialogueChunkContent> > {};
 
-	//struct Option
+
+	struct OptionChunkHeaderPointerDeclaration : pegtl::plus<ReferenceChar> {};
+	struct OptionChunkHeaderReferenceNoFunctions : OptionChunkHeaderPointerDeclaration {};
+
+	struct OptionChunkHeaderScriptsContent : pegtl::plus<ScriptLineChar> {};
+	struct OptionChunkHeaderScriptsContentList : pegtl::list<OptionChunkHeaderScriptsContent, pegtl::one<','>, pegtl::one<' '>> {};
+	struct OptionChunkHeaderNoReferenceFunctions : pegtl::seq< pegtl::opt<Whitespace>, pegtl::one<'|'>, pegtl::opt<Whitespace>, OptionChunkHeaderScriptsContentList> {};
+	
+	struct OptionChunkHeaderReferenceFunctions : pegtl::seq<OptionChunkHeaderPointerDeclaration, pegtl::pad<pegtl::one<'|'>,pegtl::one<' '>>, OptionChunkHeaderScriptsContentList> {};
+	//struct OptionChunkHeader : pegtl::seq< pegtl::one<'['>, pegtl::sor<OptionChunkHeaderReferenceNoFunctions, OptionChunkHeaderNoReferenceFunctions, OptionChunkHeaderReferenceFunctions>, pegtl::one<']'> > {};
+	//struct OptionChunkHeader : pegtl::seq< pegtl::one<'['>, pegtl::sor<OptionChunkHeaderPointerDeclaration, OptionChunkHeaderNoReferenceFunctions, OptionChunkHeaderReferenceFunctions>, pegtl::one<']'> > {};
+	struct OptionChunkHeader : pegtl::seq< pegtl::one<'['>, pegtl::if_then_else<>, pegtl::one<']'> > {};
+	// NEXTTIME: make a few seq checks in the if_then_else (if there's a reference, there may or may not be scripts, etc.)
+
+	struct OptionChunkContent : pegtl::plus<TextChar> {};
+	struct OptionChunkVisScriptPrefix : TAO_PEGTL_STRING("//") {};
+	struct OptionChunkVisScriptContent : pegtl::plus<VisScriptChar> {};
+	struct OptionChunkVisScript : pegtl::seq<OptionChunkVisScriptPrefix, OptionChunkVisScriptContent> {};
+	struct OptionChunkVisScriptList : pegtl::list<OptionChunkVisScript, pegtl::one<' '>> {};
+	struct OptionChunk : pegtl::seq< pegtl::one<'\t'>, OptionChunkHeader, AnyWhitespace, OptionChunkContent, pegtl::opt< pegtl::seq<OptionChunkVisScriptList> > > {};
+	//struct OptionChunk : pegtl::seq< AnyWhitespace, OptionChunkHeader, AnyWhitespace, OptionChunkContent, AnyWhitespace, OptionChunkVisScriptList> {};
 
 	struct Grammar : pegtl::plus< pegtl::sor<
 		CommentGlobal,
 		Separator,
 		DialogueChunk,
+		OptionChunk,
 		pegtl::eolf
 	>> {};
 
@@ -177,6 +228,76 @@ namespace TUScript
 		static void apply(const Input& in, State& v)
 		{
 			v.PendingFragment.PushPendingDialogue();
+		}
+	};
+
+	template<>
+	struct Action< OptionChunkHeaderPointerDeclaration >
+	{
+		template< typename Input >
+		static void apply(const Input& in, State& v)
+		{
+			v.PendingFragment.PendingOption.Pointer = in.string();
+		}
+	};
+
+	template<>
+	struct Action< OptionChunkHeaderReferenceNoFunctions >
+	{
+		template< typename Input >
+		static void apply(const Input& in, State& v)
+		{
+			printf_s("OptionChunkHeaderReferenceNoFunctions\n");
+		}
+	};
+
+	template<>
+	struct Action< OptionChunkHeaderScriptsContent >
+	{
+		template< typename Input >
+		static void apply(const Input& in, State& v)
+		{
+			v.PendingFragment.PendingOption.Functions.push_back(in.string());
+		}
+	};
+
+	template<>
+	struct Action< OptionChunkHeaderNoReferenceFunctions >
+	{
+		template< typename Input >
+		static void apply(const Input& in, State& v)
+		{
+			printf_s("OptionChunkHeaderNoReferenceFunctions\n");
+		}
+	};
+
+	template<>
+	struct Action< OptionChunkContent >
+	{
+		template< typename Input >
+		static void apply(const Input& in, State& v)
+		{
+			v.PendingFragment.PendingOption.Text = in.string();
+		}
+	};
+
+	template<>
+	struct Action< OptionChunkVisScriptContent >
+	{
+		template< typename Input >
+		static void apply(const Input& in, State& v)
+		{
+			v.PendingFragment.PendingOption.VisibilityScripts.push_back(in.string());
+		}
+	};
+
+	template<>
+	struct Action< OptionChunk >
+	{
+		template< typename Input >
+		static void apply(const Input& in, State& v)
+		{
+			v.PendingFragment.PushPendingOption();
 		}
 	};
 
