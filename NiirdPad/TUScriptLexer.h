@@ -128,26 +128,6 @@ namespace TUScript
 	struct DialogueChunk : pegtl::seq< DialogueChunkHeader, WrapWhitespace<DialogueChunkContent> > {};
 
 
-	struct OptionChunkHeaderPointerDeclaration : pegtl::plus<ReferenceChar> {};
-	struct OptionChunkHeaderReferenceNoFunctions : OptionChunkHeaderPointerDeclaration {};
-
-	struct OptionChunkHeaderScriptsContent : pegtl::plus<ScriptLineChar> {};
-	struct OptionChunkHeaderScriptsContentList : pegtl::list<OptionChunkHeaderScriptsContent, pegtl::one<','>, pegtl::one<' '>> {};
-	struct OptionChunkHeaderNoReferenceFunctions : pegtl::seq< pegtl::opt<Whitespace>, pegtl::one<'|'>, pegtl::opt<Whitespace>, OptionChunkHeaderScriptsContentList> {};
-	
-	struct OptionChunkHeaderReferenceFunctions : pegtl::seq<OptionChunkHeaderPointerDeclaration, pegtl::pad<pegtl::one<'|'>,pegtl::one<' '>>, OptionChunkHeaderScriptsContentList> {};
-	//struct OptionChunkHeader : pegtl::seq< pegtl::one<'['>, pegtl::sor<OptionChunkHeaderReferenceNoFunctions, OptionChunkHeaderNoReferenceFunctions, OptionChunkHeaderReferenceFunctions>, pegtl::one<']'> > {};
-	//struct OptionChunkHeader : pegtl::seq< pegtl::one<'['>, pegtl::sor<OptionChunkHeaderPointerDeclaration, OptionChunkHeaderNoReferenceFunctions, OptionChunkHeaderReferenceFunctions>, pegtl::one<']'> > {};
-	struct OptionChunkHeader : pegtl::seq< pegtl::one<'['>, pegtl::if_then_else<>, pegtl::one<']'> > {};
-	// NEXTTIME: make a few seq checks in the if_then_else (if there's a reference, there may or may not be scripts, etc.)
-
-	struct OptionChunkContent : pegtl::plus<TextChar> {};
-	struct OptionChunkVisScriptPrefix : TAO_PEGTL_STRING("//") {};
-	struct OptionChunkVisScriptContent : pegtl::plus<VisScriptChar> {};
-	struct OptionChunkVisScript : pegtl::seq<OptionChunkVisScriptPrefix, OptionChunkVisScriptContent> {};
-	struct OptionChunkVisScriptList : pegtl::list<OptionChunkVisScript, pegtl::one<' '>> {};
-	struct OptionChunk : pegtl::seq< pegtl::one<'\t'>, OptionChunkHeader, AnyWhitespace, OptionChunkContent, pegtl::opt< pegtl::seq<OptionChunkVisScriptList> > > {};
-	//struct OptionChunk : pegtl::seq< AnyWhitespace, OptionChunkHeader, AnyWhitespace, OptionChunkContent, AnyWhitespace, OptionChunkVisScriptList> {};
 
 	struct Grammar : pegtl::plus< pegtl::sor<
 		CommentGlobal,
