@@ -122,6 +122,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NiirdPad.cpp" />
     <ClCompile Include="Node.cpp" />
+    <ClCompile Include="QImportConsole.cpp" />
     <ClCompile Include="QNodeView.cpp" />
     <ClCompile Include="QReferenceEditWindow.cpp" />
     <ClCompile Include="QSDLPanel.cpp" />
@@ -132,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="NiirdPad.ui" />
+    <QtUic Include="QImportConsole.ui" />
     <QtUic Include="QReferenceEditWindow.ui" />
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +149,10 @@
     <ClInclude Include="FontStore.h" />
     <ClInclude Include="GraphicsBlocks.h" />
     <ClInclude Include="Node.h" />
+    <QtMoc Include="QImportConsole.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+    </QtMoc>
     <ClInclude Include="QNodeView.h" />
     <ClInclude Include="TUScriptLexer.h" />
     <QtMoc Include="QReferenceEditWindow.h">

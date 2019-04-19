@@ -35,6 +35,7 @@ public:
     QAction *actionExport_Project;
     QAction *actionEditReferenceWindowNew;
     QAction *actionEditReferenceWindowEdit;
+    QAction *actionImportConsole;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
     QFrame *frame;
@@ -68,6 +69,8 @@ public:
         actionEditReferenceWindowNew->setObjectName(QString::fromUtf8("actionEditReferenceWindowNew"));
         actionEditReferenceWindowEdit = new QAction(NiirdPadClass);
         actionEditReferenceWindowEdit->setObjectName(QString::fromUtf8("actionEditReferenceWindowEdit"));
+        actionImportConsole = new QAction(NiirdPadClass);
+        actionImportConsole->setObjectName(QString::fromUtf8("actionImportConsole"));
         centralWidget = new QWidget(NiirdPadClass);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         horizontalLayout = new QHBoxLayout(centralWidget);
@@ -126,6 +129,7 @@ public:
         menuFile->addAction(actionImport_Project);
         menuFile->addAction(actionExport_Project);
         menuDebug->addAction(menuEdit_Reference_Window->menuAction());
+        menuDebug->addAction(actionImportConsole);
         menuEdit_Reference_Window->addAction(actionEditReferenceWindowNew);
         menuEdit_Reference_Window->addAction(actionEditReferenceWindowEdit);
 
@@ -146,6 +150,7 @@ public:
         actionExport_Project->setText(QApplication::translate("NiirdPadClass", "Export Project...", nullptr));
         actionEditReferenceWindowNew->setText(QApplication::translate("NiirdPadClass", "New", nullptr));
         actionEditReferenceWindowEdit->setText(QApplication::translate("NiirdPadClass", "Edit", nullptr));
+        actionImportConsole->setText(QApplication::translate("NiirdPadClass", "Import Console", nullptr));
         menuFile->setTitle(QApplication::translate("NiirdPadClass", "File", nullptr));
         menuDebug->setTitle(QApplication::translate("NiirdPadClass", "Debug", nullptr));
         menuEdit_Reference_Window->setTitle(QApplication::translate("NiirdPadClass", "Edit Reference Window", nullptr));

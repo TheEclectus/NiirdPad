@@ -110,6 +110,7 @@
      <addaction name="actionEditReferenceWindowEdit"/>
     </widget>
     <addaction name="menuEdit_Reference_Window"/>
+    <addaction name="actionImportConsole"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuDebug"/>
@@ -158,6 +159,11 @@
   <action name="actionEditReferenceWindowEdit">
    <property name="text">
     <string>Edit</string>
+   </property>
+  </action>
+  <action name="actionImportConsole">
+   <property name="text">
+    <string>Import Console</string>
    </property>
   </action>
  </widget>

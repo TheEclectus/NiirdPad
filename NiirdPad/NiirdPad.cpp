@@ -1,5 +1,6 @@
 #include "NiirdPad.h"
 
+#include "QImportConsole.h"
 #include "QReferenceEditWindow.h"
 
 NiirdPad::NiirdPad(QWidget *parent)
@@ -13,6 +14,11 @@ NiirdPad::NiirdPad(QWidget *parent)
 	connect(ui.actionEditReferenceWindowEdit, &QAction::triggered, [this]() {
 		std::string Res = "";
 		QReferenceEditWindow::EditReference(this, Res);
+	});
+	
+	connect(ui.actionImportConsole, &QAction::triggered, [this]() {
+		QImportConsole Con(this);
+		Con.exec();
 	});
 	
 	//ui.widget->setFocus();
