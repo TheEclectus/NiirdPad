@@ -16,6 +16,11 @@ const std::string DemoScript = R"(>>Creature is encountered when accepting to he
 	[ugly_mofo] You're one ugly motherfucker. //showif.will.8 //hideif.clicked
 ||)";
 
+//const std::string DemoScript = R"(	[test] Fuck the niird.
+//	[ | start_music sejan/fight_strong 80, start_combat defeat victory] (Attack)
+//	[can_we_talk] Hi, can we talk? //hideif.clicked //showif.charisma.6
+//	[ugly_mofo] You're one ugly motherfucker. //showif.will.8 //hideif.clicked)";
+
 int main(int argc, char *argv[])
 {
 	pegtl::string_input<> In(DemoScript, "sus");

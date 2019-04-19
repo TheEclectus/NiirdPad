@@ -99,7 +99,8 @@ namespace TUScript
 		}
 	};
 
-	struct Whitespace : pegtl::sor<pegtl::one<' '>, pegtl::one<'\t'>> {};
+	struct Whitespace : pegtl::sor<pegtl::one<' ', '\t'>> {};
+	struct SomeWhitespace : pegtl::plus<Whitespace> {};
 	struct AnyWhitespace : pegtl::star<Whitespace> {};
 	template<class T>
 	struct WrapWhitespace : pegtl::seq<AnyWhitespace, T, AnyWhitespace> {};
@@ -107,7 +108,8 @@ namespace TUScript
 	struct ReferenceChar : pegtl::sor<pegtl::alnum, pegtl::one<'_'>> {};
 	struct ScriptLineChar : pegtl::sor< pegtl::alnum, pegtl::one<'_'>, pegtl::one<' '>, pegtl::one<'/'> > {};
 	struct TextChar : pegtl::not_one<'/', '\n'> {};
-	struct VisScriptChar : pegtl::sor<pegtl::alnum, pegtl::one<'_'>, pegtl::one<'.'>> {};
+	//struct VisScriptChar : pegtl::sor<pegtl::alnum, pegtl::one<'_'>, pegtl::one<'.'>> {};
+	struct OptionVisString : pegtl::plus<pegtl::sor<pegtl::alnum, pegtl::one<'_', '.'>>> {};
 
 	struct CommentPrefix : TAO_PEGTL_STRING(">>") {};
 	struct CommentGlobalContents : RestOfLine {};
@@ -127,20 +129,40 @@ namespace TUScript
 	struct DialogueChunkContent : RestOfLine {};
 	struct DialogueChunk : pegtl::seq< DialogueChunkHeader, WrapWhitespace<DialogueChunkContent> > {};
 
+	// A single visibility script
+	struct OptionVis : pegtl::seq< TAO_PEGTL_STRING("//"), OptionVisString > {};
+	struct OptionFooterVisList : pegtl::list< OptionVis, pegtl::one<' '> > {};
+	// The text following an OptionHeader, but before the visibility scripts
+	struct OptionFooterText : pegtl::until< pegtl::at< pegtl::sor< pegtl::seq<AnyWhitespace, OptionFooterVisList>, pegtl::eolf> > > {};
+	struct OptionFooter : pegtl::seq< OptionFooterText, pegtl::opt< pegtl::seq<AnyWhitespace, OptionFooterVisList> > > {};
 
+	// A single function call in the OptionHeader
+	struct OptionScript : pegtl::plus<ScriptLineChar> {};
+	struct OptionScriptList : pegtl::list < OptionScript, pegtl::seq<pegtl::one<','>, Whitespace>> {};
+	struct OptionScriptRegion : pegtl::seq< pegtl::opt<pegtl::plus<Whitespace>>, pegtl::one<'|'>, Whitespace, OptionScriptList > {};
+	// The pointer declared in an OptionHeader
+	struct OptionPointerDeclaration : pegtl::plus<ReferenceChar> {};
+	struct OptionHeaderDeclaration : pegtl::if_then_else<OptionPointerDeclaration, pegtl::opt<OptionScriptRegion>, OptionScriptRegion > {};
+	struct OptionHeader : pegtl::seq< pegtl::opt<pegtl::plus<Whitespace>>, pegtl::one<'['>, OptionHeaderDeclaration, pegtl::one<']'> > {};
 
-	struct Grammar : pegtl::plus< pegtl::sor<
+	struct Option : pegtl::seq< OptionHeader, AnyWhitespace, OptionFooter > {};
+
+	struct Grammar : pegtl::must< pegtl::plus< pegtl::sor<
 		CommentGlobal,
 		Separator,
 		DialogueChunk,
-		OptionChunk,
-		pegtl::eolf
-	>> {};
+		Option,
+		pegtl::eol//,
+		//pegtl::eof
+	>>,
+	pegtl::eof
+	>{};
 
 	template< typename Rule >
 	struct Action
 	{};
 
+#pragma region Dialogue
 	template<>
 	struct Action< CommentGlobalContents >
 	{
@@ -210,74 +232,60 @@ namespace TUScript
 			v.PendingFragment.PushPendingDialogue();
 		}
 	};
+#pragma endregion
 
 	template<>
-	struct Action< OptionChunkHeaderPointerDeclaration >
+	struct Action< OptionVis >
 	{
 		template< typename Input >
 		static void apply(const Input& in, State& v)
 		{
-			v.PendingFragment.PendingOption.Pointer = in.string();
-		}
-	};
-
-	template<>
-	struct Action< OptionChunkHeaderReferenceNoFunctions >
-	{
-		template< typename Input >
-		static void apply(const Input& in, State& v)
-		{
-			printf_s("OptionChunkHeaderReferenceNoFunctions\n");
-		}
-	};
-
-	template<>
-	struct Action< OptionChunkHeaderScriptsContent >
-	{
-		template< typename Input >
-		static void apply(const Input& in, State& v)
-		{
-			v.PendingFragment.PendingOption.Functions.push_back(in.string());
-		}
-	};
-
-	template<>
-	struct Action< OptionChunkHeaderNoReferenceFunctions >
-	{
-		template< typename Input >
-		static void apply(const Input& in, State& v)
-		{
-			printf_s("OptionChunkHeaderNoReferenceFunctions\n");
-		}
-	};
-
-	template<>
-	struct Action< OptionChunkContent >
-	{
-		template< typename Input >
-		static void apply(const Input& in, State& v)
-		{
-			v.PendingFragment.PendingOption.Text = in.string();
-		}
-	};
-
-	template<>
-	struct Action< OptionChunkVisScriptContent >
-	{
-		template< typename Input >
-		static void apply(const Input& in, State& v)
-		{
+			printf_s("%s\n", in.string().c_str());
 			v.PendingFragment.PendingOption.VisibilityScripts.push_back(in.string());
 		}
 	};
 
 	template<>
-	struct Action< OptionChunk >
+	struct Action< OptionFooterText >
+	{
+		template< typename Input >
+		static void apply(const Input& in, State& v)
+		{
+			printf_s("\"%s\"\n", in.string().c_str());
+			v.PendingFragment.PendingOption.Text = in.string();
+		}
+	};
+
+	template<>
+	struct Action< OptionScript >
+	{
+		template< typename Input >
+		static void apply(const Input& in, State& v)
+		{
+			printf_s("- '%s'\n", in.string().c_str());
+			v.PendingFragment.PendingOption.Functions.push_back(in.string());
+		}
+	};
+
+	template<>
+	struct Action< OptionPointerDeclaration >
+	{
+		template< typename Input >
+		static void apply(const Input& in, State& v)
+		{
+			printf_s("<%s>\n", in.string().c_str());
+			v.PendingFragment.PendingOption.Pointer = in.string();
+		}
+	};
+
+	template<>
+	struct Action< Option >
 	{
 		template< typename Input >
 		static void apply(const Input& in, State& v)
 		{
 			v.PendingFragment.PushPendingOption();
+			printf_s("---------------\n");
 		}
 	};
 
