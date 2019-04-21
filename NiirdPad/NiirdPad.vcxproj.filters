@@ -131,5 +131,8 @@
     <ClInclude Include="format-inl.h">
       <Filter>Header Files\3rd Party</Filter>
     </ClInclude>
+    <ClInclude Include="Project.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -34,6 +34,7 @@ void QImportConsole::AddInfo(const std::string &Text)
 void QImportConsole::AddError(const std::string &Text)
 {
 	ui.txtConsole->insertHtml(fmt::format("<p style=\"color:red\">[ERROR] {0}</p>\n", Text).c_str());
+
 }
 
 void QImportConsole::Import(const std::string &RootDirectory)
