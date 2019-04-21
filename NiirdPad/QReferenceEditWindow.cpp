@@ -2,6 +2,8 @@
 
 #include <QMessageBox>
 
+#include <tao\pegtl.hpp>
+
 void QReferenceEditWindow::MakeError(const std::string &Message)
 {
 	ui.lblInfo->setText(Message.c_str());
@@ -29,6 +31,19 @@ bool QReferenceEditWindow::IsValidReference()
 	}
 	else
 	{
+		std::string Text = ui.txtReferenceEdit->text().toStdString() + "\n";
+		tao::pegtl::string_input<> Input(Text, "");
+		try
+		{
+			tao::pegtl::parse< tao::pegtl::must< tao::pegtl::plus< tao::pegtl::sor< tao::pegtl::alnum, tao::pegtl::one<'_'> > >, tao::pegtl::one<'\n'> > >(Input, Text);
+		}
+		catch (std::exception Exception)
+		{
+			MakeError("Reference contains illegal characters.");
+			ui.btnAccept->setDisabled(true);
+			return false;
+		}
+
 		ui.btnAccept->setDisabled(false);
 	}
 
