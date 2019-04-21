@@ -7,10 +7,16 @@ class QImportConsole : public QDialog
 {
 	Q_OBJECT
 
+private:
+	Ui::QImportConsole ui;
+
 public:
+	QImportConsole(const std::string &RootDirectory, QWidget *parent = Q_NULLPTR);
 	QImportConsole(QWidget *parent = Q_NULLPTR);
 	~QImportConsole();
 
-private:
-	Ui::QImportConsole ui;
+	void AddInfo(const std::string &Text);
+	void AddError(const std::string &Text);
+
+	static void Import(const std::string &RootDirectory);
 };

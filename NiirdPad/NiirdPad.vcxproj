@@ -118,6 +118,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FontStore.cpp" />
+    <ClCompile Include="format.cc" />
     <ClCompile Include="GraphicsBlocks.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NiirdPad.cpp" />
@@ -146,7 +147,10 @@
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="core.h" />
     <ClInclude Include="FontStore.h" />
+    <ClInclude Include="format-inl.h" />
+    <ClInclude Include="format.h" />
     <ClInclude Include="GraphicsBlocks.h" />
     <ClInclude Include="Node.h" />
     <QtMoc Include="QImportConsole.h">

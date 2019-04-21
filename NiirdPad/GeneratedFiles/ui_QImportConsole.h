@@ -25,8 +25,8 @@ class Ui_QImportConsole
 {
 public:
     QVBoxLayout *verticalLayout;
-    QTextEdit *textEdit;
-    QProgressBar *progressBar;
+    QTextEdit *txtConsole;
+    QProgressBar *prgsbarSteps;
     QHBoxLayout *horizontalLayout;
     QSpacerItem *horizontalSpacer;
     QPushButton *btnClose;
@@ -41,18 +41,26 @@ public:
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        textEdit = new QTextEdit(QImportConsole);
-        textEdit->setObjectName(QString::fromUtf8("textEdit"));
+        txtConsole = new QTextEdit(QImportConsole);
+        txtConsole->setObjectName(QString::fromUtf8("txtConsole"));
+        QFont font;
+        font.setFamily(QString::fromUtf8("Courier New"));
+        font.setPointSize(8);
+        txtConsole->setFont(font);
+        txtConsole->setReadOnly(true);
+        txtConsole->setCursorWidth(0);
+        txtConsole->setTextInteractionFlags(Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse);
 
-        verticalLayout->addWidget(textEdit);
+        verticalLayout->addWidget(txtConsole);
 
-        progressBar = new QProgressBar(QImportConsole);
-        progressBar->setObjectName(QString::fromUtf8("progressBar"));
-        progressBar->setMaximum(0);
-        progressBar->setValue(0);
-        progressBar->setOrientation(Qt::Horizontal);
+        prgsbarSteps = new QProgressBar(QImportConsole);
+        prgsbarSteps->setObjectName(QString::fromUtf8("prgsbarSteps"));
+        prgsbarSteps->setMaximum(0);
+        prgsbarSteps->setValue(0);
+        prgsbarSteps->setTextVisible(true);
+        prgsbarSteps->setOrientation(Qt::Horizontal);
 
-        verticalLayout->addWidget(progressBar);
+        verticalLayout->addWidget(prgsbarSteps);
 
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
@@ -78,7 +86,7 @@ public:
     void retranslateUi(QDialog *QImportConsole)
     {
         QImportConsole->setWindowTitle(QApplication::translate("QImportConsole", "Import Console", nullptr));
-        progressBar->setFormat(QApplication::translate("QImportConsole", "%v/%m", nullptr));
+        prgsbarSteps->setFormat(QApplication::translate("QImportConsole", "%v/%m", nullptr));
         btnClose->setText(QApplication::translate("QImportConsole", "Close", nullptr));
     } // retranslateUi
 

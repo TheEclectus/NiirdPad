@@ -28,6 +28,12 @@
       <Extensions>moc;h;cpp</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="Header Files\3rd Party">
+      <UniqueIdentifier>{b6bd08c7-181e-40be-8177-d19d70725020}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\3rd Party">
+      <UniqueIdentifier>{8cf9506f-871d-4316-a211-184143a68eab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NiirdPad.cpp">
@@ -59,6 +65,9 @@
     </ClCompile>
     <ClCompile Include="QImportConsole.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="format.cc">
+      <Filter>Source Files\3rd Party</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -112,6 +121,15 @@
     </ClInclude>
     <ClInclude Include="TUScriptLexer.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="format.h">
+      <Filter>Header Files\3rd Party</Filter>
+    </ClInclude>
+    <ClInclude Include="core.h">
+      <Filter>Header Files\3rd Party</Filter>
+    </ClInclude>
+    <ClInclude Include="format-inl.h">
+      <Filter>Header Files\3rd Party</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
