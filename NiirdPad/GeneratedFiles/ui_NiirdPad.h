@@ -31,7 +31,7 @@ public:
     QAction *actionOpen;
     QAction *actionSave;
     QAction *actionSave_As;
-    QAction *actionImport_Project;
+    QAction *actionImportProject;
     QAction *actionExport_Project;
     QAction *actionEditReferenceWindowNew;
     QAction *actionEditReferenceWindowEdit;
@@ -61,8 +61,8 @@ public:
         actionSave->setObjectName(QString::fromUtf8("actionSave"));
         actionSave_As = new QAction(NiirdPadClass);
         actionSave_As->setObjectName(QString::fromUtf8("actionSave_As"));
-        actionImport_Project = new QAction(NiirdPadClass);
-        actionImport_Project->setObjectName(QString::fromUtf8("actionImport_Project"));
+        actionImportProject = new QAction(NiirdPadClass);
+        actionImportProject->setObjectName(QString::fromUtf8("actionImportProject"));
         actionExport_Project = new QAction(NiirdPadClass);
         actionExport_Project->setObjectName(QString::fromUtf8("actionExport_Project"));
         actionEditReferenceWindowNew = new QAction(NiirdPadClass);
@@ -126,7 +126,7 @@ public:
         menuFile->addAction(actionSave);
         menuFile->addAction(actionSave_As);
         menuFile->addSeparator();
-        menuFile->addAction(actionImport_Project);
+        menuFile->addAction(actionImportProject);
         menuFile->addAction(actionExport_Project);
         menuDebug->addAction(menuEdit_Reference_Window->menuAction());
         menuDebug->addAction(actionImportConsole);
@@ -146,7 +146,7 @@ public:
         actionOpen->setText(QApplication::translate("NiirdPadClass", "Open...", nullptr));
         actionSave->setText(QApplication::translate("NiirdPadClass", "Save", nullptr));
         actionSave_As->setText(QApplication::translate("NiirdPadClass", "Save As...", nullptr));
-        actionImport_Project->setText(QApplication::translate("NiirdPadClass", "Import Project...", nullptr));
+        actionImportProject->setText(QApplication::translate("NiirdPadClass", "Import Project...", nullptr));
         actionExport_Project->setText(QApplication::translate("NiirdPadClass", "Export Project...", nullptr));
         actionEditReferenceWindowNew->setText(QApplication::translate("NiirdPadClass", "New", nullptr));
         actionEditReferenceWindowEdit->setText(QApplication::translate("NiirdPadClass", "Edit", nullptr));

@@ -46,4 +46,5 @@ protected:
 
 public:
 	QNodeView(QWidget *Parent);
+	const FontStore &FontStore() const;
 };

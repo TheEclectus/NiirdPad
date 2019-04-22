@@ -268,4 +268,7 @@ public:
 
 	virtual void CalculateSize(int MaxWidthHint = -1, int MaxHeightHint = -1) override;
 	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
+
+	GraphicsBlock_NodeInputBoxSection *InputSection();
+	GraphicsBlock_NodeOutputBoxSection *OutputSection();
 };

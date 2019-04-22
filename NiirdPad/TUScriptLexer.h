@@ -88,6 +88,8 @@ namespace TUScript
 		std::vector<std::string> Warnings;
 		std::string Error;
 
+		bool bReachedEndOfFile = false;
+
 		void PushPendingFragment()
 		{
 			// Make sure it's not empty.
@@ -296,6 +298,7 @@ namespace TUScript
 		static void apply(const Input& in, State& v)
 		{
 			v.PushPendingFragment();
+			v.bReachedEndOfFile = true;
 		}
 	};
 }

@@ -557,4 +557,14 @@ void GraphicsBlock_Node::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 	AGraphicsBlock::Render(SDLRenderer, Position);
 }
 
+GraphicsBlock_NodeInputBoxSection *GraphicsBlock_Node::InputSection()
+{
+	return _Inputs;
+}
+
+GraphicsBlock_NodeOutputBoxSection *GraphicsBlock_Node::OutputSection()
+{
+	return _Outputs;
+}
+
 #pragma endregion

@@ -95,7 +95,7 @@
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
     <addaction name="separator"/>
-    <addaction name="actionImport_Project"/>
+    <addaction name="actionImportProject"/>
     <addaction name="actionExport_Project"/>
    </widget>
    <widget class="QMenu" name="menuDebug">
@@ -141,7 +141,7 @@
     <string>Save As...</string>
    </property>
   </action>
-  <action name="actionImport_Project">
+  <action name="actionImportProject">
    <property name="text">
     <string>Import Project...</string>
    </property>

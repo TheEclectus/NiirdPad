@@ -28,6 +28,6 @@ public:
 	FontStore(SDL_Renderer *AssociatedRenderer);
 	~FontStore();
 
-	FC_Font *GetFont(const Role FontRole);
+	FC_Font *GetFont(const Role FontRole) const;
 	void ResetFonts(const SDL_EventType &Type);
 };

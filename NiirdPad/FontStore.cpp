@@ -23,7 +23,7 @@ FontStore::~FontStore()
 	}
 }
 
-FC_Font *FontStore::GetFont(const Role FontRole)
+FC_Font *FontStore::GetFont(const Role FontRole) const
 {
 	if (FontRole == Role::COUNT)
 		return nullptr;

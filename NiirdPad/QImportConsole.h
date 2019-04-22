@@ -10,13 +10,17 @@ class QImportConsole : public QDialog
 private:
 	Ui::QImportConsole ui;
 
+	std::string RootDirectory;
+
 public:
 	QImportConsole(const std::string &RootDirectory, QWidget *parent = Q_NULLPTR);
 	QImportConsole(QWidget *parent = Q_NULLPTR);
 	~QImportConsole();
 
+	virtual void showEvent(QShowEvent *event) override;
+
 	void AddInfo(const std::string &Text);
 	void AddError(const std::string &Text);
 
-	static void Import(const std::string &RootDirectory);
+	void Import();
 };

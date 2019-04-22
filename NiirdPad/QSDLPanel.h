@@ -58,8 +58,6 @@ protected:
 	void mouseReleaseEvent(QMouseEvent *event) override;
 	void mouseMoveEvent(QMouseEvent *event) override;
 
-	SDL_Renderer *SDLRenderer() const;
-
 private slots:
 	void ProcessInternal();
 
@@ -79,4 +77,6 @@ public:
 	void SetBackgroundColor(const SDL_Color &Color);
 
 	const SDL_Point &GetMousePosition() const;
+
+	SDL_Renderer *SDLRenderer() const;
 };

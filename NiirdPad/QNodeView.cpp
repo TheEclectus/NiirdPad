@@ -151,3 +151,8 @@ QNodeView::QNodeView(QWidget *Parent) :
 {
 
 }
+
+const FontStore &QNodeView::FontStore() const
+{
+	return _FontStore;
+}

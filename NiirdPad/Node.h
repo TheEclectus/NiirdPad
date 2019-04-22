@@ -4,6 +4,8 @@
 
 #include <SDL.h>
 
+#include "QNodeView.h"
+
 // GraphicsBlocks.h
 class GraphicsBlock_NodeInputBox;
 class GraphicsBlock_NodeOutputBox;
@@ -12,6 +14,7 @@ class GraphicsBlock_Node;
 class NodeDialogue
 {
 private:
+	// Non-owning
 	GraphicsBlock_NodeInputBox *_graphics;
 
 	std::string _reference, _script, _dialogue;
@@ -29,11 +32,12 @@ public:
 class Node
 {
 private:
+	// Owning
 	GraphicsBlock_Node *_graphics;
 	std::vector<NodeDialogue*> _dialogues;
 
 public:
-	Node();
+	Node(QNodeView &NodeView);
 	~Node();
 
 	GraphicsBlock_Node &Graphics();
