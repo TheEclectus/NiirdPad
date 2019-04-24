@@ -20,6 +20,7 @@ public:
 	virtual void showEvent(QShowEvent *event) override;
 
 	void AddInfo(const std::string &Text);
+	void AddWarning(const std::string &Text);
 	void AddError(const std::string &Text);
 
 	void Import();

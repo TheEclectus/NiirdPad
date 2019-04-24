@@ -7,9 +7,11 @@ class NiirdPad : public QMainWindow
 {
 	Q_OBJECT
 
-public:
-	NiirdPad(QWidget *parent = Q_NULLPTR);
-
 private:
 	Ui::NiirdPadClass ui;
+
+	void Import();
+
+public:
+	NiirdPad(QWidget *parent = Q_NULLPTR);
 };

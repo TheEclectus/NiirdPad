@@ -108,7 +108,7 @@ namespace TUScript
 	struct WrapWhitespace : pegtl::seq<AnyWhitespace, T, AnyWhitespace> {};
 	struct RestOfLine : pegtl::until<pegtl::at<pegtl::one<'\n'>>> {};
 	struct ReferenceChar : pegtl::sor<pegtl::alnum, pegtl::one<'_'>> {};
-	struct ScriptLineChar : pegtl::sor< pegtl::alnum, pegtl::one<'_'>, pegtl::one<' '>, pegtl::one<'/'> > {};
+	struct ScriptLineChar : pegtl::sor< pegtl::alnum, pegtl::one<'_', ' ', '/', '-'> > {};
 	struct TextChar : pegtl::not_one<'/', '\n'> {};
 	//struct VisScriptChar : pegtl::sor<pegtl::alnum, pegtl::one<'_'>, pegtl::one<'.'>> {};
 	struct OptionVisString : pegtl::plus<pegtl::sor<pegtl::alnum, pegtl::one<'_', '.'>>> {};

@@ -36,7 +36,7 @@ public:
         if (QImportConsole->objectName().isEmpty())
             QImportConsole->setObjectName(QString::fromUtf8("QImportConsole"));
         QImportConsole->setWindowModality(Qt::ApplicationModal);
-        QImportConsole->resize(414, 297);
+        QImportConsole->resize(781, 297);
         verticalLayout = new QVBoxLayout(QImportConsole);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
