@@ -7,7 +7,8 @@
 #include <QThread>
 
 #include "format.h"
-#include "QImportConsole.h"
+//#include "QImportConsole.h"
+#include "ImportWorker.h"
 #include "QReferenceEditWindow.h"
 
 void NiirdPad::Import()
@@ -19,8 +20,8 @@ void NiirdPad::Import()
 
 	if (Dialog.exec() != QDialog::Accepted)
 		return;
-
-	namespace fs = std::experimental::filesystem;
+	
+	/*namespace fs = std::experimental::filesystem;
 
 	fs::path AbsoluteImportPath = fs::absolute(Dialog.directory().absolutePath().toStdString());
 	QProgressDialog Prg(fmt::format("Importing {}", AbsoluteImportPath.string()).c_str(), "Cancel", 0, 0, this);
@@ -34,7 +35,21 @@ void NiirdPad::Import()
 
 		if (Prg.wasCanceled())
 			break;
-	}
+	}*/
+
+	QThread *ImportThread = new QThread(this);
+	ImportWorker *Worker = new ImportWorker("sus");
+	QProgressDialog *Prg = new QProgressDialog("", "Cancel", 0, 0, this);
+	Prg->setWindowTitle(fmt::format("Importing '{0}'", Dialog.directory().absolutePath().toStdString()).c_str());
+	Prg->setWindowModality(Qt::WindowModality::ApplicationModal);
+	Prg->setModal(true);
+
+	Worker->moveToThread(ImportThread);
+
+	connect(ImportThread, &QThread::started, Worker, &ImportWorker::Start);
+	connect(Worker, &ImportWorker::SetProgress, Prg, &QProgressDialog::setValue);
+	connect(Worker, &ImportWorker::SetMessage, Prg, &QProgressDialog::setLabelText);
+	connect(Prg, &QProgressDialog::cancel, Worker, &ImportWorker::Cancel);
 }
 
 NiirdPad::NiirdPad(QWidget *parent)
@@ -66,8 +81,8 @@ NiirdPad::NiirdPad(QWidget *parent)
 		QReferenceEditWindow::EditReference(this, Res);
 	});
 	connect(ui.actionImportConsole, &QAction::triggered, [this]() {
-		QImportConsole Con(this);
-		Con.exec();
+		//QImportConsole Con(this);
+		//Con.exec();
 	});
 	
 	//ui.widget->setFocus();

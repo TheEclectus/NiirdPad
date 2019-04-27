@@ -69,6 +69,9 @@
     <ClCompile Include="format.cc">
       <Filter>Source Files\3rd Party</Filter>
     </ClCompile>
+    <ClCompile Include="ImportWorker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="NiirdPad.h">
@@ -81,6 +84,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="QImportConsole.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ImportWorker.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
