@@ -126,8 +126,8 @@ namespace TUScript
 	struct DialogueReferenceDeclaration : pegtl::plus<ReferenceChar> {};
 	struct DialogueChunkHeaderScriptsContent : pegtl::plus<ScriptLineChar> {};
 	struct DialogueChunkHeaderScriptsContentList : pegtl::list<DialogueChunkHeaderScriptsContent, pegtl::one<','>, pegtl::one<' '>> {};
-	struct DialogueChunkHeaderScripts : pegtl::seq< pegtl::pad<pegtl::one<'|'>, pegtl::one<' '>>, DialogueChunkHeaderScriptsContentList > {};
-	struct DialogueChunkHeader : pegtl::seq< pegtl::one<'{'>, DialogueReferenceDeclaration, pegtl::opt<DialogueChunkHeaderScripts>, pegtl::one<'}'> > {};
+	struct DialogueChunkHeaderScripts : pegtl::seq< DialogueChunkHeaderScriptsContentList > {};
+	struct DialogueChunkHeader : pegtl::seq< pegtl::one<'{'>, DialogueReferenceDeclaration, pegtl::opt<pegtl::pad<pegtl::one<'|'>, pegtl::one<' '>>, pegtl::opt<DialogueChunkHeaderScripts>>, pegtl::one<'}'> > {};
 	struct DialogueChunkContent : RestOfLine {};
 	struct DialogueChunk : pegtl::seq< DialogueChunkHeader, WrapWhitespace<DialogueChunkContent> > {};
 
@@ -163,6 +163,18 @@ namespace TUScript
 	template< typename Rule >
 	struct Action
 	{};
+
+#pragma region Debug
+	template<>
+	struct Action< Separator >
+	{
+		template< typename Input >
+		static void apply(const Input& in, State& v)
+		{
+			printf("Debug.\n");
+		}
+	};
+#pragma endregion
 
 #pragma region Dialogue
 	template<>
@@ -297,6 +309,8 @@ namespace TUScript
 		template< typename Input >
 		static void apply(const Input& in, State& v)
 		{
+			auto line = in.input().line();
+
 			v.PushPendingFragment();
 			v.bReachedEndOfFile = true;
 		}

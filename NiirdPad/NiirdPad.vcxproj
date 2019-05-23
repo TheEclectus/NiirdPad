@@ -124,11 +124,13 @@
     <ClCompile Include="NiirdPad.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="ImportWorker.cpp" />
+    <ClCompile Include="ProjectFile.cpp" />
     <ClCompile Include="QImportConsole.cpp" />
     <ClCompile Include="QNodeView.cpp" />
     <ClCompile Include="QReferenceEditWindow.cpp" />
     <ClCompile Include="QSDLPanel.cpp" />
     <ClCompile Include="SDL_FontCache.c" />
+    <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="NiirdPad.h" />
@@ -163,6 +165,7 @@
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
     </QtMoc>
     <ClInclude Include="Project.h" />
+    <ClInclude Include="ProjectFile.h" />
     <ClInclude Include="QNodeView.h" />
     <ClInclude Include="TUScriptLexer.h" />
     <QtMoc Include="QReferenceEditWindow.h">

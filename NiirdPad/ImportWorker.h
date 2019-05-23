@@ -6,6 +6,7 @@
 #include <QProgressBar>
 #include <QThread>
 
+#include "ProjectFile.h"
 #include "TUScriptLexer.h"
 
 class ImportWorker : public QObject
@@ -18,6 +19,9 @@ private:
 
 	std::string _Error;
 	std::vector<std::string> _Warnings;
+	RawProjectFile _LoadedProject;
+
+	bool LoadCharacters(const std::experimental::filesystem::path &CharactersPath);
 
 public:
 	// ENSURE THAT THE PATH EXISTS BEFORE PASSING IT TO IMPORTWORKER!
@@ -35,4 +39,7 @@ signals:
 	void SetTotal(int);
 	void SetProgress(int);
 	void SetMessage(QString);
+	void SendError(std::string);
+	void SendData(std::vector<std::string> /*Warnings*/, RawProjectFile);
+	void Finished();
 };

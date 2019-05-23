@@ -48,9 +48,6 @@
     <ClCompile Include="QNodeView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SDL_FontCache.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GraphicsBlocks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -71,6 +68,15 @@
     </ClCompile>
     <ClCompile Include="ImportWorker.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL_FontCache.c">
+      <Filter>Source Files\3rd Party</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -116,9 +122,6 @@
     <ClInclude Include="GraphicsBlocks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDL_FontCache.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FontStore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -139,6 +142,12 @@
     </ClInclude>
     <ClInclude Include="Project.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL_FontCache.h">
+      <Filter>Header Files\3rd Party</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
