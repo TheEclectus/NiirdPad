@@ -1,5 +1,7 @@
 #include "ImportWorker.h"
 
+#include <fstream>
+
 #include "format.h"
 
 namespace fs = std::experimental::filesystem;
@@ -59,12 +61,15 @@ bool ImportWorker::LoadCharacters(const fs::path &CharactersPath)
 			if (fs::is_regular_file(CurFile) && Filename.find(u8"diag") == 0u && Extension == u8".txt")
 			{
 				emit SetMessage(fmt::format("{0} - Parsing {1}...", CharacterName, Filename).c_str());
-				pegtl::file_input<> FileToParse(CurFile.path().u8string());
+				//pegtl::file_input<> FileToParse(CurFile.path().u8string());
+				std::ifstream InFile{ CurFile.path().u8string() };
+				std::string SrcString{ std::istreambuf_iterator<char>(InFile), std::istreambuf_iterator<char>() };
+				pegtl::string_input<> FileToParse(SrcString, "");
 
 				TUScript::State ParserState;
 				try
 				{
-					if (!pegtl::parse<TUScript::Grammar>(FileToParse, ParserState))
+					if (!pegtl::parse<TUScript::Grammar, TUScript::Action>(FileToParse, ParserState))
 						_Warnings.push_back(fmt::format("Skipped file '{0}' (couldn't parse)", CurFile.path().filename().u8string()));
 					else
 					{

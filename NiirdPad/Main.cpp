@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 	std::ifstream InFile{ "Z:\\Teraurge\\Teraurge\\database\\characters\\braq_m\\diag.txt" };
 	std::string SrcString{ std::istreambuf_iterator<char>(InFile), std::istreambuf_iterator<char>() };
 
-	pegtl::string_input<> In(/*DemoScript*/ SrcString, "sus");
+	pegtl::string_input<> In(SrcString, "sus");
 	TUScript::State State;
 
 	try 
