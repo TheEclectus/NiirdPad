@@ -93,6 +93,8 @@ RawProjectFile_ScriptFile::RawProjectFile_ScriptFile(TUScript::State &State)
 		{
 			NewNode._Options.push_back(RawProjectFile_Option(CurOpt.Pointer, CurOpt.VisibilityScripts, CurOpt.Functions, CurOpt.Text));
 		}
+
+		this->_Nodes.push_back(NewNode);
 	}
 }
 
