@@ -132,14 +132,14 @@ void NiirdPad::ImportConfirmationMessageBox(std::vector<std::string> Warnings, R
 	if (Warnings.size() > 0)
 	{
 		QMessageBox Msg(this);
-		QString WarningString = fmt::format("== {0} Warnings: ==\n", Warnings.size()).c_str();
+		QString WarningString = ""; //fmt::format("== {0} Warnings: ==\n", Warnings.size()).c_str();
 		for (auto a : Warnings)
 		{
 			WarningString.append(a.c_str());
-			WarningString.append("\n");
+			WarningString.append("\n\n");
 		}
 		//QMessageBox *Msg = new QMessageBox(this);
-		Msg.setWindowTitle("Warnings");
+		Msg.setWindowTitle(fmt::format("{0} Warnings", Warnings.size()).c_str());
 		Msg.setText("Warnings were generated during import. Continue?");
 		Msg.setIcon(QMessageBox::Icon::Warning);
 		Msg.setDetailedText(WarningString);
