@@ -60,9 +60,6 @@
     <ClCompile Include="Node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="QImportConsole.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="format.cc">
       <Filter>Source Files\3rd Party</Filter>
     </ClCompile>
@@ -89,9 +86,6 @@
     <QtMoc Include="QReferenceEditWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="QImportConsole.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="ImportWorker.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -101,9 +95,6 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="QReferenceEditWindow.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="QImportConsole.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
