@@ -86,11 +86,17 @@ void NiirdPad::Import()
 	});
 	connect(Worker, &ImportWorker::Finished, ImportThread, &QThread::quit);
 	connect(Worker, &ImportWorker::Finished, Worker, &ImportWorker::deleteLater);
+	connect(Worker, &ImportWorker::Finished, Prg, &QProgressBar::deleteLater);
 
 	connect(Worker, &ImportWorker::SetTotal, Prg, &QProgressDialog::setMaximum);
 	connect(Worker, &ImportWorker::SetProgress, Prg, &QProgressDialog::setValue);
 	connect(Worker, &ImportWorker::SetMessage, Prg, &QProgressDialog::setLabelText);
-	connect(Prg, &QProgressDialog::cancel, Worker, &ImportWorker::Cancel);
+	
+	// TODO: Cancel button currently doesn't do anything.
+
+	/*connect(Prg, &QProgressDialog::cancel, ImportThread, &QThread::quit);
+	connect(Prg, &QProgressDialog::cancel, Worker, &ImportWorker::deleteLater);
+	connect(Prg, &QProgressDialog::cancel, Prg, &QProgressBar::deleteLater);*/
 
 	ImportThread->start();
 

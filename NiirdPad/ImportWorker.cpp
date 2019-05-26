@@ -20,9 +20,13 @@ bool ImportWorker::LoadCharacters(const fs::path &CharactersPath)
 	std::vector<fs::path> CharacterPathList;
 	for (auto CurFolder : fs::directory_iterator(CharactersPath))
 	{
+		if (!fs::is_directory(CurFolder))
+			continue;
+
 		std::string CharacterName = CurFolder.path().stem().u8string();
 
-		if (!fs::is_directory(CurFolder))
+		// Skip template_ folders
+		if (CharacterName.find(u8"template_") == 0u)
 			continue;
 
 		bool bDirectoryHadDiagTxt = false;
@@ -47,10 +51,16 @@ bool ImportWorker::LoadCharacters(const fs::path &CharactersPath)
 
 	emit SetTotal(CharacterPathList.size());
 	emit SetProgress(0);
-	int CurCharacterCount = 1;
+	int CurCharacterCount = 0;
 
 	for (auto CurCharacterPath : CharacterPathList)
 	{
+		if (_Cancelled)
+		{
+			_Error = "Operation cancelled.";
+			return false;
+		}
+
 		RawProjectFile_Character NewCharacter;
 		std::string CharacterName = CurCharacterPath.stem().u8string();
 
@@ -60,6 +70,11 @@ bool ImportWorker::LoadCharacters(const fs::path &CharactersPath)
 			std::string Extension = CurFile.path().extension().u8string();
 			if (fs::is_regular_file(CurFile) && Filename.find(u8"diag") == 0u && Extension == u8".txt")
 			{
+				/*if (Filename == u8"diag_shop")
+				{
+					_Warnings.push_back(fmt::format("{0}/{1}: File skipped (shop dialogue not yet supported)"));
+				}*/
+
 				emit SetMessage(fmt::format("{0} - Parsing {1}...", CharacterName, Filename).c_str());
 				//pegtl::file_input<> FileToParse(CurFile.path().u8string());
 				std::ifstream InFile{ CurFile.path().u8string() };
@@ -82,7 +97,7 @@ bool ImportWorker::LoadCharacters(const fs::path &CharactersPath)
 				{
 					size_t Line = FileToParse.line();
 					const char *cur = FileToParse.current();
-					_Warnings.push_back(fmt::format("Skipped file '{0}' (parser error: '{1}')", CurFile.path().filename().u8string(), Exception.what()));
+					_Warnings.push_back(fmt::format("{0}/{1}: File skipped (parser error: '{2}')", CharacterName, CurFile.path().filename().u8string(), Exception.what()));
 				}
 			}
 		}
