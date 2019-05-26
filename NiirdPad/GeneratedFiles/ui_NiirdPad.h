@@ -10,6 +10,7 @@
 #define UI_NIIRDPAD_H
 
 #include <QtCore/QVariant>
+#include <QtGui/QIcon>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QFrame>
@@ -51,6 +52,9 @@ public:
         if (NiirdPadClass->objectName().isEmpty())
             NiirdPadClass->setObjectName(QString::fromUtf8("NiirdPadClass"));
         NiirdPadClass->resize(1043, 644);
+        QIcon icon;
+        icon.addFile(QString::fromUtf8(":/NiirdPad/Resources/Icon2.ico"), QSize(), QIcon::Normal, QIcon::Off);
+        NiirdPadClass->setWindowIcon(icon);
         actionNew_Project = new QAction(NiirdPadClass);
         actionNew_Project->setObjectName(QString::fromUtf8("actionNew_Project"));
         actionNew_File = new QAction(NiirdPadClass);

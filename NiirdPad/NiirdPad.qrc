@@ -1,4 +1,6 @@
 <RCC>
-    <qresource prefix="NiirdPad">
+    <qresource prefix="/NiirdPad">
+        <file>Resources/Icon1.ico</file>
+        <file>Resources/Icon2.ico</file>
     </qresource>
 </RCC>
