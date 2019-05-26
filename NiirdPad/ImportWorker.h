@@ -6,7 +6,7 @@
 #include <QProgressBar>
 #include <QThread>
 
-#include "ProjectFile.h"
+#include "RawProjectFile.h"
 #include "TUScriptLexer.h"
 
 class ImportWorker : public QObject

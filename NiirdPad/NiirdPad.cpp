@@ -146,6 +146,8 @@ void NiirdPad::ImportConfirmationMessageBox(std::vector<std::string> Warnings, R
 		Msg.setStandardButtons({ QMessageBox::StandardButton::Ok, QMessageBox::StandardButton::Cancel });
 		if (Msg.exec() == QMessageBox::Cancel)
 			return;
+
+		// TODO: Do the RawProjectFile -> ProjectFile conversion here
 	}
 
 	// Do the actual importing here.
