@@ -77,8 +77,11 @@ bool ImportWorker::LoadCharacters(const fs::path &CharactersPath)
 						NewCharacter.AddFile(Filename, NewFile);
 					}
 				}
+				// TODO: I think exceptions are coming from [ | end_encounter] and the like, because of the formatting.
 				catch (std::exception Exception)
 				{
+					size_t Line = FileToParse.line();
+					const char *cur = FileToParse.current();
 					_Warnings.push_back(fmt::format("Skipped file '{0}' (parser error: '{1}')", CurFile.path().filename().u8string(), Exception.what()));
 				}
 			}

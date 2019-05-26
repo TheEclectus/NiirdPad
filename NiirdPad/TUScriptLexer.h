@@ -6,6 +6,8 @@
 
 #include <tao\pegtl.hpp>
 
+#include "format.h"
+
 namespace pegtl = tao::pegtl;
 
 namespace TUScript
@@ -104,39 +106,49 @@ namespace TUScript
 	struct Whitespace : pegtl::sor<pegtl::one<' ', '\t'>> {};
 	struct SomeWhitespace : pegtl::plus<Whitespace> {};
 	struct AnyWhitespace : pegtl::star<Whitespace> {};
+
+	//struct EmptyLine : pegtl::until< pegtl::at<pegtl::eol>, AnyWhitespace > {};
+	// NEXTTIME: figure this fucking shit out, whitespace followed by either eol or eof (but not consuming eof)
+	//struct EmptyLine : pegtl::seq< pegtl::star< pegtl::not_at< pegtl::eolf >, Whitespace> > {};
+	struct EmptyLine : pegtl::seq< SomeWhitespace, pegtl::eolf > {};
+
 	template<class T>
 	struct WrapWhitespace : pegtl::seq<AnyWhitespace, T, AnyWhitespace> {};
 	struct RestOfLine : pegtl::until<pegtl::at<pegtl::one<'\n'>>> {};
 	struct ReferenceChar : pegtl::sor<pegtl::alnum, pegtl::one<'_'>> {};
-	struct ScriptLineChar : pegtl::sor< pegtl::alnum, pegtl::one<'_', ' ', '/', '-'> > {};
+	struct ScriptLineChar : pegtl::sor< pegtl::alnum, pegtl::one<'_', ' ', '/', '-', '+', '.', '\''> > {};
 	struct TextChar : pegtl::not_one<'/', '\n'> {};
 	//struct VisScriptChar : pegtl::sor<pegtl::alnum, pegtl::one<'_'>, pegtl::one<'.'>> {};
 	struct OptionVisString : pegtl::plus<pegtl::sor<pegtl::alnum, pegtl::one<'_', '.'>>> {};
 
+	struct NotesLiteral : TAO_PEGTL_STRING("NOTES") {};
+	struct NoteSection : pegtl::seq<NotesLiteral, pegtl::until<NotesLiteral>> {};
+
 	struct CommentPrefix : TAO_PEGTL_STRING(">>") {};
 	struct CommentGlobalContents : RestOfLine {};
-	struct CommentGlobal : pegtl::seq<CommentPrefix, CommentGlobalContents> {};
+	struct CommentGlobal : pegtl::seq<pegtl::opt<SomeWhitespace>, CommentPrefix, CommentGlobalContents> {};
 
 	struct SeparatorPrefix : TAO_PEGTL_STRING("||") {};
 	struct CommentFragmentContents : RestOfLine {};
 	// Fragment comment (follows separator)
 	struct CommentFragment : pegtl::seq<CommentPrefix, CommentFragmentContents> {};
-	struct Separator : pegtl::seq<SeparatorPrefix, pegtl::star<CommentFragment>> {};
+	struct Separator : pegtl::seq<SeparatorPrefix, pegtl::opt<SomeWhitespace>, pegtl::star<CommentFragment>> {};
 
 	struct DialogueReferenceDeclaration : pegtl::plus<ReferenceChar> {};
-	struct DialogueChunkHeaderScriptsContent : pegtl::plus<ScriptLineChar> {};
-	struct DialogueChunkHeaderScriptsContentList : pegtl::list<DialogueChunkHeaderScriptsContent, pegtl::one<','>, pegtl::one<' '>> {};
+	struct DialogueChunkHeaderScriptsContent : pegtl::plus<ScriptLineChar> {};	// TODO: replace with an ::until, accounting for individual characters as is done now might be silly.
+	struct DialogueChunkHeaderScriptsContentList : pegtl::list<DialogueChunkHeaderScriptsContent, pegtl::one<','>, /*pegtl::one<' '>*/ SomeWhitespace> {};
 	struct DialogueChunkHeaderScripts : pegtl::seq< DialogueChunkHeaderScriptsContentList > {};
 	struct DialogueChunkHeader : pegtl::seq< pegtl::one<'{'>, DialogueReferenceDeclaration, pegtl::opt<pegtl::pad<pegtl::one<'|'>, pegtl::one<' '>>, pegtl::opt<DialogueChunkHeaderScripts>>, pegtl::one<'}'> > {};
 	struct DialogueChunkContent : RestOfLine {};
-	struct DialogueChunk : pegtl::seq< DialogueChunkHeader, WrapWhitespace<DialogueChunkContent> > {};
+	struct DialogueChunk : pegtl::seq< pegtl::opt<SomeWhitespace>, DialogueChunkHeader, WrapWhitespace<DialogueChunkContent> > {};
 
 	// A single visibility script
 	struct OptionVis : pegtl::seq< TAO_PEGTL_STRING("//"), OptionVisString > {};
-	struct OptionFooterVisList : pegtl::list< OptionVis, pegtl::one<' '> > {};
+	struct OptionFooterVisList : pegtl::list< OptionVis, /*pegtl::one<' '>*/ SomeWhitespace > {};
 	// The text following an OptionHeader, but before the visibility scripts
 	struct OptionFooterText : pegtl::until< pegtl::at< pegtl::sor< pegtl::seq<AnyWhitespace, OptionFooterVisList>, pegtl::eolf> > > {};
-	struct OptionFooter : pegtl::seq< OptionFooterText, pegtl::opt< pegtl::seq<AnyWhitespace, OptionFooterVisList> > > {};
+	// TODO: ::opt is a sequence, not necessary to be nested in a ::seq
+	struct OptionFooter : pegtl::seq< OptionFooterText, pegtl::opt< pegtl::seq<AnyWhitespace, OptionFooterVisList, pegtl::opt<SomeWhitespace> > > > {};
 
 	// A single function call in the OptionHeader
 	struct OptionScript : pegtl::plus<ScriptLineChar> {};
@@ -151,11 +163,13 @@ namespace TUScript
 
 	struct Grammar : pegtl::must< pegtl::plus< pegtl::sor<
 		CommentGlobal,
+		NoteSection,
+		NotesLiteral,
 		Separator,
 		DialogueChunk,
 		Option,
-		pegtl::eol//,
-		//pegtl::eof
+		pegtl::eol,
+		EmptyLine
 	>>,
 	pegtl::eof
 	>{};
@@ -171,6 +185,18 @@ namespace TUScript
 		template< typename Input >
 		static void apply(const Input& in, State& v)
 		{
+			//printf("Debug.\n");
+		}
+	};
+
+	template<>
+	struct Action< EmptyLine >
+	{
+		template< typename Input >
+		static void apply(const Input& in, State& v)
+		{
+			auto line = in.input().line();
+			auto str = in.string();
 			printf("Debug.\n");
 		}
 	};
@@ -313,6 +339,26 @@ namespace TUScript
 
 			v.PushPendingFragment();
 			v.bReachedEndOfFile = true;
+		}
+	};
+	
+	template<>
+	struct Action< NoteSection >
+	{
+		template< typename Input >
+		static void apply(const Input& in, State& v)
+		{
+			auto line = in.input().line();
+		}
+	};
+
+	template<>
+	struct Action< NotesLiteral >
+	{
+		template< typename Input >
+		static void apply(const Input& in, State& v)
+		{
+			auto line = in.input().line();
 		}
 	};
 }

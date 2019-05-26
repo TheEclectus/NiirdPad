@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 	pegtl::string_input<> In(SrcString, "sus");
 	TUScript::State State;
 
-	try 
+	/*try 
 	{
 		bool Result = pegtl::parse<TUScript::Grammar, TUScript::Action>(In, State);
 		if (!Result)
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 	catch (std::exception Exception)
 	{
 		printf_s("%s\n", Exception.what());
-	}
+	}*/
 
 	SDL_SetMainReady();
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
