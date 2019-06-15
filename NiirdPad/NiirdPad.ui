@@ -114,7 +114,6 @@
      <addaction name="actionEditReferenceWindowEdit"/>
     </widget>
     <addaction name="menuEdit_Reference_Window"/>
-    <addaction name="actionImportConsole"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuDebug"/>

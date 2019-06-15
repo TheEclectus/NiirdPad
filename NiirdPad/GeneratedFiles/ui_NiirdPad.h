@@ -133,7 +133,6 @@ public:
         menuFile->addAction(actionImportProject);
         menuFile->addAction(actionExport_Project);
         menuDebug->addAction(menuEdit_Reference_Window->menuAction());
-        menuDebug->addAction(actionImportConsole);
         menuEdit_Reference_Window->addAction(actionEditReferenceWindowNew);
         menuEdit_Reference_Window->addAction(actionEditReferenceWindowEdit);
 
