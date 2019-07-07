@@ -34,6 +34,9 @@
     <Filter Include="Source Files\3rd Party">
       <UniqueIdentifier>{8cf9506f-871d-4316-a211-184143a68eab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Lua Scripts">
+      <UniqueIdentifier>{22f64db3-e40a-467a-8305-22a84626b5fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NiirdPad.cpp">
@@ -140,5 +143,13 @@
     <ClInclude Include="RawProjectFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ScriptEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TeraurgeV2.lua">
+      <Filter>Source Files\Lua Scripts</Filter>
+    </None>
   </ItemGroup>
 </Project>
