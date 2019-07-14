@@ -129,7 +129,7 @@
     <ClCompile Include="QReferenceEditWindow.cpp" />
     <ClCompile Include="QSDLPanel.cpp" />
     <ClCompile Include="SDL_FontCache.c" />
-    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="ScriptEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="NiirdPad.h" />
