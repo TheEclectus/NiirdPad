@@ -663,3 +663,5 @@ function D.remove_location(args)
 
 	return true, nil, nil
 end
+
+return Funcs

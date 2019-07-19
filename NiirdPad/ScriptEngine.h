@@ -16,10 +16,23 @@
 class ScriptEngine
 {
 private:
+	std::string _path;
 	sol::state _state;
-	std::unordered_map<std::string, sol::function> _validationFunctions;
+	std::unordered_map<std::string, sol::safe_function> _validationFunctions;
 public:
 	ScriptEngine();
+
+	/// <summary>
+	/// Reloads functions from current file.
+	/// </summary>
+	/// <returns></returns>
+	bool ReloadFromFile();
+
+	/// <summary>
+	/// Loads functions from a new Lua file.
+	/// </summary>
+	/// <returns></returns>
+	bool LoadFromFile(std::string &Path);
 
 	/// <returns>
 	/// True on success, false on error; ConnectionKeys will be filled with any connection options
