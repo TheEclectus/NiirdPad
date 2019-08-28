@@ -62,6 +62,7 @@ class ConnectionTarget
 
 };
 
+// TODO: In NodeDialogue and NodeOption, store the QScriptEditWindow's ::saveState() data and reset the state of the QSplitter (save this to the project file!)
 
 class NodeDialogue
 {
@@ -70,13 +71,16 @@ private:
 	GraphicsBlock_NodeInputBox *_graphics;
 
 	// _script and _dialogue are multiline strings
-	std::string _reference, _script, _dialogue;
+	std::string _reference, _dialogue;
+	std::vector<std::string> _functionLines;
+	//std::string _reference, _script, _dialogue;
 public:
 	NodeDialogue(SDL_Renderer *Renderer, const std::string &Reference, const std::string &Script = "", const std::string &Dialogue = "");
 
-	void SetAll(const std::string &Reference, const std::string &Scripts, const std::string &Dialogue);
+	void SetAll(const std::vector<std::string> &Scripts, const std::string &Dialogue);
 	void SetReference(const std::string &Reference);
-	void SetScriptLines(const std::string &Script);
+	void SetFunctions(const std::vector<std::string> &FunctionLines);
+	// Passing a string with newline characters is ill-formed
 	void SetDialogue(const std::string &Dialogue);
 
 	GraphicsBlock_NodeInputBox *Graphics();
@@ -99,12 +103,13 @@ private:
 	//NodeDialogue *_
 
 	// All but _pointer are multiline strings
-	std::string _pointer, _visibilityScripts, _functions, _text;
+	//std::string _pointer, _visibilityScripts, _functions, _text;
+	std::string _option;
+	std::vector<std::string> _visibilityScriptLines, _functionLines;
 public:
 	NodeOption(SDL_Renderer *Renderer, const std::string &Pointer, const std::string &VisibilityScripts = "", const std::string &Functions = "", const std::string &Text = "");
 
-	void SetAll(const std::string &Pointer, const std::string &VisScripts, const std::string &Functions);
-	void SetPointer(const std::string &Pointer);
+	void SetAll(const std::vector<std::string> &VisibilityScriptLines, const std::vector<std::string> &FunctionLines, const std::string &Option);
 };
 
 class Node

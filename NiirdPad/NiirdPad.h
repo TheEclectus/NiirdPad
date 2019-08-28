@@ -5,6 +5,7 @@
 #include "ui_NiirdPad.h"
 
 #include "ImportWorker.h"
+#include "ScriptEngine.h"
 
 class NiirdPad : public QMainWindow
 {
@@ -13,6 +14,7 @@ class NiirdPad : public QMainWindow
 private:
 	Ui::NiirdPadClass ui;
 	//QMessageBox *_importMessageBox;
+	ScriptEngine _scriptEngine;
 
 	void Import();
 

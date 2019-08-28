@@ -11,6 +11,7 @@
 //#include "QImportConsole.h"
 #include "ImportWorker.h"
 #include "QReferenceEditWindow.h"
+#include "QScriptEditWindow.h"
 
 void NiirdPad::Import()
 {
@@ -154,7 +155,8 @@ void NiirdPad::ImportConfirmationMessageBox(std::vector<std::string> Warnings, R
 }
 
 NiirdPad::NiirdPad(QWidget *parent) : 
-	QMainWindow(parent)
+	QMainWindow(parent),
+	_scriptEngine()
 	//_importMessageBox(new QMessageBox(this))
 {
 	ui.setupUi(this);
@@ -185,6 +187,16 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	connect(ui.actionImportConsole, &QAction::triggered, [this]() {
 		//QImportConsole Con(this);
 		//Con.exec();
+	});
+
+	// Neither option actually has a NodeDialogue or NodeOption to edit by design. No fucking around with needing the SDL state.
+	connect(ui.actionEditScriptWindowDialogue, &QAction::triggered, [this]() {
+		QScriptEditWindow Win(this, this->_scriptEngine, true);
+		Win.exec();
+	});
+	connect(ui.actionEditScriptWindowOption, &QAction::triggered, [this]() {
+		QScriptEditWindow Win(this, this->_scriptEngine, false);
+		Win.exec();
 	});
 	
 	//ui.widget->setFocus();

@@ -16,10 +16,10 @@ private:
 	bool IsValidReference();
 
 public:
-	QReferenceEditWindow(QWidget *parent = Q_NULLPTR);
-	~QReferenceEditWindow();
-
 	// Dialog for creating a new reference. Result will be filled if the dialog is accepted.
 	static int NewReference(QWidget *Parent, std::string &Result);
 	static int EditReference(QWidget *Parent, std::string &Result);
+
+	QReferenceEditWindow(QWidget *parent = Q_NULLPTR);
+	~QReferenceEditWindow();
 };

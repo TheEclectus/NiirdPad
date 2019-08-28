@@ -113,10 +113,27 @@
      <addaction name="actionEditReferenceWindowNew"/>
      <addaction name="actionEditReferenceWindowEdit"/>
     </widget>
+    <widget class="QMenu" name="menuEditScriptWindow">
+     <property name="title">
+      <string>Edit Script Window</string>
+     </property>
+     <addaction name="actionEditScriptWindowOption"/>
+     <addaction name="actionEditScriptWindowDialogue"/>
+    </widget>
     <addaction name="menuEdit_Reference_Window"/>
+    <addaction name="menuEditScriptWindow"/>
+   </widget>
+   <widget class="QMenu" name="menuTUScript">
+    <property name="title">
+     <string>TUScript</string>
+    </property>
+    <addaction name="actionDatabase"/>
+    <addaction name="actionReload_2"/>
+    <addaction name="actionReload"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuDebug"/>
+   <addaction name="menuTUScript"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionNew_Project">
@@ -167,6 +184,41 @@
   <action name="actionImportConsole">
    <property name="text">
     <string>Import Console</string>
+   </property>
+  </action>
+  <action name="actionReference">
+   <property name="text">
+    <string>Syntax Reference</string>
+   </property>
+  </action>
+  <action name="actionDatabase">
+   <property name="text">
+    <string>View Database</string>
+   </property>
+  </action>
+  <action name="actionReload">
+   <property name="text">
+    <string>Reload From File</string>
+   </property>
+  </action>
+  <action name="actionReload_2">
+   <property name="text">
+    <string>Reload</string>
+   </property>
+  </action>
+  <action name="actionEditScriptWindow_Dialogue">
+   <property name="text">
+    <string>Dialogue Fragment</string>
+   </property>
+  </action>
+  <action name="actionEditScriptWindowDialogue">
+   <property name="text">
+    <string>Dialogue Fragment</string>
+   </property>
+  </action>
+  <action name="actionEditScriptWindowOption">
+   <property name="text">
+    <string>Option Fragment</string>
    </property>
   </action>
  </widget>

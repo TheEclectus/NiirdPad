@@ -6,10 +6,16 @@
 	- Returns a boolean for validity, and a list of connection keys (or nil for a single connection/non-index-modifying functions/failure), and an error string (nil on success)
 	- Multiple index-modifying functions in the same Option 
 	- On generation, keys will be passed back in the exact same order as they were output in
+
+	Visibility Functions
+	====================
+	- Each validation function returns a boolean for validity, and an error string (nil on success)
+	- Each takes a table that is a list of string arguments in sequential order (not including the condition name or the showif/hideif)
 --]]
 
--- TOMORROW: Ask meanie about what functions can go where
 -- TODO: Maybe just make a list of index-modifying functions? Maybe as another table?
+-- TODO: More-specific checks, like if an item or picture exists
+-- TODO: Implement below functions and add them into existing functions when ready.
 
 -- Maybe disconnects should only happen when a function is changed?
 -- Otherwise maintain connections based on position
@@ -28,6 +34,7 @@ function IsCuratedListType(type)
 		return true
 	else
 		return false
+	end
 end
 
 function IsMoneyType(type)
@@ -35,6 +42,18 @@ function IsMoneyType(type)
 		return true
 	else
 		return false
+	end
+end
+
+function IsAttribute(attr)
+	if(attr == "charisma" or
+		attr == "will" or
+		attr == "intelligence" or
+		attr == "perception" or
+		attr == "agility" or
+		attr == "strength" or
+		attr == "endurance") then return true
+	else return false end
 end
 
 -- Shamelessly copy-pasted from http://lua-users.org/wiki/SplitJoin
@@ -46,19 +65,184 @@ function SplitString(str, pat)
    local s, e, cap = str:find(fpat, 1)
    while s do
       if s ~= 1 or cap ~= "" then
-         table.insert(t,cap)
+         --table.insert(t,cap) -- Not supported
+		 t[#t+1] = cap
       end
       last_end = e+1
       s, e, cap = str:find(fpat, last_end)
    end
    if last_end <= #str then
       cap = str:sub(last_end)
-      table.insert(t, cap)
+      --table.insert(t, cap) -- Not supported
+	  t[#t+1] = cap
    end
    return t
 end
 
 local Funcs = {}
+
+-- VISIBILITY CONDITIONS =================================================================================
+
+Funcs.Visibility = {}
+
+local V = Funcs.Visibility
+function VisFail(msg)
+	return false, msg
+end
+
+
+
+-- .clicked
+function V.clicked(args)
+	if #args ~= 0 then return VisFail("Expected 0 arguments, received " .. tostring(#args) .. ".") end
+
+	return true, nil
+end
+
+-- .index_is.<index>
+function V.index_is(args)
+	if #args ~= 1 then return VisFail("Expected 1 arguments, received " .. tostring(#args) .. ".") end
+
+	return true, nil
+end
+
+-- .has_item.<item>.<?count>
+function V.has_item(args)
+	if #args < 1 or #args > 2 then return VisFail("Expected 1-2 arguments, received " .. tostring(#args) .. ".") end
+
+	if #args == 2 and tonumber(args[2]) == nil then return VisFail("Argument 2 must be a number.") end
+
+	return true, nil
+end
+
+-- .no_item.<item>
+function V.no_item(args)
+	if #args ~= 1 then return VisFail("Expected 1 argument, received " .. tostring(#args) .. ".") end
+
+	return true, nil
+end
+
+-- .has_krats.<count>
+function V.has_krats(args)
+	if #args ~= 1 then return VisFail("Expected 1 argument, received " .. tostring(#args) .. ".") end
+
+	if tonumber(args[1]) == nil then return VisFail("Argument 1 must be a number.") end
+
+	return true, nil
+end
+
+-- .has_adats.<count>
+function V.has_adats(args)
+	if #args ~= 1 then return VisFail("Expected 1 argument, received " .. tostring(#args) .. ".") end
+
+	if tonumber(args[1]) == nil then return VisFail("Argument 1 must be a number.") end
+
+	return true, nil
+end
+
+-- .no_adats.<count>
+function V.no_adats(args)
+	if #args ~= 1 then return VisFail("Expected 1 argument, received " .. tostring(#args) .. ".") end
+
+	if tonumber(args[1]) == nil then return VisFail("Argument 1 must be a number.") end
+
+	return true, nil
+end
+
+-- .has_flag.<flag>
+function V.has_flag(args)
+	if #args ~= 1 then return VisFail("Expected 1 argument, received " .. tostring(#args) .. ".") end
+
+	return true, nil
+end
+
+-- .no_flag.<flag>
+function V.no_flag(args)
+	if #args ~= 1 then return VisFail("Expected 1 argument, received " .. tostring(#args) .. ".") end
+
+	return true, nil
+end
+
+-- .has_stat.<attribute>.<num>
+function V.has_stat(args)
+	if #args ~= 2 then return VisFail("Expected 2 arguments, received " .. tostring(#args) .. ".") end
+
+	if not IsAttribute(args[1]) then return VisFail("Argument 1 must be a valid attribute.") end
+	if tonumber(args[2]) == nil or tonumber(args[2]) < 0 then return VisFail("Argument 2 must be a positive number.") end
+
+	return true, nil
+end
+
+-- .rape_filter_off
+function V.rape_filter_off(args)
+	if #args ~= 0 then return VisFail("Expected 0 arguments, received " .. tostring(#args) .. ".") end
+
+	return true, nil
+end
+
+-- .gore_filter_off
+function V.gore_filter_off(args)
+	if #args ~= 0 then return VisFail("Expected 0 arguments, received " .. tostring(#args) .. ".") end
+
+	return true, nil
+end
+
+-- .feral_filter_off
+function V.feral_filter_off(args)
+	if #args ~= 0 then return VisFail("Expected 0 arguments, received " .. tostring(#args) .. ".") end
+
+	return true, nil
+end
+
+-- .time_filter.<more than>.<less than>
+function V.time_filter(args)
+	if #args ~= 2 then return VisFail("Expected 2 arguments, received " .. tostring(#args) .. ".") end
+
+	if tonumber(args[1]) == nil or args[1] < 0 then return VisFail("Argument 1 must be a positive number.") end
+	if tonumber(args[2]) == nil or args[2] < 0 then return VisFail("Argument 2 must be a positive number.") end
+
+	if(args[1] <= args[2]) then return VisFail("Argument 1 cannot be less than or equal to argument 2.") end
+	return true, nil
+end
+
+-- .counter.<counter name>.<minimum>
+function V.counter(args)
+	if #args ~= 2 then return VisFail("Expected 2 arguments, received " .. tostring(#args) .. ".") end
+
+	if tonumber(args[2]) == nil or args[2] < 0 then return VisFail("Argument 2 must be a positive number.") end
+
+	return true, nil
+end
+
+-- .has_discovered.<location name>
+function V.has_discovered(args)
+	if #args ~= 1 then return VisFail("Expected 1 arguments, received " .. tostring(#args) .. ".") end
+
+	return true, nil
+end
+
+-- .has_a_save
+function V.has_a_save(args)
+	if #args ~= 0 then return VisFail("Expected 0 arguments, received " .. tostring(#args) .. ".") end
+
+	return true, nil
+end
+
+-- .note.<note text>
+function V.note(args)
+	if #args ~= 1 then return VisFail("Expected 1 arguments, received " .. tostring(#args) .. ".") end
+
+	return true, nil
+end
+
+-- .debug
+function V.debug(args)
+	if #args ~= 0 then return VisFail("Expected 0 arguments, received " .. tostring(#args) .. ".") end
+
+	return true, nil
+end
+
+-- DIALOGUE FUNCTIONS ====================================================================================
 
 Funcs.Dialogue = {}
 
@@ -316,7 +500,11 @@ function D.check_stat(args)
 	if #args ~= 2 then return MakeFail("Expected 2 arguments, received " .. tostring(#args) .. ".") end
 
 	local attribute = args[1]
+	print(attribute)
+	if not IsAttribute(attribute) then return MakeFail("Argument 1 must be a valid attribute.") end
+
 	local values = SplitString(args[2], "-")
+	print(#values .. " values")
 
 	local keys = {"Check Failed"}
 	for i=1,#values do
@@ -426,7 +614,7 @@ function D.give_item(args)
 	if(not ItemExists(item)) then return MakeFail("Argument 1: item '" .. item .." doesn't exist.") end
 
 	local amount = tonumber(args[2]) or 1
-	if(amount < 1) then return MakeFail("Argument 2 cannot be less than 1.")
+	if(amount < 1) then return MakeFail("Argument 2 cannot be less than 1.") end
 
 	return true, nil, nil
 end
@@ -439,7 +627,7 @@ function D.remove_item(args)
 	if(not ItemExists(item)) then return MakeFail("Argument 1: item '" .. item .." doesn't exist.") end
 
 	local amount = tonumber(args[2]) or 1
-	if(amount < 1) then return MakeFail("Argument 2 cannot be less than 1.")
+	if(amount < 1) then return MakeFail("Argument 2 cannot be less than 1.") end
 
 	return true, nil, nil
 end
@@ -513,7 +701,7 @@ function D.combat_damage(args)
 	if(target ~= "character" and target ~= "player") then return MakeFail("Argument 1 must be one of ['character', 'player'].") end
 
 	local hitpoints = tonumber(args[2])
-	if(hitpoints == nil) then return MakeFail("Argument 2 must be a number.")
+	if(hitpoints == nil) then return MakeFail("Argument 2 must be a number.") end
 
 	return true, nil, nil
 end
@@ -526,7 +714,7 @@ function D.combat_heal(args)
 	if(target ~= "character" and target ~= "player") then return MakeFail("Argument 1 must be one of ['character', 'player'].") end
 
 	local hitpoints = tonumber(args[2])
-	if(hitpoints == nil) then return MakeFail("Argument 2 must be a number.")
+	if(hitpoints == nil) then return MakeFail("Argument 2 must be a number.") end
 
 	return true, nil, nil
 end
@@ -545,7 +733,7 @@ function D.advance_time(args)
 	if #args ~= 1 then return MakeFail("Expected 1 argument, received " .. tostring(#args) .. ".") end
 
 	local time_units = tonumber(args[1]) or 1
-	if(hitpoints < 1) then return MakeFail("Argument 2 cannot be less than 1.")
+	if(hitpoints < 1) then return MakeFail("Argument 2 cannot be less than 1.") end
 
 	return true, nil, nil
 end
@@ -558,18 +746,18 @@ function D.advance_time_to(args)
 	if(time_units == nil) then
 		time_units = args[1]
 		if(time_units ~= "morning" and time_units ~= "noon" and time_units ~= "evening" and time_units ~= "night") then
-			return MakeFail("Argument 1 must be a number or one of ['morning', 'noon', 'evening', 'night'].") end
+			return MakeFail("Argument 1 must be a number or one of ['morning', 'noon', 'evening', 'night'].")
 		end
 	elseif time_units < 1 then
-		return MakeFail("Argument 1 must be greater than 0.") end
+		return MakeFail("Argument 1 must be greater than 0.")
 	end
 
 	return true, nil, nil
 end
 
--- start_music (filename, volume, fadeout secs, fadein secs)
+-- start_music (filename, ?volume, ?fadeout secs, ?fadein secs)
 function D.start_music(args)
-	if #args ~= 4 then return MakeFail("Expected 4 arguments, received " .. tostring(#args) .. ".") end
+	if #args < 1 or #args > 4 then return MakeFail("Expected 1-4 arguments, received " .. tostring(#args) .. ".") end
 
 	local filename = args[1]
 	local volume = tonumber(args[2]) or 0

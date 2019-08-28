@@ -30,8 +30,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>D:\Dropbox\Programming\Libraries\Scripting\LuaJIT-2.0.5\src;D:\Dropbox\Programming\Libraries\Scripting\sol2\single;D:\Programming Libraries\Graphics\SDL2_ttf-2.0.15\include;D:\Programming Libraries\Graphics\SDL2-2.0.9\include;D:\Dropbox\Programming\Libraries\Utilities\PEGTL\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Programming Libraries\Graphics\SDL2_ttf-2.0.15\lib\x86;D:\Programming Libraries\Graphics\SDL2-2.0.9\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Dropbox\Programming\Libraries\Scripting\LuaJIT-2.0.5\src;D:\Dropbox\Programming\Libraries\Scripting\sol2\single;D:\Programming Libraries\Graphics\SDL2_ttf-2.0.15\include;D:\Programming Libraries\Graphics\SDL2-2.0.9\include;D:\Dropbox\Programming\Libraries\Utilities\PEGTL\include;D:\Dropbox\Programming\Libraries\Utilities\strtk;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Dropbox\Programming\Libraries\Scripting\LuaJIT-2.0.5\src;D:\Programming Libraries\Graphics\SDL2_ttf-2.0.15\lib\x86;D:\Programming Libraries\Graphics\SDL2-2.0.9\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
@@ -56,7 +56,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;SDL_MAIN_HANDLED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;SDL_MAIN_HANDLED;strtk_no_tr1_or_boost;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -68,13 +68,13 @@
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;SDL2.lib;SDL2main.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;SDL2.lib;SDL2main.lib;SDL2_ttf.lib;lua51.lib;luajit.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <QtMoc>
       <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
       <IncludePath>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</IncludePath>
-      <Define>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;SDL_MAIN_HANDLED;%(PreprocessorDefinitions)</Define>
+      <Define>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;SDL_MAIN_HANDLED;strtk_no_tr1_or_boost;%(PreprocessorDefinitions)</Define>
     </QtMoc>
     <QtUic>
       <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
@@ -127,7 +127,9 @@
     <ClCompile Include="ProjectFile.cpp" />
     <ClCompile Include="QNodeView.cpp" />
     <ClCompile Include="QReferenceEditWindow.cpp" />
+    <ClCompile Include="QScriptEditWindow.cpp" />
     <ClCompile Include="QSDLPanel.cpp" />
+    <ClCompile Include="QTUScriptDatabase.cpp" />
     <ClCompile Include="SDL_FontCache.c" />
     <ClCompile Include="ScriptEngine.cpp" />
   </ItemGroup>
@@ -137,6 +139,8 @@
   <ItemGroup>
     <QtUic Include="NiirdPad.ui" />
     <QtUic Include="QReferenceEditWindow.ui" />
+    <QtUic Include="QScriptEditWindow.ui" />
+    <QtUic Include="QTUScriptDatabase.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="NiirdPad.qrc" />
@@ -159,6 +163,14 @@
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
     </QtMoc>
     <ClInclude Include="Project.h" />
+    <QtMoc Include="QScriptEditWindow.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+    </QtMoc>
+    <QtMoc Include="QTUScriptDatabase.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+    </QtMoc>
     <ClInclude Include="RawProjectFile.h" />
     <ClInclude Include="QNodeView.h" />
     <ClInclude Include="ScriptEngine.h" />

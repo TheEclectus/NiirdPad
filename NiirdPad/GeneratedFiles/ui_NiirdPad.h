@@ -37,6 +37,13 @@ public:
     QAction *actionEditReferenceWindowNew;
     QAction *actionEditReferenceWindowEdit;
     QAction *actionImportConsole;
+    QAction *actionReference;
+    QAction *actionDatabase;
+    QAction *actionReload;
+    QAction *actionReload_2;
+    QAction *actionEditScriptWindow_Dialogue;
+    QAction *actionEditScriptWindowDialogue;
+    QAction *actionEditScriptWindowOption;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
     QFrame *frame;
@@ -45,6 +52,8 @@ public:
     QMenu *menuFile;
     QMenu *menuDebug;
     QMenu *menuEdit_Reference_Window;
+    QMenu *menuEditScriptWindow;
+    QMenu *menuTUScript;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *NiirdPadClass)
@@ -75,6 +84,20 @@ public:
         actionEditReferenceWindowEdit->setObjectName(QString::fromUtf8("actionEditReferenceWindowEdit"));
         actionImportConsole = new QAction(NiirdPadClass);
         actionImportConsole->setObjectName(QString::fromUtf8("actionImportConsole"));
+        actionReference = new QAction(NiirdPadClass);
+        actionReference->setObjectName(QString::fromUtf8("actionReference"));
+        actionDatabase = new QAction(NiirdPadClass);
+        actionDatabase->setObjectName(QString::fromUtf8("actionDatabase"));
+        actionReload = new QAction(NiirdPadClass);
+        actionReload->setObjectName(QString::fromUtf8("actionReload"));
+        actionReload_2 = new QAction(NiirdPadClass);
+        actionReload_2->setObjectName(QString::fromUtf8("actionReload_2"));
+        actionEditScriptWindow_Dialogue = new QAction(NiirdPadClass);
+        actionEditScriptWindow_Dialogue->setObjectName(QString::fromUtf8("actionEditScriptWindow_Dialogue"));
+        actionEditScriptWindowDialogue = new QAction(NiirdPadClass);
+        actionEditScriptWindowDialogue->setObjectName(QString::fromUtf8("actionEditScriptWindowDialogue"));
+        actionEditScriptWindowOption = new QAction(NiirdPadClass);
+        actionEditScriptWindowOption->setObjectName(QString::fromUtf8("actionEditScriptWindowOption"));
         centralWidget = new QWidget(NiirdPadClass);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         horizontalLayout = new QHBoxLayout(centralWidget);
@@ -117,6 +140,10 @@ public:
         menuDebug->setObjectName(QString::fromUtf8("menuDebug"));
         menuEdit_Reference_Window = new QMenu(menuDebug);
         menuEdit_Reference_Window->setObjectName(QString::fromUtf8("menuEdit_Reference_Window"));
+        menuEditScriptWindow = new QMenu(menuDebug);
+        menuEditScriptWindow->setObjectName(QString::fromUtf8("menuEditScriptWindow"));
+        menuTUScript = new QMenu(menuBar);
+        menuTUScript->setObjectName(QString::fromUtf8("menuTUScript"));
         NiirdPadClass->setMenuBar(menuBar);
         statusBar = new QStatusBar(NiirdPadClass);
         statusBar->setObjectName(QString::fromUtf8("statusBar"));
@@ -124,6 +151,7 @@ public:
 
         menuBar->addAction(menuFile->menuAction());
         menuBar->addAction(menuDebug->menuAction());
+        menuBar->addAction(menuTUScript->menuAction());
         menuFile->addAction(actionNew_Project);
         menuFile->addAction(actionOpen);
         menuFile->addSeparator();
@@ -133,8 +161,14 @@ public:
         menuFile->addAction(actionImportProject);
         menuFile->addAction(actionExport_Project);
         menuDebug->addAction(menuEdit_Reference_Window->menuAction());
+        menuDebug->addAction(menuEditScriptWindow->menuAction());
         menuEdit_Reference_Window->addAction(actionEditReferenceWindowNew);
         menuEdit_Reference_Window->addAction(actionEditReferenceWindowEdit);
+        menuEditScriptWindow->addAction(actionEditScriptWindowOption);
+        menuEditScriptWindow->addAction(actionEditScriptWindowDialogue);
+        menuTUScript->addAction(actionDatabase);
+        menuTUScript->addAction(actionReload_2);
+        menuTUScript->addAction(actionReload);
 
         retranslateUi(NiirdPadClass);
 
@@ -154,9 +188,18 @@ public:
         actionEditReferenceWindowNew->setText(QApplication::translate("NiirdPadClass", "New", nullptr));
         actionEditReferenceWindowEdit->setText(QApplication::translate("NiirdPadClass", "Edit", nullptr));
         actionImportConsole->setText(QApplication::translate("NiirdPadClass", "Import Console", nullptr));
+        actionReference->setText(QApplication::translate("NiirdPadClass", "Syntax Reference", nullptr));
+        actionDatabase->setText(QApplication::translate("NiirdPadClass", "View Database", nullptr));
+        actionReload->setText(QApplication::translate("NiirdPadClass", "Reload From File", nullptr));
+        actionReload_2->setText(QApplication::translate("NiirdPadClass", "Reload", nullptr));
+        actionEditScriptWindow_Dialogue->setText(QApplication::translate("NiirdPadClass", "Dialogue Fragment", nullptr));
+        actionEditScriptWindowDialogue->setText(QApplication::translate("NiirdPadClass", "Dialogue Fragment", nullptr));
+        actionEditScriptWindowOption->setText(QApplication::translate("NiirdPadClass", "Option Fragment", nullptr));
         menuFile->setTitle(QApplication::translate("NiirdPadClass", "File", nullptr));
         menuDebug->setTitle(QApplication::translate("NiirdPadClass", "Debug", nullptr));
         menuEdit_Reference_Window->setTitle(QApplication::translate("NiirdPadClass", "Edit Reference Window", nullptr));
+        menuEditScriptWindow->setTitle(QApplication::translate("NiirdPadClass", "Edit Script Window", nullptr));
+        menuTUScript->setTitle(QApplication::translate("NiirdPadClass", "TUScript", nullptr));
     } // retranslateUi
 
 };
