@@ -47,7 +47,6 @@ class Connection
 {
 	friend class ConnectionManager;
 private:
-	bool _bIsInfinite;	// If true, use _index, else use _key.
 	std::string _key;	// <- the key that 'this' will be stored under
 	size_t _index;		// <- the index of the infinite connection
 
@@ -71,13 +70,13 @@ private:
 	GraphicsBlock_NodeInputBox *_graphics;
 
 	// _script and _dialogue are multiline strings
-	std::string _reference, _dialogue;
+	std::string _reference, _dialogue;	// Dialogue text has '\n' replaced with '<br>'s
 	std::vector<std::string> _functionLines;
 	//std::string _reference, _script, _dialogue;
 public:
-	NodeDialogue(SDL_Renderer *Renderer, const std::string &Reference, const std::string &Script = "", const std::string &Dialogue = "");
+	NodeDialogue(GraphicsBlock_NodeInputBox *Graphics, const std::string &Reference, const std::vector<std::string> &FunctionLines = {}, const std::string &Dialogue = "");
 
-	void SetAll(const std::vector<std::string> &Scripts, const std::string &Dialogue);
+	void SetAll(const std::vector<std::string> &FunctionLines, const std::string &Dialogue);
 	void SetReference(const std::string &Reference);
 	void SetFunctions(const std::vector<std::string> &FunctionLines);
 	// Passing a string with newline characters is ill-formed

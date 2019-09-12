@@ -64,6 +64,9 @@ int QScriptEditWindow::EditDialogueFragment(QWidget *Parent, ScriptEngine &Engin
 		strtk::remove_empty_strings(ScriptLines);
 
 		std::string DialogueText = ScriptEdit.ui.txtText->toPlainText().toStdString();
+
+		Dialogue.SetAll(ScriptLines, DialogueText);
+
 		// TODO: remove trailing newlines?
 		size_t Pos = DialogueText.find('\n');
 		while (Pos != std::string::npos)
@@ -71,8 +74,6 @@ int QScriptEditWindow::EditDialogueFragment(QWidget *Parent, ScriptEngine &Engin
 			DialogueText.replace(Pos, 1, "<br>");
 			Pos = DialogueText.find('\n');
 		}
-
-		Dialogue.SetAll(ScriptLines, DialogueText);
 	}
 
 	return Res;
