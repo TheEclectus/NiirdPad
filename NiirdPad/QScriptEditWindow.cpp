@@ -56,16 +56,16 @@ int QScriptEditWindow::EditDialogueFragment(QWidget *Parent, ScriptEngine &Engin
 	if (Res == QDialog::Accepted)
 	{
 		QTextDocument &QtDoc = *ScriptEdit.ui.txtScripts->document();
-		std::vector<std::string> ScriptLines = {};
+		std::vector<std::string> FunctionLines = {};
 		for (QTextBlock CurLine = QtDoc.begin(); CurLine != QtDoc.end(); CurLine = CurLine.next())
 		{
-			ScriptLines.push_back(CurLine.text().toStdString());
+			FunctionLines.push_back(CurLine.text().toStdString());
 		}
-		strtk::remove_empty_strings(ScriptLines);
+		strtk::remove_empty_strings(FunctionLines);
 
 		std::string DialogueText = ScriptEdit.ui.txtText->toPlainText().toStdString();
 
-		Dialogue.SetAll(ScriptLines, DialogueText);
+		Dialogue.SetAll(FunctionLines, DialogueText);
 
 		// TODO: remove trailing newlines?
 		size_t Pos = DialogueText.find('\n');
