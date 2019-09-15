@@ -21,7 +21,11 @@ AGraphicsBlock::~AGraphicsBlock()
 			delete Child;
 		}
 		_ChildBlocks.clear();
-		
+	}
+
+	if (_ParentBlock)
+	{
+		_ParentBlock->
 	}
 }
 
@@ -40,6 +44,15 @@ void AGraphicsBlock::AddChild(AGraphicsBlock *Child)
 {
 	Child->_ParentBlock = this;
 	_ChildBlocks.push_back(Child);
+}
+
+void AGraphicsBlock::RemoveChild(AGraphicsBlock *Child)
+{
+	auto Res = std::find(this->_ChildBlocks.begin(), this->_ChildBlocks.end(), Child);
+	if (Res != this->_ChildBlocks.end())
+	{
+		this->_ChildBlocks.erase(Res);
+	}
 }
 
 void AGraphicsBlock::Dirty()

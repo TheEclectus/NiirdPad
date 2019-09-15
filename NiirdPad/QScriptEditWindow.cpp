@@ -94,9 +94,9 @@ int QScriptEditWindow::EditOptionFragment(QWidget *Parent, ScriptEngine &Engine,
 		}
 		strtk::remove_empty_strings(VisLines);
 
-		QTextDocument &QtDoc = *ScriptEdit.ui.txtScripts->document();
+		QTextDocument &QtDocScripts = *ScriptEdit.ui.txtScripts->document();
 		std::vector<std::string> ScriptLines = {};
-		for (QTextBlock CurLine = QtDoc.begin(); CurLine != QtDoc.end(); CurLine = CurLine.next())
+		for (QTextBlock CurLine = QtDocScripts.begin(); CurLine != QtDocScripts.end(); CurLine = CurLine.next())
 		{
 			ScriptLines.push_back(CurLine.text().toStdString());
 		}

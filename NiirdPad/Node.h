@@ -63,6 +63,7 @@ class ConnectionTarget
 
 // TODO: In NodeDialogue and NodeOption, store the QScriptEditWindow's ::saveState() data and reset the state of the QSplitter (save this to the project file!)
 
+// TODO: SetAll() must currently be called before _graphics is updated.
 class NodeDialogue
 {
 private:
@@ -86,6 +87,7 @@ public:
 	ConnectionTarget &ConnTarget();
 };
 
+// TODO: SetAll() must currently be called before _graphics is updated.
 class NodeOption
 {
 private:
@@ -97,7 +99,6 @@ private:
 		TODO: Connection types:
 		- Direct (one-to-one)
 		- Named (one-to-many, named)
-		- Infinite (one-to-many, unnamed)
 	*/
 	//NodeDialogue *_
 
@@ -106,9 +107,14 @@ private:
 	std::string _option;
 	std::vector<std::string> _visibilityScriptLines, _functionLines;
 public:
-	NodeOption(SDL_Renderer *Renderer, const std::string &Pointer, const std::string &VisibilityScripts = "", const std::string &Functions = "", const std::string &Text = "");
+	NodeOption(GraphicsBlock_NodeOutputBox *Graphics, const std::vector<std::string> &VisibilityScripts = {}, const const std::vector<std::string> &Functions = {}, const std::string &Text = "");
 
 	void SetAll(const std::vector<std::string> &VisibilityScriptLines, const std::vector<std::string> &FunctionLines, const std::string &Option);
+	void SetVisibilityLines(const std::vector<std::string> &VisibilityLines);
+	void SetFunctions(const std::vector<std::string> &FunctionLines);
+	void SetOption(const std::string &Dialogue);
+
+	GraphicsBlock_NodeOutputBox *Graphics();
 };
 
 class Node

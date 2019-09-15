@@ -73,6 +73,13 @@ public:
 	void AddChild(AGraphicsBlock *Child);
 
 	/// <summary>
+	/// Removes a child AGraphicsBlock. Will do nothing if the pointer is not a child. Does
+	/// NOT delete the child.
+	/// </summary>
+	/// <param name="Child">The AGraphicsBlock to remove.</param>
+	void RemoveChild(AGraphicsBlock *Child);
+
+	/// <summary>
 	/// Signals that the GraphicsBlock must have CalculateSize() called again. Will call
 	/// Dirty() of _ParentBlock unless it is nullptr, at which point CalculateSize() will
 	/// be called. Top-most block will not have CalculateSize() called until _bIsConstructing
@@ -269,6 +276,8 @@ public:
 	virtual void CalculateSize(int MaxWidthHint = -1, int MaxHeightHint = -1) override;
 	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
 
+	// TODO: function to return the NodeHeader
+	GraphicsBlock_NodeHeader *Header();
 	GraphicsBlock_NodeInputBoxSection *InputSection();
 	GraphicsBlock_NodeOutputBoxSection *OutputSection();
 };

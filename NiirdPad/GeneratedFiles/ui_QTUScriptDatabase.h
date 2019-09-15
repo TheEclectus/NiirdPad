@@ -36,7 +36,7 @@ public:
     {
         if (QTUScriptDatabase->objectName().isEmpty())
             QTUScriptDatabase->setObjectName(QString::fromUtf8("QTUScriptDatabase"));
-        QTUScriptDatabase->resize(895, 649);
+        QTUScriptDatabase->resize(895, 642);
         verticalLayout = new QVBoxLayout(QTUScriptDatabase);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
