@@ -22,6 +22,8 @@ struct QNodeViewInputState
 	SDL_Point Position = { -1, -1 };
 	SDL_Point DownPosition[3] = { { -1, -1 }, { -1, -1 }, { -1, -1 } };
 
+	std::vector<Node*> SelectedNodes;
+
 	/// <summary>
 	/// Resets all applicable input state information:
 	/// <para>- Currently selected nodes</para>
