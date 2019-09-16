@@ -130,7 +130,7 @@ public:
 
 	GraphicsBlock_Node &Graphics();
 
-	NodeDialogue *AddDialogue();
+	NodeDialogue *AddDialogue(const std::string &Reference);
 	void RemoveDialogue(NodeDialogue *Dlg);
 	const std::vector<const NodeDialogue *const> &Dialogues() const;
 };

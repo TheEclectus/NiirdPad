@@ -1,8 +1,12 @@
 #pragma once
 
-#include "QSDLPanel.h"
+#include <queue>
 
 #include "FontStore.h"
+#include "QSDLPanel.h"
+
+// Node.h
+class Node;
 
 struct QNodeViewCamera
 {
@@ -32,6 +36,8 @@ protected:
 	QNodeViewCamera _Camera;
 	QNodeViewInputState _InputState;
 	FontStore _FontStore;
+
+	std::queue<Node*> _Nodes;
 
 	virtual void Input() override;
 	virtual void Logic() override;

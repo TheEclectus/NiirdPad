@@ -25,7 +25,7 @@ AGraphicsBlock::~AGraphicsBlock()
 
 	if (_ParentBlock)
 	{
-		_ParentBlock->
+		//_ParentBlock->
 	}
 }
 
@@ -322,6 +322,16 @@ GraphicsBlock_NodeInputBox *GraphicsBlock_NodeInputBoxSection::AddInputBox()
 	return NewBox;
 }
 
+void GraphicsBlock_NodeInputBoxSection::RemoveInputBox(GraphicsBlock_NodeInputBox *Target)
+{
+	auto Res = std::find(_InputBoxes.begin(), _InputBoxes.end(), Target);
+	if (Res != _InputBoxes.end())
+	{
+		RemoveChild(Target);
+		_InputBoxes.erase(Res);
+	}
+}
+
 void GraphicsBlock_NodeInputBoxSection::CalculateSize(int MaxWidthHint, int MaxHeightHint)
 {
 	SDL_Rect Size = { 0, 0, 0, 0 };
@@ -521,18 +531,18 @@ GraphicsBlock_Node::GraphicsBlock_Node(SDL_Renderer *AssociatedRenderer, FC_Font
 	_Inputs = new GraphicsBlock_NodeInputBoxSection(AssociatedRenderer, HeaderFont, HeaderFont);
 	AddChild(_Inputs);
 	
-	auto NewInputBox = _Inputs->AddInputBox();
+	/*auto NewInputBox = _Inputs->AddInputBox();
 	NewInputBox->SetIndex("start");
 	NewInputBox->SetScript("no script, just testing.");
-	NewInputBox->SetDialogue("There never was a story of more woe, than that of Juliet, and her Romeo.");
+	NewInputBox->SetDialogue("There never was a story of more woe, than that of Juliet, and her Romeo.");*/
 
 	_Outputs = new GraphicsBlock_NodeOutputBoxSection(AssociatedRenderer, HeaderFont, HeaderFont, HeaderFont);
 	AddChild(_Outputs);
 
-	auto NewOutputBox = _Outputs->AddOutputBox();
+	/*auto NewOutputBox = _Outputs->AddOutputBox();
 	NewOutputBox->SetVisibility("//showif.has_flag.eated_the_cheese");
 	NewOutputBox->SetScript("dummy test script");
-	NewOutputBox->SetOption("I want to eated the other cheese owo");
+	NewOutputBox->SetOption("I want to eated the other cheese owo");*/
 
 	_bIsConstructing = false;
 	CalculateSize();

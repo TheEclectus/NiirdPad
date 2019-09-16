@@ -126,7 +126,23 @@ GraphicsBlock_Node &Node::Graphics()
 	return *_graphics;
 }
 
-NodeDialogue *Node::AddDialogue()
+NodeDialogue *Node::AddDialogue(const std::string &Reference)
 {
-	
+	GraphicsBlock_NodeInputBox *NewInputBoxGraphics = _graphics->InputSection()->AddInputBox();
+	NodeDialogue *NewDialogue = new NodeDialogue(NewInputBoxGraphics, "", {}, "");
+
+	_dialogues.push_back(NewDialogue);
+
+	return NewDialogue;
+}
+
+void Node::RemoveDialogue(NodeDialogue *Dlg)
+{
+	auto Res = std::find(_dialogues.begin(), _dialogues.end(), Dlg);
+	if (Res != _dialogues.end())
+	{
+		_dialogues.erase(Res);
+	}
+
+	_graphics->InputSection()->RemoveInputBox(Dlg->Graphics());
 }

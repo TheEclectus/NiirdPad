@@ -1,5 +1,7 @@
 #include "QNodeView.h"
 
+#include "Node.h"
+
 void QNodeView::Input()
 {
 	// TODO: Consider pros and cons of flushing event cache, sans user events.
@@ -39,7 +41,6 @@ void QNodeView::Input()
 				_Camera.ViewBox.x -= Delta.x;
 				_Camera.ViewBox.y -= Delta.y;
 			}
-			
 		}
 
 		else if (Event.type == SDL_EventType::SDL_WINDOWEVENT)
