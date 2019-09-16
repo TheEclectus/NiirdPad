@@ -1,6 +1,6 @@
 #pragma once
 
-#include <queue>
+#include <vector>
 
 #include "FontStore.h"
 #include "QSDLPanel.h"
@@ -37,7 +37,7 @@ protected:
 	QNodeViewInputState _InputState;
 	FontStore _FontStore;
 
-	std::queue<Node*> _Nodes;
+	std::vector<Node*> _Nodes;	// Order changes frequently, most-recently-clicked Node at front.
 
 	virtual void Input() override;
 	virtual void Logic() override;

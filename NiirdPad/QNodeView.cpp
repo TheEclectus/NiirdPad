@@ -131,26 +131,22 @@ void QNodeView::RenderForeground()
 
 	SDL_Renderer *Renderer = SDLRenderer();
 
-	static GraphicsBlock_Node *NodeBlock = nullptr;
-	if (NodeBlock == nullptr)
+	// TODO: occlusion culling
+	for (auto Node : _Nodes)
 	{
-		NodeBlock = new GraphicsBlock_Node(Renderer, _FontStore.GetFont(FontStore::Role::NodeComment));
-		NodeBlock->CalculateSize();
+		SDL_Point BlockRenderPos = { 0, 0 };
+		BlockRenderPos.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x;
+		BlockRenderPos.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y;
+
+		Node->Graphics().Render(Renderer, BlockRenderPos);
 	}
-
-	// HACK: Code to render the demonstration GraphicsBlock_Node.
-	SDL_Point BlockRenderPos = { 0, 0 };
-	BlockRenderPos.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x;
-	BlockRenderPos.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y;
-
-	NodeBlock->Render(Renderer, BlockRenderPos);
 }
 
 QNodeView::QNodeView(QWidget *Parent) :
 	QSDLPanel(Parent),
 	_FontStore(this->SDLRenderer())
 {
-
+	_Nodes.push_back(new Node(*this));
 }
 
 const FontStore &QNodeView::FontStore() const
