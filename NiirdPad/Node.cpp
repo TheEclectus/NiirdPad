@@ -130,6 +130,7 @@ NodeDialogue *Node::AddDialogue(const std::string &Reference)
 {
 	GraphicsBlock_NodeInputBox *NewInputBoxGraphics = _graphics->InputSection()->AddInputBox();
 	NodeDialogue *NewDialogue = new NodeDialogue(NewInputBoxGraphics, "", {}, "");
+	NewDialogue->SetReference(Reference);
 
 	_dialogues.push_back(NewDialogue);
 
@@ -145,4 +146,14 @@ void Node::RemoveDialogue(NodeDialogue *Dlg)
 	}
 
 	_graphics->InputSection()->RemoveInputBox(Dlg->Graphics());
+}
+
+NodeOption *Node::AddOption()
+{
+	GraphicsBlock_NodeOutputBox *NewOutputBoxGraphics = _graphics->OutputSection()->AddOutputBox();
+	NodeOption *NewOption = new NodeOption(NewOutputBoxGraphics);
+
+	_options.push_back(NewOption);
+
+	return NewOption;
 }

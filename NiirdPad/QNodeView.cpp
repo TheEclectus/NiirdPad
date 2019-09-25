@@ -215,7 +215,15 @@ QNodeView::QNodeView(QWidget *Parent) :
 	QSDLPanel(Parent),
 	_FontStore(this->SDLRenderer())
 {
-	_Nodes.push_back(new Node(*this));
+	auto NewNode = new Node(*this);
+	auto NN_Dlg = NewNode->AddDialogue("blep");
+	NN_Dlg->SetDialogue("Test!");
+	NN_Dlg->SetFunctions({ "give_money \"krats\" 20" });
+
+	auto NN_Opt = NewNode->AddOption();
+	NN_Opt->SetAll({ "//showif.has_krats.20", "//hideif.has_krats.50", "//hideif.has_adats.50" }, { "take_money krats 20" }, "BEEEEEEEEEP ( ' v ')");
+
+	_Nodes.push_back(NewNode);
 }
 
 const FontStore &QNodeView::FontStore() const

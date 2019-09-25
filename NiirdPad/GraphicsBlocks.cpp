@@ -234,6 +234,7 @@ GraphicsBlock_NodeInputBox::GraphicsBlock_NodeInputBox(SDL_Renderer *AssociatedR
 	AddChild(_DialogueLabel);
 }
 
+// TODO: don't add _ScriptLabel height if it's empty.
 void GraphicsBlock_NodeInputBox::CalculateSize(int MaxWidthHint, int MaxHeightHint)
 {
 	AGraphicsBlock::CalculateSize(MaxWidthHint, MaxHeightHint);
@@ -564,7 +565,7 @@ void GraphicsBlock_Node::CalculateSize(int MaxWidthHint, int MaxHeightHint)
 	_Outputs->CalculateSize();
 	_Outputs->SetPosition({ 0, Size.h });
 	SDL_Rect OutputSectionSize = _Outputs->GetBounds();
-	Size.h += InputSectionSize.h;
+	Size.h += OutputSectionSize.h;
 
 	Size.w = std::max({ HeaderSize.w, InputSectionSize.w, OutputSectionSize.w });
 

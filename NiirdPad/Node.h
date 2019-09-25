@@ -123,6 +123,7 @@ private:
 	// Owning
 	GraphicsBlock_Node *_graphics;
 	std::vector<NodeDialogue*> _dialogues;
+	std::vector<NodeOption*> _options;
 
 public:
 	Node(QNodeView &NodeView);
@@ -133,4 +134,6 @@ public:
 	NodeDialogue *AddDialogue(const std::string &Reference);
 	void RemoveDialogue(NodeDialogue *Dlg);
 	const std::vector<const NodeDialogue *const> &Dialogues() const;
+
+	NodeOption *AddOption();
 };
