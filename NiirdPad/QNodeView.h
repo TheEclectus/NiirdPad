@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include <QMenu>
+
 #include "FontStore.h"
 #include "QSDLPanel.h"
 

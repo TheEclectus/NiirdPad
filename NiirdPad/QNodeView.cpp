@@ -1,7 +1,5 @@
 #include "QNodeView.h"
 
-#include <QMenu>
-
 #include "GraphicsBlocks.h"
 #include "Node.h"
 
@@ -117,7 +115,8 @@ void QNodeView::Input()
 						NodeOption *Opt = nullptr;
 						if (CurNode->FeatureAtPosition(PointInsideNode, &Dlg, &Opt))
 						{
-							// TODO: scrolling lags if immediately done while menu is open
+							// TODO: scrolling lags if immediately done while menu is open (consider tying refresh rate to Qt's Dirty()ing)
+							// TODO: scrolling while menus is open will cause the origin to be where the menu previously was -- implement focusing for QSDLPanel so IO events will only fire if the widget is in focus
 							QMenu Context("Context Menu", this);
 							if (Dlg)
 							{
