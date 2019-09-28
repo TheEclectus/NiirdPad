@@ -1,5 +1,7 @@
 #include "QNodeView.h"
 
+#include <QMenu>
+
 #include "GraphicsBlocks.h"
 #include "Node.h"
 
@@ -59,17 +61,6 @@ void QNodeView::Input()
 						bNodeFound = true;
 						break;
 					}
-					else if (Event.user.code == Qt::MouseButton::RightButton)
-					{
-						SDL_Point PointInsideNode = { NewDownPos.x - NodeBounds.x, NewDownPos.y - NodeBounds.y };
-						
-						NodeDialogue *Dlg = nullptr;
-						NodeOption *Opt = nullptr;
-						if (CurNode->FeatureAtPosition(PointInsideNode, &Dlg, &Opt))
-						{
-
-						}
-					}
 				}
 			}
 
@@ -95,6 +86,52 @@ void QNodeView::Input()
 			else if (Event.user.code == Qt::MouseButton::MiddleButton)
 				_InputState.DownPosition[2] = { -1, -1 };
 			//printf("MouseUp (%d, %d)\n", reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2));
+
+			SDL_Point ReleasePos = { reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2) };
+
+			//printf("MouseDown (%d, %d)\n", reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2));
+
+			/*
+				===================
+				NODE CLICK SCANNING
+				===================
+			*/
+			auto KeyboardMods = SDL_GetModState();
+			bool bNodeFound = false;
+			// TODO: Only look through the list of VISIBILE nodes (see TODO about occlusion culling)
+			for (auto CurNode : _Nodes)
+			{
+				auto NodePos = CurNode->Position();
+				auto NodeBounds = CurNode->Graphics().GetBounds();
+				NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
+				NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
+
+				// A Node is found
+				if (SDL_PointInRect(&ReleasePos, &NodeBounds))
+				{
+					if (Event.user.code == Qt::MouseButton::RightButton)
+					{
+						SDL_Point PointInsideNode = { ReleasePos.x - NodeBounds.x, ReleasePos.y - NodeBounds.y };
+
+						NodeDialogue *Dlg = nullptr;
+						NodeOption *Opt = nullptr;
+						if (CurNode->FeatureAtPosition(PointInsideNode, &Dlg, &Opt))
+						{
+							// TODO: scrolling lags if immediately done while menu is open
+							QMenu Context("Context Menu", this);
+							if (Dlg)
+							{
+								Context.addAction("Edit Dialogue");
+								Context.addAction("Delete Dialogue");
+
+								Context.exec(mapToGlobal(QPoint(ReleasePos.x, ReleasePos.y)));
+							}
+						}
+
+						break;
+					}
+				}
+			}
 		}
 		else if (Event.type == EVENT_MOUSEMOVE)
 		{
