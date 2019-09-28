@@ -176,6 +176,10 @@ bool Node::FeatureAtPosition(SDL_Point MousePos, NodeDialogue **const Dlg, NodeO
 		for (auto CurrentDialogue : _dialogues)
 		{
 			auto Dialogue = CurrentDialogue->Graphics()->GetBounds();
+			auto DlgOffset = CurrentDialogue->Graphics()->GetTotalOffset();
+
+			Dialogue.x = DlgOffset.x;
+			Dialogue.y = DlgOffset.y;
 
 			if (SDL_PointInRect(&MousePos, &Dialogue))
 			{

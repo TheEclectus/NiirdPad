@@ -40,6 +40,17 @@ const SDL_Rect &AGraphicsBlock::GetBounds() const
 	return _CalculatedBounds;
 }
 
+const SDL_Point AGraphicsBlock::GetTotalOffset() const
+{
+	if (_ParentBlock == nullptr)
+		return { 0, 0 };
+	else
+	{
+		auto ParentOffset = _ParentBlock->GetTotalOffset();
+		return { ParentOffset.x + this->_CalculatedBounds.x, ParentOffset.y + this->_CalculatedBounds.y };
+	}
+}
+
 void AGraphicsBlock::AddChild(AGraphicsBlock *Child)
 {
 	Child->_ParentBlock = this;

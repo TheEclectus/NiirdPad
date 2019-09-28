@@ -67,6 +67,12 @@ public:
 	const SDL_Rect &GetBounds() const;
 
 	/// <summary>
+	/// Walks up the Parent tree to find the total offset of the GraphicsBlock.
+	/// </summary>
+	/// <returns></returns>
+	const SDL_Point GetTotalOffset() const;
+
+	/// <summary>
 	/// Adds an AGraphicsBlock as a child, ensuring it will be properly assigned this as its parent and cleaned up on destruction.
 	/// </summary>
 	/// <param name="Child">The AGraphicsBlock to add as a child.</param>
