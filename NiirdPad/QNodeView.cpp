@@ -1,8 +1,7 @@
 #include "QNodeView.h"
 
-#include "Node.h"
-
 #include "GraphicsBlocks.h"
+#include "Node.h"
 
 void QNodeView::Input()
 {
@@ -31,11 +30,12 @@ void QNodeView::Input()
 			auto KeyboardMods = SDL_GetModState();
 			bool bNodeFound = false;
 			// TODO: Only look through the list of VISIBILE nodes (see TODO about occlusion culling)
-			for (auto Node : _Nodes)
+			for (auto CurNode : _Nodes)
 			{
-				auto NodeBounds = Node->Graphics().GetBounds();
-				NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x;
-				NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y;
+				auto NodePos = CurNode->Position();
+				auto NodeBounds = CurNode->Graphics().GetBounds();
+				NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
+				NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
 
 				// A Node is found
 				if (SDL_PointInRect(&NewDownPos, &NodeBounds))
@@ -49,15 +49,26 @@ void QNodeView::Input()
 							SelNodes.clear();
 						}
 
-						auto FindRes = std::find(SelNodes.begin(), SelNodes.end(), Node);
+						auto FindRes = std::find(SelNodes.begin(), SelNodes.end(), CurNode);
 						// If it's not already selected
 						if (FindRes == SelNodes.end())
 						{
-							SelNodes.push_back(Node);
+							SelNodes.push_back(CurNode);
 						}
 
 						bNodeFound = true;
 						break;
+					}
+					else if (Event.user.code == Qt::MouseButton::RightButton)
+					{
+						SDL_Point PointInsideNode = { NewDownPos.x - NodeBounds.x, NewDownPos.y - NodeBounds.y };
+						
+						NodeDialogue *Dlg = nullptr;
+						NodeOption *Opt = nullptr;
+						if (CurNode->FeatureAtPosition(PointInsideNode, &Dlg, &Opt))
+						{
+
+						}
 					}
 				}
 			}
@@ -141,6 +152,9 @@ void QNodeView::Render()
 void QNodeView::mousePressEvent(QMouseEvent *event)
 {
 	QSDLPanel::mousePressEvent(event);
+
+	//event->
+	// NEXTTIME: Context menu for Nodes!
 }
 
 void QNodeView::mouseReleaseEvent(QMouseEvent *event)
@@ -189,16 +203,18 @@ void QNodeView::RenderForeground()
 	// TODO: occlusion culling (list of visible nodes, updated on camera movement)
 	for (auto Node : _Nodes)
 	{
+		SDL_Point NodePos = Node->Position();
 		SDL_Point BlockRenderPos = { 0, 0 };
-		BlockRenderPos.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x;
-		BlockRenderPos.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y;
+		BlockRenderPos.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
+		BlockRenderPos.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
 
 		// TODO: Only check the visibile
 		if (std::find(_InputState.SelectedNodes.begin(), _InputState.SelectedNodes.end(), Node) != _InputState.SelectedNodes.end())
 		{
+			SDL_Point NodePos = Node->Position();
 			SDL_Rect HighlightRect = Node->Graphics().GetBounds();
-			HighlightRect.x = ((_Camera.ViewBox.w / 2) - _Camera.ViewBox.x) - 2;
-			HighlightRect.y = ((_Camera.ViewBox.h / 2) - _Camera.ViewBox.y) - 2;
+			HighlightRect.x = ((_Camera.ViewBox.w / 2) - _Camera.ViewBox.x) - 2 + NodePos.x;
+			HighlightRect.y = ((_Camera.ViewBox.h / 2) - _Camera.ViewBox.y) - 2 + NodePos.y;
 			HighlightRect.w += 4;
 			HighlightRect.h += 4;
 
@@ -220,8 +236,8 @@ QNodeView::QNodeView(QWidget *Parent) :
 	NN_Dlg->SetDialogue("Test!");
 	NN_Dlg->SetFunctions({ "give_money \"krats\" 20" });
 
-	auto NN_Opt = NewNode->AddOption();
-	NN_Opt->SetAll({ "//showif.has_krats.20", "//hideif.has_krats.50", "//hideif.has_adats.50" }, { "take_money krats 20" }, "BEEEEEEEEEP ( ' v ')");
+	//auto NN_Opt = NewNode->AddOption();
+	//NN_Opt->SetAll({ "//showif.has_krats.20", "//hideif.has_krats.50", "//hideif.has_adats.50" }, { "take_money krats 20" }, "BEEEEEEEEEP ( ' v ')");
 
 	_Nodes.push_back(NewNode);
 }

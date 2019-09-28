@@ -124,16 +124,21 @@ private:
 	GraphicsBlock_Node *_graphics;
 	std::vector<NodeDialogue*> _dialogues;
 	std::vector<NodeOption*> _options;
+	SDL_Point _position;
 
 public:
-	Node(QNodeView &NodeView);
+	Node(QNodeView &NodeView, SDL_Point Position = { 0,0 });
 	~Node();
 
 	GraphicsBlock_Node &Graphics();
+	const SDL_Point &Position();
 
 	NodeDialogue *AddDialogue(const std::string &Reference);
 	void RemoveDialogue(NodeDialogue *Dlg);
 	const std::vector<const NodeDialogue *const> &Dialogues() const;
 
 	NodeOption *AddOption();
+
+	// MousePos must be adjusted for position. [0,0] is top-left
+	bool FeatureAtPosition(SDL_Point MousePos, NodeDialogue **const Dlg, NodeOption **const Opt);
 };

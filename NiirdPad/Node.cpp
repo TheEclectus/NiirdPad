@@ -110,8 +110,9 @@ GraphicsBlock_NodeOutputBox *NodeOption::Graphics()
 
 
 
-Node::Node(QNodeView &NodeView) :
-	_graphics(new GraphicsBlock_Node(NodeView.SDLRenderer(), NodeView.FontStore().GetFont(FontStore::Role::NodeComment)))
+Node::Node(QNodeView &NodeView, SDL_Point Position) :
+	_graphics(new GraphicsBlock_Node(NodeView.SDLRenderer(), NodeView.FontStore().GetFont(FontStore::Role::NodeComment))),
+	_position(Position)
 {
 	
 }
@@ -124,6 +125,11 @@ Node::~Node()
 GraphicsBlock_Node &Node::Graphics()
 {
 	return *_graphics;
+}
+
+const SDL_Point &Node::Position()
+{
+	return _position;
 }
 
 NodeDialogue *Node::AddDialogue(const std::string &Reference)
@@ -156,4 +162,35 @@ NodeOption *Node::AddOption()
 	_options.push_back(NewOption);
 
 	return NewOption;
+}
+
+bool Node::FeatureAtPosition(SDL_Point MousePos, NodeDialogue **const Dlg, NodeOption **const Opt)
+{
+	//auto Header = _graphics->Header();
+	auto Inputs = _graphics->InputSection();
+	auto Outputs = _graphics->OutputSection();
+
+	// Input section
+	if (SDL_PointInRect(&MousePos, &Inputs->GetBounds()))
+	{
+		for (auto CurrentDialogue : _dialogues)
+		{
+			auto Dialogue = CurrentDialogue->Graphics()->GetBounds();
+
+			if (SDL_PointInRect(&MousePos, &Dialogue))
+			{
+				*Dlg = CurrentDialogue;
+				return true;
+			}
+		}
+	}
+	// Output section
+	else if (SDL_PointInRect(&MousePos, &Outputs->GetBounds()))
+	{
+
+	}
+
+	// TODO: implement header checking, and be able to return it as a parameter
+
+	return false;
 }
