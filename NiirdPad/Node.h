@@ -94,14 +94,6 @@ private:
 	// Non-owning
 	GraphicsBlock_NodeOutputBox *_graphics;
 
-	// Non-owning
-	/*
-		TODO: Connection types:
-		- Direct (one-to-one)
-		- Named (one-to-many, named)
-	*/
-	//NodeDialogue *_
-
 	// All but _pointer are multiline strings
 	//std::string _pointer, _visibilityScripts, _functions, _text;
 	std::string _option;

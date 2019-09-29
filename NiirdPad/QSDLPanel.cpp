@@ -37,6 +37,8 @@ void QSDLPanel::mousePressEvent(QMouseEvent *event)
 	User.data1 = reinterpret_cast<void*>(event->x());
 	User.data2 = reinterpret_cast<void*>(event->y());
 
+	_LastMousePosition = { event->x(), event->y() };
+
 	SDL_PushEvent(&NewEvent);
 }
 
@@ -51,6 +53,8 @@ void QSDLPanel::mouseReleaseEvent(QMouseEvent *event)
 	User.code = event->button();
 	User.data1 = reinterpret_cast<void*>(event->x());
 	User.data2 = reinterpret_cast<void*>(event->y());
+
+	_LastMousePosition = { event->x(), event->y() };
 
 	SDL_PushEvent(&NewEvent);
 }
