@@ -164,7 +164,7 @@ NodeOption *Node::AddOption()
 	return NewOption;
 }
 
-bool Node::FeatureAtPosition(SDL_Point MousePos, NodeDialogue **const Dlg, NodeOption **const Opt)
+void Node::FeatureAtPosition(SDL_Point MousePos, bool &bInInputSection, bool &bInOutputSection, NodeDialogue **const Dlg, NodeOption **const Opt)
 {
 	//auto Header = _graphics->Header();
 	auto Inputs = _graphics->InputSection();
@@ -173,6 +173,8 @@ bool Node::FeatureAtPosition(SDL_Point MousePos, NodeDialogue **const Dlg, NodeO
 	// Input section
 	if (SDL_PointInRect(&MousePos, &Inputs->GetBounds()))
 	{
+		bInInputSection = true;
+
 		for (auto CurrentDialogue : _dialogues)
 		{
 			auto Dialogue = CurrentDialogue->Graphics()->GetBounds();
@@ -184,17 +186,17 @@ bool Node::FeatureAtPosition(SDL_Point MousePos, NodeDialogue **const Dlg, NodeO
 			if (SDL_PointInRect(&MousePos, &Dialogue))
 			{
 				*Dlg = CurrentDialogue;
-				return true;
+				//return true;
 			}
 		}
 	}
 	// Output section
 	else if (SDL_PointInRect(&MousePos, &Outputs->GetBounds()))
 	{
-
+		bInOutputSection = true;
 	}
 
 	// TODO: implement header checking, and be able to return it as a parameter
 
-	return false;
+	//return false;
 }

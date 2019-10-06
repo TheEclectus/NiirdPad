@@ -2,6 +2,7 @@
 
 #include "GraphicsBlocks.h"
 #include "Node.h"
+#include "QScriptEditWindow.h"
 
 void QNodeView::Input()
 {
@@ -111,20 +112,33 @@ void QNodeView::Input()
 					{
 						SDL_Point PointInsideNode = { ReleasePos.x - NodeBounds.x, ReleasePos.y - NodeBounds.y };
 
+						bool bDlgSection = false;
+						bool bOptSection = false;
 						NodeDialogue *Dlg = nullptr;
 						NodeOption *Opt = nullptr;
-						if (CurNode->FeatureAtPosition(PointInsideNode, &Dlg, &Opt))
+
+						CurNode->FeatureAtPosition(PointInsideNode, bDlgSection, bOptSection, &Dlg, &Opt);
+						if (bDlgSection || bOptSection)
 						{
 							// TODO: scrolling lags if immediately done while menu is open (consider tying refresh rate to Qt's Dirty()ing)
-							// TODO: scrolling while menus is open will cause the origin to be where the menu previously was -- implement focusing for QSDLPanel so IO events will only fire if the widget is in focus
 							QMenu Context("Context Menu", this);
-							if (Dlg)
+							if (bDlgSection)
 							{
-								Context.addAction("Edit Dialogue");
-								Context.addAction("Delete Dialogue");
-
-								Context.exec(mapToGlobal(QPoint(ReleasePos.x, ReleasePos.y)));
+								Context.addAction("New Dialogue");
+								Context.addSeparator();
+								if (Dlg)
+								{
+									Context.addAction("Edit Dialogue", [Dlg]() {
+										QScriptEditWindow::EditDialogueFragment(this, )
+									});
+									Context.addAction("Delete Dialogue");
+									Context.addSeparator();
+								}
 							}
+
+							Context.addAction("Delete Node");
+
+							Context.exec(mapToGlobal(QPoint(ReleasePos.x, ReleasePos.y)));
 						}
 
 						break;

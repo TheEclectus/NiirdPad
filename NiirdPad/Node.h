@@ -83,6 +83,8 @@ public:
 	// Passing a string with newline characters is ill-formed
 	void SetDialogue(const std::string &Dialogue);
 
+
+
 	GraphicsBlock_NodeInputBox *Graphics();
 	ConnectionTarget &ConnTarget();
 };
@@ -132,5 +134,5 @@ public:
 	NodeOption *AddOption();
 
 	// MousePos must be adjusted for position. [0,0] is top-left
-	bool FeatureAtPosition(SDL_Point MousePos, NodeDialogue **const Dlg, NodeOption **const Opt);
+	void FeatureAtPosition(SDL_Point MousePos, bool &bInInputSection, bool &bInOutputSection, NodeDialogue **const Dlg, NodeOption **const Opt);
 };

@@ -51,6 +51,13 @@ QScriptEditWindow::~QScriptEditWindow()
 int QScriptEditWindow::EditDialogueFragment(QWidget *Parent, ScriptEngine &Engine, NodeDialogue &Dialogue)
 {
 	QScriptEditWindow ScriptEdit(Parent, Engine, true);
+
+	/*
+		1. Dialogue text needs to have "<br>"s replaced with newlines.
+		2. txtScripts populated with FunctionLines
+	*/
+	Dialogue.
+	ScriptEdit.ui.txtScripts
 	
 	int Res = ScriptEdit.exec();
 	if (Res == QDialog::Accepted)
@@ -65,8 +72,6 @@ int QScriptEditWindow::EditDialogueFragment(QWidget *Parent, ScriptEngine &Engin
 
 		std::string DialogueText = ScriptEdit.ui.txtText->toPlainText().toStdString();
 
-		Dialogue.SetAll(FunctionLines, DialogueText);
-
 		// TODO: remove trailing newlines?
 		size_t Pos = DialogueText.find('\n');
 		while (Pos != std::string::npos)
@@ -74,6 +79,7 @@ int QScriptEditWindow::EditDialogueFragment(QWidget *Parent, ScriptEngine &Engin
 			DialogueText.replace(Pos, 1, "<br>");
 			Pos = DialogueText.find('\n');
 		}
+		Dialogue.SetAll(FunctionLines, DialogueText);
 	}
 
 	return Res;
