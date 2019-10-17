@@ -45,6 +45,21 @@ void NodeDialogue::SetDialogue(const std::string &Dialogue)
 	_graphics->SetDialogue(Dialogue);
 }
 
+const std::string &NodeDialogue::GetReference() const
+{
+	return _reference;
+}
+
+const std::string &NodeDialogue::GetDialogue() const
+{
+	return _dialogue;
+}
+
+const std::vector<std::string> &NodeDialogue::GetFunctionLines() const
+{
+	return _functionLines;
+}
+
 GraphicsBlock_NodeInputBox *NodeDialogue::Graphics()
 {
 	return _graphics;

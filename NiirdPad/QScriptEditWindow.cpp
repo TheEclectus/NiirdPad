@@ -54,13 +54,34 @@ int QScriptEditWindow::EditDialogueFragment(QWidget *Parent, ScriptEngine &Engin
 
 	/*
 		1. Dialogue text needs to have "<br>"s replaced with newlines.
-		2. txtScripts populated with FunctionLines
+		2. txtText populated with 
+		3. txtScripts populated with FunctionLines
+		4. txtVisibility populated with VisibilityLines
 	*/
-	Dialogue.
-	ScriptEdit.ui.txtScripts
+	std::string FormattedDialogue = Dialogue.GetDialogue();
+	size_t Pos = FormattedDialogue.find("<br>");
+	while (Pos != std::string::npos)
+	{
+		FormattedDialogue.replace(Pos, 4, "\n");
+		Pos = FormattedDialogue.find("<br>");
+	}
+	ScriptEdit.ui.txtText->setPlainText(FormattedDialogue.c_str());
+
+	ScriptEdit.ui.txtVisibility->clear();
+	for (auto &CurVisLine : Dialogue.GetFunctionLines())
+	{
+		ScriptEdit.ui.txtVisibility->append(CurVisLine.c_str());
+	}
+	
+	ScriptEdit.ui.txtScripts->clear();
+	for (auto &CurFuncLine : Dialogue.GetFunctionLines())
+	{
+		ScriptEdit.ui.txtScripts->append(CurFuncLine.c_str());
+	}
+	//ScriptEdit.ui.txtScripts->document()->setPlainText()
 	
 	int Res = ScriptEdit.exec();
-	if (Res == QDialog::Accepted)
+	if (Res == QDialog::DialogCode::Accepted)
 	{
 		QTextDocument &QtDoc = *ScriptEdit.ui.txtScripts->document();
 		std::vector<std::string> FunctionLines = {};

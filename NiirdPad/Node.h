@@ -83,7 +83,9 @@ public:
 	// Passing a string with newline characters is ill-formed
 	void SetDialogue(const std::string &Dialogue);
 
-
+	const std::string &GetReference() const;
+	const std::string &GetDialogue() const;
+	const std::vector<std::string> &GetFunctionLines() const;
 
 	GraphicsBlock_NodeInputBox *Graphics();
 	ConnectionTarget &ConnTarget();
