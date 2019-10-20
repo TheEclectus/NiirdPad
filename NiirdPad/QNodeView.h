@@ -6,9 +6,13 @@
 
 #include "FontStore.h"
 #include "QSDLPanel.h"
+#include "ScriptEngine.h"
 
 // Node.h
 class Node;
+
+// NiirdPad.h
+class NiirdPad;
 
 struct QNodeViewCamera
 {
@@ -40,6 +44,9 @@ protected:
 	QNodeViewCamera _Camera;
 	QNodeViewInputState _InputState;
 	FontStore _FontStore;
+	// HACK: Figure out a more-elegant solution than this shite.
+	ScriptEngine *_Engine = nullptr;
+	NiirdPad *_Parent = nullptr;
 
 	std::vector<Node*> _Nodes;	// Order changes frequently, most-recently-clicked Node at front.
 
@@ -57,4 +64,10 @@ protected:
 public:
 	QNodeView(QWidget *Parent);
 	const FontStore &FontStore() const;
+
+	// HACK: So you can't miss the HACK label for setting a crucial pointer outside the constructor, fuckhead
+	void SetEngine(ScriptEngine *Engine);
+
+	// HACK: hee hee hoo hoo ho ho it's ME AGAIN, THE HACK LABEL >:D
+	void SetNiirdPad(NiirdPad *NP);
 };

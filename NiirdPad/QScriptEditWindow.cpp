@@ -7,6 +7,8 @@
 
 #include "Node.h"
 
+#include <thread>
+
 QScriptEditWindow::QScriptEditWindow(QWidget *parent, ScriptEngine &Engine, bool bHideVisConditions) :
 	QDialog(parent),
 	_scriptEngine(Engine)
@@ -80,30 +82,33 @@ int QScriptEditWindow::EditDialogueFragment(QWidget *Parent, ScriptEngine &Engin
 	}
 	//ScriptEdit.ui.txtScripts->document()->setPlainText()
 	
-	int Res = ScriptEdit.exec();
-	if (Res == QDialog::DialogCode::Accepted)
-	{
-		QTextDocument &QtDoc = *ScriptEdit.ui.txtScripts->document();
-		std::vector<std::string> FunctionLines = {};
-		for (QTextBlock CurLine = QtDoc.begin(); CurLine != QtDoc.end(); CurLine = CurLine.next())
-		{
-			FunctionLines.push_back(CurLine.text().toStdString());
-		}
-		strtk::remove_empty_strings(FunctionLines);
+	ScriptEdit.show();
+	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+	return 1;
+	//int Res = ScriptEdit.exec();
+	//if (Res == QDialog::DialogCode::Accepted)
+	//{
+	//	QTextDocument &QtDoc = *ScriptEdit.ui.txtScripts->document();
+	//	std::vector<std::string> FunctionLines = {};
+	//	for (QTextBlock CurLine = QtDoc.begin(); CurLine != QtDoc.end(); CurLine = CurLine.next())
+	//	{
+	//		FunctionLines.push_back(CurLine.text().toStdString());
+	//	}
+	//	strtk::remove_empty_strings(FunctionLines);
 
-		std::string DialogueText = ScriptEdit.ui.txtText->toPlainText().toStdString();
+	//	std::string DialogueText = ScriptEdit.ui.txtText->toPlainText().toStdString();
 
-		// TODO: remove trailing newlines?
-		size_t Pos = DialogueText.find('\n');
-		while (Pos != std::string::npos)
-		{
-			DialogueText.replace(Pos, 1, "<br>");
-			Pos = DialogueText.find('\n');
-		}
-		Dialogue.SetAll(FunctionLines, DialogueText);
-	}
+	//	// TODO: remove trailing newlines?
+	//	size_t Pos = DialogueText.find('\n');
+	//	while (Pos != std::string::npos)
+	//	{
+	//		DialogueText.replace(Pos, 1, "<br>");
+	//		Pos = DialogueText.find('\n');
+	//	}
+	//	Dialogue.SetAll(FunctionLines, DialogueText);
+	//}
 
-	return Res;
+	//return Res;
 }
 
 int QScriptEditWindow::EditOptionFragment(QWidget *Parent, ScriptEngine &Engine, NodeOption &Option)

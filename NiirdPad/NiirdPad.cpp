@@ -161,6 +161,10 @@ NiirdPad::NiirdPad(QWidget *parent) :
 {
 	ui.setupUi(this);
 
+	// HACK: hack attack, whack your shmack and clack your knacks :^)
+	ui.widget->SetEngine(&_scriptEngine);
+	ui.widget->SetNiirdPad(this);
+
 	connect(ui.actionImportProject, &QAction::triggered, [this]() {
 		this->Import();
 
@@ -191,7 +195,7 @@ NiirdPad::NiirdPad(QWidget *parent) :
 
 	// Neither option actually has a NodeDialogue or NodeOption to edit by design. No fucking around with needing the SDL state.
 	connect(ui.actionEditScriptWindowDialogue, &QAction::triggered, [this]() {
-		QScriptEditWindow Win(this, this->_scriptEngine, true);
+		QScriptEditWindow Win(this->window(), this->_scriptEngine, true);
 		Win.exec();
 	});
 	connect(ui.actionEditScriptWindowOption, &QAction::triggered, [this]() {
