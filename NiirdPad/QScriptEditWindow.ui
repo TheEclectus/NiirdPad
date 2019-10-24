@@ -28,6 +28,9 @@
   <property name="windowTitle">
    <string>Edit Fragment</string>
   </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout_5">
    <item>
     <widget class="QSplitter" name="splitter">

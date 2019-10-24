@@ -118,6 +118,21 @@ void NodeOption::SetOption(const std::string &Dialogue)
 	_graphics->SetOption(Dialogue);
 }
 
+const std::string &NodeOption::GetOption() const
+{
+	return _option;
+}
+
+const std::vector<std::string> &NodeOption::GetFunctionLines() const
+{
+	return _functionLines;
+}
+
+const std::vector<std::string> &NodeOption::GetVisibilityScriptLines() const
+{
+	return _visibilityScriptLines;
+}
+
 GraphicsBlock_NodeOutputBox *NodeOption::Graphics()
 {
 	return _graphics;

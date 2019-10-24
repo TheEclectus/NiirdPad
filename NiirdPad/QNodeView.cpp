@@ -131,7 +131,8 @@ void QNodeView::Input()
 								{
 									// NEXTTIME: See if you can't pass the NiirdPad instance as the parent, somehow. The refreshing stops and only the background color is shown when the edit window is opened.
 									Context.addAction("Edit Dialogue", [this, Dlg]() {
-										QScriptEditWindow::EditDialogueFragment(_Parent->window(), *this->_Engine, *Dlg);
+										//QScriptEditWindow::EditDialogueFragment(_Parent->window(), *this->_Engine, *Dlg);
+										this->_Parent->ScriptEditWindow()->dialogueFragment(Dlg);
 									});
 									Context.addAction("Delete Dialogue");
 									Context.addSeparator();

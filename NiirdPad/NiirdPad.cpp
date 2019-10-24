@@ -154,9 +154,10 @@ void NiirdPad::ImportConfirmationMessageBox(std::vector<std::string> Warnings, R
 	// Do the actual importing here.
 }
 
-NiirdPad::NiirdPad(QWidget *parent) : 
+NiirdPad::NiirdPad(QWidget *parent) :
 	QMainWindow(parent),
-	_scriptEngine()
+	_scriptEngine(),
+	_scriptEditWindow(new QScriptEditWindow(this, _scriptEngine, false))
 	//_importMessageBox(new QMessageBox(this))
 {
 	ui.setupUi(this);
@@ -205,4 +206,9 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	
 	//ui.widget->setFocus();
 	//this->setMouseTracking(true);
+}
+
+QScriptEditWindow *NiirdPad::ScriptEditWindow()
+{
+	return _scriptEditWindow;
 }

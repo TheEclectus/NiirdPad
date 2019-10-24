@@ -21,6 +21,9 @@ private:
 	QTimer _updateTimer;
 	const ScriptEngine &_scriptEngine;
 
+	NodeDialogue *_dialogue;
+	NodeOption *_option;
+
 	void ResetTimer();
 	
 	void ValidateScripts();
@@ -31,11 +34,26 @@ private:
 	void VisMakeClean();
 	void VisMakeError(const std::string &Message);
 
+	void ResetForm();
+	void FormAccepted();
+
 public:
-	static int EditDialogueFragment(QWidget *Parent, ScriptEngine &Engine, NodeDialogue &Dialogue);
+	//static int EditDialogueFragment(QWidget *Parent, ScriptEngine &Engine, NodeDialogue &Dialogue);
 	static int EditOptionFragment(QWidget *Parent, ScriptEngine &Engine, NodeOption &Option);
 
 	QScriptEditWindow(QWidget *parent, ScriptEngine &Engine, bool bHideVisConditions);
 	~QScriptEditWindow();
 	void closeEvent(QCloseEvent *event) override;
+
+	/// <summary>
+	/// Shows the window to edit a NodeDialogue.
+	/// </summary>
+	/// <param name="Dialogue"></param>
+	void dialogueFragment(NodeDialogue *Dialogue);
+
+	/// <summary>
+	/// Shows the window to edit a NodeOption.
+	/// </summary>
+	/// <param name="Option"></param>
+	void optionFragment(NodeOption *Option);
 };

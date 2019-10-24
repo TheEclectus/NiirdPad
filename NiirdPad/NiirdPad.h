@@ -5,6 +5,7 @@
 #include "ui_NiirdPad.h"
 
 #include "ImportWorker.h"
+#include "QScriptEditWindow.h"
 #include "ScriptEngine.h"
 
 class NiirdPad : public QMainWindow
@@ -16,6 +17,8 @@ private:
 	//QMessageBox *_importMessageBox;
 	ScriptEngine _scriptEngine;
 
+	QScriptEditWindow *_scriptEditWindow;
+
 	void Import();
 
 public slots:
@@ -23,4 +26,5 @@ public slots:
 
 public:
 	NiirdPad(QWidget *parent = Q_NULLPTR);
+	QScriptEditWindow *ScriptEditWindow();
 };

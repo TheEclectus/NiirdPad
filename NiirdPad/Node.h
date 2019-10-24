@@ -110,6 +110,10 @@ public:
 	void SetFunctions(const std::vector<std::string> &FunctionLines);
 	void SetOption(const std::string &Dialogue);
 
+	const std::string &GetOption() const;
+	const std::vector<std::string> &GetFunctionLines() const;
+	const std::vector<std::string> &GetVisibilityScriptLines() const;
+
 	GraphicsBlock_NodeOutputBox *Graphics();
 };
 

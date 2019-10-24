@@ -63,6 +63,7 @@ public:
         sizePolicy.setHeightForWidth(QScriptEditWindow->sizePolicy().hasHeightForWidth());
         QScriptEditWindow->setSizePolicy(sizePolicy);
         QScriptEditWindow->setMinimumSize(QSize(200, 305));
+        QScriptEditWindow->setModal(true);
         verticalLayout_5 = new QVBoxLayout(QScriptEditWindow);
         verticalLayout_5->setSpacing(6);
         verticalLayout_5->setContentsMargins(11, 11, 11, 11);
