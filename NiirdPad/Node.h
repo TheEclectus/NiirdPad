@@ -67,6 +67,7 @@ class ConnectionTarget
 class NodeDialogue
 {
 private:
+	Node &_parentNode;
 	// Non-owning
 	GraphicsBlock_NodeInputBox *_graphics;
 
@@ -75,7 +76,7 @@ private:
 	std::vector<std::string> _functionLines;
 	//std::string _reference, _script, _dialogue;
 public:
-	NodeDialogue(GraphicsBlock_NodeInputBox *Graphics, const std::string &Reference, const std::vector<std::string> &FunctionLines = {}, const std::string &Dialogue = "");
+	NodeDialogue(Node &ParentNode, GraphicsBlock_NodeInputBox *Graphics, const std::string &Reference, const std::vector<std::string> &FunctionLines = {}, const std::string &Dialogue = "");
 
 	void SetAll(const std::vector<std::string> &FunctionLines, const std::string &Dialogue);
 	void SetReference(const std::string &Reference);
@@ -95,6 +96,7 @@ public:
 class NodeOption
 {
 private:
+	Node &_parentNode;
 	// Non-owning
 	GraphicsBlock_NodeOutputBox *_graphics;
 
@@ -103,7 +105,7 @@ private:
 	std::string _option;
 	std::vector<std::string> _visibilityScriptLines, _functionLines;
 public:
-	NodeOption(GraphicsBlock_NodeOutputBox *Graphics, const std::vector<std::string> &VisibilityScripts = {}, const const std::vector<std::string> &Functions = {}, const std::string &Text = "");
+	NodeOption(Node &ParentNode, GraphicsBlock_NodeOutputBox *Graphics, const std::vector<std::string> &VisibilityScripts = {}, const const std::vector<std::string> &Functions = {}, const std::string &Text = "");
 
 	void SetAll(const std::vector<std::string> &VisibilityScriptLines, const std::vector<std::string> &FunctionLines, const std::string &Option);
 	void SetVisibilityLines(const std::vector<std::string> &VisibilityLines);

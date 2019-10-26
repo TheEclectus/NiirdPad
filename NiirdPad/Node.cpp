@@ -3,7 +3,8 @@
 #include "GraphicsBlocks.h"
 
 
-NodeDialogue::NodeDialogue(GraphicsBlock_NodeInputBox *Graphics, const std::string &Reference, const std::vector<std::string> &FunctionLines, const std::string &Dialogue) :
+NodeDialogue::NodeDialogue(Node &ParentNode, GraphicsBlock_NodeInputBox *Graphics, const std::string &Reference, const std::vector<std::string> &FunctionLines, const std::string &Dialogue) :
+	_parentNode(ParentNode),
 	_graphics(Graphics),
 	_reference(Reference),
 	_dialogue(Dialogue),
@@ -67,7 +68,8 @@ GraphicsBlock_NodeInputBox *NodeDialogue::Graphics()
 
 
 
-NodeOption::NodeOption(GraphicsBlock_NodeOutputBox *Graphics, const std::vector<std::string> &VisibilityScripts, const const std::vector<std::string> &Functions, const std::string &Text) :
+NodeOption::NodeOption(Node &ParentNode, GraphicsBlock_NodeOutputBox *Graphics, const std::vector<std::string> &VisibilityScripts, const const std::vector<std::string> &Functions, const std::string &Text) :
+	_parentNode(ParentNode),
 	_graphics(Graphics),
 	_visibilityScriptLines(VisibilityScripts),
 	_functionLines(Functions),
@@ -165,7 +167,7 @@ const SDL_Point &Node::Position()
 NodeDialogue *Node::AddDialogue(const std::string &Reference)
 {
 	GraphicsBlock_NodeInputBox *NewInputBoxGraphics = _graphics->InputSection()->AddInputBox();
-	NodeDialogue *NewDialogue = new NodeDialogue(NewInputBoxGraphics, "", {}, "");
+	NodeDialogue *NewDialogue = new NodeDialogue(*this, NewInputBoxGraphics, "", {}, "");
 	NewDialogue->SetReference(Reference);
 
 	_dialogues.push_back(NewDialogue);
@@ -187,7 +189,7 @@ void Node::RemoveDialogue(NodeDialogue *Dlg)
 NodeOption *Node::AddOption()
 {
 	GraphicsBlock_NodeOutputBox *NewOutputBoxGraphics = _graphics->OutputSection()->AddOutputBox();
-	NodeOption *NewOption = new NodeOption(NewOutputBoxGraphics);
+	NodeOption *NewOption = new NodeOption(*this, NewOutputBoxGraphics);
 
 	_options.push_back(NewOption);
 

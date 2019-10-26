@@ -136,17 +136,29 @@ void QNodeView::Input()
 									});
 									Context.addAction("Delete Dialogue");
 									Context.addSeparator();
+									Context.addAction("Edit Index");
+									Context.addSeparator();
 								}
 							}
 
 							Context.addAction("Delete Node");
 
 							Context.exec(mapToGlobal(QPoint(ReleasePos.x, ReleasePos.y)));
+							return;
 						}
 
 						break;
 					}
 				}
+			}
+			// No Node is found
+
+			if (Event.user.code == Qt::MouseButton::RightButton)
+			{
+				QMenu Context("Context Menu", this);
+				Context.addAction("Create Node");
+				Context.exec(mapToGlobal(QPoint(ReleasePos.x, ReleasePos.y)));
+				return;
 			}
 		}
 		else if (Event.type == EVENT_MOUSEMOVE)
