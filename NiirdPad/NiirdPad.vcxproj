@@ -117,6 +117,8 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Character.cpp" />
+    <ClCompile Include="DialogueFile.cpp" />
     <ClCompile Include="FontStore.cpp" />
     <ClCompile Include="format.cc" />
     <ClCompile Include="GraphicsBlocks.cpp" />
@@ -152,7 +154,9 @@
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Character.h" />
     <ClInclude Include="core.h" />
+    <ClInclude Include="DialogueFile.h" />
     <ClInclude Include="FontStore.h" />
     <ClInclude Include="format-inl.h" />
     <ClInclude Include="format.h" />

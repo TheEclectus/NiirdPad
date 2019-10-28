@@ -13,6 +13,9 @@ class GraphicsBlock_NodeInputBox;
 class GraphicsBlock_NodeOutputBox;
 class GraphicsBlock_Node;
 
+// DialogueFile.h
+class DialogueFile;
+
 // Forward Declarations
 class ConnectionManager;
 class ConnectionTarget;
@@ -122,6 +125,7 @@ public:
 class Node
 {
 private:
+	//DialogueFile &_parentFile;
 	// Owning
 	GraphicsBlock_Node *_graphics;
 	std::vector<NodeDialogue*> _dialogues;

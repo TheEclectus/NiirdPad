@@ -13,12 +13,16 @@
 #include <QtGui/QIcon>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include "QNodeView.h"
 
@@ -47,6 +51,12 @@ public:
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
     QFrame *frame;
+    QVBoxLayout *verticalLayout;
+    QLabel *label;
+    QComboBox *comboBox;
+    QLabel *label_2;
+    QComboBox *comboBox_2;
+    QSpacerItem *verticalSpacer;
     QNodeView *widget;
     QMenuBar *menuBar;
     QMenu *menuFile;
@@ -117,6 +127,34 @@ public:
         frame->setSizeIncrement(QSize(0, 0));
         frame->setFrameShape(QFrame::Box);
         frame->setFrameShadow(QFrame::Plain);
+        verticalLayout = new QVBoxLayout(frame);
+        verticalLayout->setSpacing(6);
+        verticalLayout->setContentsMargins(11, 11, 11, 11);
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        label = new QLabel(frame);
+        label->setObjectName(QString::fromUtf8("label"));
+
+        verticalLayout->addWidget(label);
+
+        comboBox = new QComboBox(frame);
+        comboBox->setObjectName(QString::fromUtf8("comboBox"));
+
+        verticalLayout->addWidget(comboBox);
+
+        label_2 = new QLabel(frame);
+        label_2->setObjectName(QString::fromUtf8("label_2"));
+
+        verticalLayout->addWidget(label_2);
+
+        comboBox_2 = new QComboBox(frame);
+        comboBox_2->setObjectName(QString::fromUtf8("comboBox_2"));
+
+        verticalLayout->addWidget(comboBox_2);
+
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout->addItem(verticalSpacer);
+
 
         horizontalLayout->addWidget(frame);
 
@@ -195,6 +233,8 @@ public:
         actionEditScriptWindow_Dialogue->setText(QApplication::translate("NiirdPadClass", "Dialogue Fragment", nullptr));
         actionEditScriptWindowDialogue->setText(QApplication::translate("NiirdPadClass", "Dialogue Fragment", nullptr));
         actionEditScriptWindowOption->setText(QApplication::translate("NiirdPadClass", "Option Fragment", nullptr));
+        label->setText(QApplication::translate("NiirdPadClass", "Character", nullptr));
+        label_2->setText(QApplication::translate("NiirdPadClass", "Dialogue File", nullptr));
         menuFile->setTitle(QApplication::translate("NiirdPadClass", "File", nullptr));
         menuDebug->setTitle(QApplication::translate("NiirdPadClass", "Debug", nullptr));
         menuEdit_Reference_Window->setTitle(QApplication::translate("NiirdPadClass", "Edit Reference Window", nullptr));
