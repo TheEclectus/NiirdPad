@@ -137,7 +137,11 @@ public:
 	~Node();
 
 	GraphicsBlock_Node &Graphics();
+
+	void SetPosition(const SDL_Point &Position);
 	const SDL_Point &Position();
+
+	void SetComment(const std::string &Comment);
 
 	NodeDialogue *AddDialogue(const std::string &Reference);
 	void RemoveDialogue(NodeDialogue *Dlg);

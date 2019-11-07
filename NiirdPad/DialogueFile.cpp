@@ -4,7 +4,7 @@
 #include "Node.h"
 #include "QNodeView.h"
 
-DialogueFile::DialogueFile(Character &ParentCharacter, std::string &Filename) :
+DialogueFile::DialogueFile(Character &ParentCharacter, const std::string &Filename) :
 	_parentCharacter(ParentCharacter),
 	_filename(Filename)
 {
@@ -19,6 +19,11 @@ const std::string &DialogueFile::GetFilename() const
 const std::map<std::string, NodeDialogue*> &DialogueFile::GetIndices() const
 {
 	return _indices;
+}
+
+const std::vector<Node*> &DialogueFile::GetNodes() const
+{
+	return _nodes;
 }
 
 Node *DialogueFile::NewNode(const SDL_Point &Position)

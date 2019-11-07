@@ -8,6 +8,9 @@
 #include "QSDLPanel.h"
 #include "ScriptEngine.h"
 
+// DialogueFile.h
+class DialogueFile;
+
 // Node.h
 class Node;
 
@@ -48,7 +51,8 @@ protected:
 	ScriptEngine *_Engine = nullptr;
 	NiirdPad *_Parent = nullptr;
 
-	std::vector<Node*> _Nodes;	// Order changes frequently, most-recently-clicked Node at front.
+	DialogueFile *_DialogueFile = nullptr;
+	std::vector<Node*> _Nodes;	// Copy of the list from the current DialogueFile. Order changes frequently, most-recently-clicked Node at front.
 
 	virtual void Input() override;
 	virtual void Logic() override;
@@ -64,6 +68,8 @@ protected:
 public:
 	QNodeView(QWidget *Parent);
 	const FontStore &FontStore() const;
+
+	void SetDialogueFile(DialogueFile *File);
 
 	// HACK: So you can't miss the HACK label for setting a crucial pointer outside the constructor, fuckhead
 	void SetEngine(ScriptEngine *Engine);

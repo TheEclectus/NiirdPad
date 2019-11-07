@@ -159,9 +159,19 @@ GraphicsBlock_Node &Node::Graphics()
 	return *_graphics;
 }
 
+void Node::SetPosition(const SDL_Point &Position)
+{
+	_position = Position;
+}
+
 const SDL_Point &Node::Position()
 {
 	return _position;
+}
+
+void Node::SetComment(const std::string &Comment)
+{
+	_graphics->Header()->SetText(Comment);
 }
 
 NodeDialogue *Node::AddDialogue(const std::string &Reference)

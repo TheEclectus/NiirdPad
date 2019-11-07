@@ -537,7 +537,7 @@ GraphicsBlock_Node::GraphicsBlock_Node(SDL_Renderer *AssociatedRenderer, FC_Font
 	_bIsConstructing = true;
 
 	_Header = new GraphicsBlock_NodeHeader(AssociatedRenderer, HeaderFont);
-	_Header->SetText("Test text.  dzfgzdfg Texticles. 8===========D");
+	//_Header->SetText("Test text.  dzfgzdfg Texticles. 8===========D");
 	AddChild(_Header);
 
 	_Inputs = new GraphicsBlock_NodeInputBoxSection(AssociatedRenderer, HeaderFont, HeaderFont);
@@ -590,6 +590,11 @@ void GraphicsBlock_Node::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 	SDL_RenderFillRect(SDLRenderer, &RenderDest);*/
 
 	AGraphicsBlock::Render(SDLRenderer, Position);
+}
+
+GraphicsBlock_NodeHeader *GraphicsBlock_Node::Header()
+{
+	return _Header;
 }
 
 GraphicsBlock_NodeInputBoxSection *GraphicsBlock_Node::InputSection()

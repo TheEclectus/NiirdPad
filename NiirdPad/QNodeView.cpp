@@ -1,5 +1,6 @@
 #include "QNodeView.h"
 
+#include "DialogueFile.h"
 #include "GraphicsBlocks.h"
 #include "NiirdPad.h"
 #include "Node.h"
@@ -126,7 +127,6 @@ void QNodeView::Input()
 							if (bDlgSection)
 							{
 								Context.addAction("New Dialogue");
-								Context.addSeparator();
 								if (Dlg)
 								{
 									// NEXTTIME: See if you can't pass the NiirdPad instance as the parent, somehow. The refreshing stops and only the background color is shown when the edit window is opened.
@@ -137,6 +137,10 @@ void QNodeView::Input()
 									Context.addAction("Delete Dialogue");
 									Context.addSeparator();
 									Context.addAction("Edit Index");
+									Context.addSeparator();
+								}
+								else
+								{
 									Context.addSeparator();
 								}
 							}
@@ -297,6 +301,8 @@ QNodeView::QNodeView(QWidget *Parent) :
 	_FontStore(this->SDLRenderer())
 {
 	auto NewNode = new Node(*this);
+	NewNode->SetComment("Time for a new header. ( ' v ')");
+
 	auto NN_Dlg = NewNode->AddDialogue("blep");
 	NN_Dlg->SetDialogue("Test!");
 	NN_Dlg->SetFunctions({ "give_money \"krats\" 20" });
@@ -310,6 +316,22 @@ QNodeView::QNodeView(QWidget *Parent) :
 const FontStore &QNodeView::FontStore() const
 {
 	return _FontStore;
+}
+
+void QNodeView::SetDialogueFile(DialogueFile *File)
+{
+	_DialogueFile = File;
+	_Nodes.clear();
+
+	if (File == nullptr)
+	{
+		// Reset the view and disable the viewbox?
+		// Be sure to disable the right-click menu as well.
+	}
+	else
+	{
+		_Nodes = _DialogueFile->GetNodes();
+	}
 }
 
 void QNodeView::SetEngine(ScriptEngine *Engine)

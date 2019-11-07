@@ -21,10 +21,11 @@ private:
 	std::map<std::string, NodeDialogue*> _indices;	// non-owning NodeDialogue pointers
 	std::vector<Node*> _nodes;
 public:
-	DialogueFile(Character &ParentCharacter, std::string &Filename);
+	DialogueFile(Character &ParentCharacter, const std::string &Filename);
 
 	const std::string &GetFilename() const;
 	const std::map<std::string, NodeDialogue*> &GetIndices() const;
+	const std::vector<Node*> &GetNodes() const;
 
 	Node *NewNode(const SDL_Point &Position = { 0,0 });
 };

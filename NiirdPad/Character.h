@@ -17,11 +17,13 @@ class Character
 private:
 	Project &_parentProject;
 	QNodeView &_nodeView;
-	std::string _name;
+	//std::string _name;
 	std::map<std::string, DialogueFile*> _dialogueFiles;
 public:
-	Character(Project &ParentProject, QNodeView &NodeView, const std::string &Name);
+	Character(Project &ParentProject, QNodeView &NodeView);
 
-	const std::string &GetName() const;
+	//const std::string &GetName() const;
 	QNodeView &GetNodeView() const;
+
+	DialogueFile *NewDialogueFile(const std::string &Filename);
 };

@@ -16,8 +16,9 @@ private:
 	Ui::NiirdPadClass ui;
 	//QMessageBox *_importMessageBox;
 	ScriptEngine _scriptEngine;
-
 	QScriptEditWindow *_scriptEditWindow;
+
+
 
 	void Import();
 
