@@ -33,3 +33,8 @@ DialogueFile *Character::NewDialogueFile(const std::string &Filename)
 
 	return NewFile;
 }
+
+std::map<std::string, DialogueFile*> &Character::DialogueFiles()
+{
+	return _dialogueFiles;
+}

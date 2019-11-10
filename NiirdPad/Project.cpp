@@ -49,7 +49,7 @@ Project::Project(QNodeView &NodeView, const RawProjectFile &ImportedProject) :
 				for (auto &CurrentOption : CurrentNode.Options())
 				{
 					auto NewOpt = NewNode->AddOption();
-					NewOpt->SetAll(CurrentOption.VisibilityScripts(), CurrentOption.Functions(), CurrentOption.Text);
+					NewOpt->SetAll(CurrentOption.VisibilityScripts(), CurrentOption.Functions(), CurrentOption.Text());
 				}
 			}
 		}
@@ -68,4 +68,9 @@ Character *Project::NewCharacter(const std::string &Name)
 	_Characters.insert({ Name, NewCharacter });
 
 	return NewCharacter;
+}
+
+std::map<std::string, Character*> &Project::Characters()
+{
+	return _Characters;
 }

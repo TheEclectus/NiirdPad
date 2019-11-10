@@ -53,9 +53,9 @@ public:
     QFrame *frame;
     QVBoxLayout *verticalLayout;
     QLabel *label;
-    QComboBox *comboBox;
+    QComboBox *cmbCharacter;
     QLabel *label_2;
-    QComboBox *comboBox_2;
+    QComboBox *cmbDiag;
     QSpacerItem *verticalSpacer;
     QNodeView *widget;
     QMenuBar *menuBar;
@@ -136,20 +136,20 @@ public:
 
         verticalLayout->addWidget(label);
 
-        comboBox = new QComboBox(frame);
-        comboBox->setObjectName(QString::fromUtf8("comboBox"));
+        cmbCharacter = new QComboBox(frame);
+        cmbCharacter->setObjectName(QString::fromUtf8("cmbCharacter"));
 
-        verticalLayout->addWidget(comboBox);
+        verticalLayout->addWidget(cmbCharacter);
 
         label_2 = new QLabel(frame);
         label_2->setObjectName(QString::fromUtf8("label_2"));
 
         verticalLayout->addWidget(label_2);
 
-        comboBox_2 = new QComboBox(frame);
-        comboBox_2->setObjectName(QString::fromUtf8("comboBox_2"));
+        cmbDiag = new QComboBox(frame);
+        cmbDiag->setObjectName(QString::fromUtf8("cmbDiag"));
 
-        verticalLayout->addWidget(comboBox_2);
+        verticalLayout->addWidget(cmbDiag);
 
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 

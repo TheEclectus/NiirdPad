@@ -206,14 +206,18 @@ NodeOption *Node::AddOption()
 	return NewOption;
 }
 
-void Node::FeatureAtPosition(SDL_Point MousePos, bool &bInInputSection, bool &bInOutputSection, NodeDialogue **const Dlg, NodeOption **const Opt)
+void Node::FeatureAtPosition(SDL_Point MousePos, bool &bInHeader, bool &bInInputSection, bool &bInOutputSection, NodeDialogue **const Dlg, NodeOption **const Opt)
 {
-	//auto Header = _graphics->Header();
+	auto Header = _graphics->Header();
 	auto Inputs = _graphics->InputSection();
 	auto Outputs = _graphics->OutputSection();
 
 	// Input section
-	if (SDL_PointInRect(&MousePos, &Inputs->GetBounds()))
+	if (SDL_PointInRect(&MousePos, &Header->GetBounds()))
+	{
+		bInHeader = true;
+	}
+	else if (SDL_PointInRect(&MousePos, &Inputs->GetBounds()))
 	{
 		bInInputSection = true;
 

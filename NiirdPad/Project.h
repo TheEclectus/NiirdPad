@@ -20,6 +20,7 @@ private:
 	std::string _savePath = "";	// If empty, assumed to be a new file.
 	bool _bUnsavedChanges = true;
 	std::map<std::string, Character*> _Characters;
+
 public:
 	Project(QNodeView &NodeView, const std::string &Path);
 	Project(QNodeView &NodeView, const RawProjectFile &ImportedProject);
@@ -29,4 +30,5 @@ public:
 	bool SaveAs(const std::string &Path);
 
 	Character *NewCharacter(const std::string &Name);
+	std::map<std::string, Character*> &Characters();
 };

@@ -6,12 +6,17 @@
 #include <QMessageBox>
 #include <QProgressDialog>
 #include <QThread>
+#include <QVariant>
 
 #include "format.h"
 //#include "QImportConsole.h"
 #include "ImportWorker.h"
 #include "QReferenceEditWindow.h"
 #include "QScriptEditWindow.h"
+
+#include "Character.h"
+#include "DialogueFile.h"
+#include "Node.h"
 
 void NiirdPad::Import()
 {
@@ -128,6 +133,36 @@ void NiirdPad::Import()
 	}*/
 }
 
+void NiirdPad::ResetCharacterCombo()
+{
+	ui.cmbCharacter->clear();
+
+	if (_loadedProject)
+	{
+		for (auto &CurChar : _loadedProject->Characters())
+		{
+			ui.cmbCharacter->addItem(CurChar.first.c_str(), QVariant::fromValue((void*)CurChar.second));
+		}
+	}
+
+	ResetDialogueFileCombo();
+}
+
+void NiirdPad::ResetDialogueFileCombo()
+{
+	ui.cmbDiag->clear();
+
+	if (_loadedProject && ui.cmbCharacter->count() > 0)
+	{
+		Character *SelectedChar = (Character*)ui.cmbCharacter->currentData().value<void*>();
+
+		for (auto &CurDiag : SelectedChar->DialogueFiles())
+		{
+			ui.cmbDiag->addItem(CurDiag.first.c_str(), QVariant::fromValue((void*)CurDiag.second));
+		}
+	}
+}
+
 void NiirdPad::ImportConfirmationMessageBox(std::vector<std::string> Warnings, RawProjectFile Files)
 {
 	if (Warnings.size() > 0)
@@ -158,7 +193,6 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	QMainWindow(parent),
 	_scriptEngine(),
 	_scriptEditWindow(new QScriptEditWindow(this, _scriptEngine, false))
-	//_importMessageBox(new QMessageBox(this))
 {
 	ui.setupUi(this);
 
@@ -203,9 +237,40 @@ NiirdPad::NiirdPad(QWidget *parent) :
 		QScriptEditWindow Win(this, this->_scriptEngine, false);
 		Win.exec();
 	});
+
+	connect(ui.cmbCharacter, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int index) {
+		this->ResetDialogueFileCombo();
+	});
+	connect(ui.cmbDiag, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int index) {
+		DialogueFile *DiagFile = (DialogueFile*)ui.cmbDiag->itemData(index).value<void*>();
+		this->ui.widget->SetDialogueFile(DiagFile);
+	});
 	
 	//ui.widget->setFocus();
 	//this->setMouseTracking(true);
+
+	_loadedProject = new Project(*ui.widget);
+
+	Character *NewChar = _loadedProject->NewCharacter("NIIRB"); // Legally distinct from Niirds™
+	
+	DialogueFile *NewDiag = NewChar->NewDialogueFile("diag");
+	Node *NewNode = NewDiag->NewNode();
+	NewNode->SetComment("Presenting, the Niirb");
+	
+	auto *Dlg = NewNode->AddDialogue("b i r b");
+	Dlg->SetAll({ "give_money \"krats\" 20" }, "the niirb is a legally distinct creature from the Niird, which is copyright 2016-2019 Meandraco Entertainment");
+
+
+	DialogueFile *NewDiag2 = NewChar->NewDialogueFile("diag 2");
+	Node *NewNode2 = NewDiag2->NewNode();
+	NewNode2->SetComment("Presenting, the Niirb 2");
+
+	auto *Dlg2 = NewNode2->AddDialogue("b i r b 2");
+	Dlg2->SetAll({ "give_money \"krats\" 80" }, "plz no sue");
+
+	ResetCharacterCombo();
+
+	//ui.widget->SetDialogueFile(NewDiag);
 }
 
 QScriptEditWindow *NiirdPad::ScriptEditWindow()

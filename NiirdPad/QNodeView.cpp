@@ -33,8 +33,10 @@ void QNodeView::Input()
 			auto KeyboardMods = SDL_GetModState();
 			bool bNodeFound = false;
 			// TODO: Only look through the list of VISIBILE nodes (see TODO about occlusion culling)
-			for (auto CurNode : _Nodes)
+			for (auto CurNodeIter = _Nodes.begin(); CurNodeIter != _Nodes.end(); CurNodeIter++)
 			{
+				auto CurNode = *CurNodeIter;
+
 				auto NodePos = CurNode->Position();
 				auto NodeBounds = CurNode->Graphics().GetBounds();
 				NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
@@ -58,6 +60,10 @@ void QNodeView::Input()
 						{
 							SelNodes.push_back(CurNode);
 						}
+						
+						// Brings last-clicked Node to the top
+						_Nodes.erase(CurNodeIter);
+						_Nodes.insert(_Nodes.begin(), CurNode);
 
 						bNodeFound = true;
 						break;
@@ -114,16 +120,22 @@ void QNodeView::Input()
 					{
 						SDL_Point PointInsideNode = { ReleasePos.x - NodeBounds.x, ReleasePos.y - NodeBounds.y };
 
+						bool bHeader = false;
 						bool bDlgSection = false;
 						bool bOptSection = false;
 						NodeDialogue *Dlg = nullptr;
 						NodeOption *Opt = nullptr;
 
-						CurNode->FeatureAtPosition(PointInsideNode, bDlgSection, bOptSection, &Dlg, &Opt);
-						if (bDlgSection || bOptSection)
+						CurNode->FeatureAtPosition(PointInsideNode, bHeader, bDlgSection, bOptSection, &Dlg, &Opt);
+						if (bHeader || bDlgSection || bOptSection)
 						{
 							// TODO: scrolling lags if immediately done while menu is open (consider tying refresh rate to Qt's Dirty()ing)
 							QMenu Context("Context Menu", this);
+							if (bHeader)
+							{
+								Context.addAction("Edit Comment");
+							}
+
 							if (bDlgSection)
 							{
 								Context.addAction("New Dialogue");
@@ -169,7 +181,19 @@ void QNodeView::Input()
 		{
 			_InputState.Position = GetMousePosition();// { reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2) };
 			//printf("MouseMove [%c%c%c] (%d, %d)\n", Event.user.code & Qt::MouseButton::LeftButton ? 'L' : ' ', Event.user.code & Qt::MouseButton::MiddleButton ? 'M' : ' ', Event.user.code & Qt::MouseButton::RightButton ? 'R' : ' ', reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2));
-			if (Event.user.code & Qt::MouseButton::MiddleButton)
+			
+			if (Event.user.code & Qt::MouseButton::LeftButton)
+			{
+				SDL_Point Delta = { reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2) };
+
+				for (auto CurNode : _InputState.SelectedNodes)
+				{
+					SDL_Point CurNodePos = CurNode->Position();
+					CurNodePos = { CurNodePos.x + Delta.x, CurNodePos.y + Delta.y };
+					CurNode->SetPosition(CurNodePos);
+				}
+			}
+			else if (Event.user.code & Qt::MouseButton::MiddleButton)
 			{
 				SDL_Point Delta = { reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2) };
 				//printf_s("%d %d\n", Delta.x, Delta.y);
@@ -307,8 +331,8 @@ QNodeView::QNodeView(QWidget *Parent) :
 	NN_Dlg->SetDialogue("Test!");
 	NN_Dlg->SetFunctions({ "give_money \"krats\" 20" });
 
-	//auto NN_Opt = NewNode->AddOption();
-	//NN_Opt->SetAll({ "//showif.has_krats.20", "//hideif.has_krats.50", "//hideif.has_adats.50" }, { "take_money krats 20" }, "BEEEEEEEEEP ( ' v ')");
+	auto NN_Opt = NewNode->AddOption();
+	NN_Opt->SetAll({ "//showif.has_krats.20", "//hideif.has_krats.50", "//hideif.has_adats.50" }, { "take_money krats 20" }, "BEEEEEEEEEP ( ' v ') ( ' < ') ( ' v ')");
 
 	_Nodes.push_back(NewNode);
 }

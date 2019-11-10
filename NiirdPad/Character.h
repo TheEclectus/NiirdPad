@@ -26,4 +26,5 @@ public:
 	QNodeView &GetNodeView() const;
 
 	DialogueFile *NewDialogueFile(const std::string &Filename);
+	std::map<std::string, DialogueFile*> &DialogueFiles();
 };

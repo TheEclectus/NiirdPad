@@ -8,6 +8,8 @@
 #include "QScriptEditWindow.h"
 #include "ScriptEngine.h"
 
+#include "Project.h"
+
 class NiirdPad : public QMainWindow
 {
 	Q_OBJECT
@@ -18,9 +20,11 @@ private:
 	ScriptEngine _scriptEngine;
 	QScriptEditWindow *_scriptEditWindow;
 
-
+	Project *_loadedProject;
 
 	void Import();
+	void ResetCharacterCombo();
+	void ResetDialogueFileCombo();
 
 public slots:
 	void ImportConfirmationMessageBox(std::vector<std::string> Warnings, RawProjectFile Files);

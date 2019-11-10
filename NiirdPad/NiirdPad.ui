@@ -75,7 +75,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="comboBox"/>
+        <widget class="QComboBox" name="cmbCharacter"/>
        </item>
        <item>
         <widget class="QLabel" name="label_2">
@@ -85,7 +85,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="comboBox_2"/>
+        <widget class="QComboBox" name="cmbDiag"/>
        </item>
        <item>
         <spacer name="verticalSpacer">
