@@ -265,6 +265,7 @@ protected:
 public:
 	GraphicsBlock_NodeOutputBoxSection(SDL_Renderer *AssociatedRenderer, FC_Font *TextFont, FC_Font *ScriptFont, FC_Font *VisFont, const SDL_Color &TextColor = { 255, 255, 255, 255 }, const SDL_Color &ScriptColor = { 173, 216, 230, 255 }, const SDL_Color &VisColor = { 235, 195, 85, 255 });
 	GraphicsBlock_NodeOutputBox *AddOutputBox();
+	std::vector<GraphicsBlock_NodeOutputBox*> &OutputBoxes();
 
 	virtual void CalculateSize(int MaxWidthHint = -1, int MaxHeightHint = -1) override;
 	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;

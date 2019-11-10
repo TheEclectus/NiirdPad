@@ -485,6 +485,11 @@ GraphicsBlock_NodeOutputBox *GraphicsBlock_NodeOutputBoxSection::AddOutputBox()
 	return NewBox;
 }
 
+std::vector<GraphicsBlock_NodeOutputBox*> &GraphicsBlock_NodeOutputBoxSection::OutputBoxes()
+{
+	return _OutputBoxes;
+}
+
 void GraphicsBlock_NodeOutputBoxSection::CalculateSize(int MaxWidthHint, int MaxHeightHint)
 {
 	SDL_Rect Size = { 0, 0, 0, 0 };
@@ -590,6 +595,19 @@ void GraphicsBlock_Node::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 	SDL_RenderFillRect(SDLRenderer, &RenderDest);*/
 
 	AGraphicsBlock::Render(SDLRenderer, Position);
+
+	auto BB_Sec = _Outputs->GetBounds();
+	for (auto OutputBoxes : _Outputs->OutputBoxes())
+	{
+		auto BoxBounds = OutputBoxes->GetBounds();
+		int LineWidth = GetBounds().w - (BoxBounds.x + BoxBounds.w) - 1;
+
+		SDL_SetRenderDrawColor(SDLRenderer, 80, 80, 80, 255);
+		int x1 = Position.x + BoxBounds.x + BoxBounds.w;
+		int x2 = x1 + LineWidth;
+		int y = Position.y + BB_Sec.y + (BB_Sec.h / 2);
+		SDL_RenderDrawLine(_Renderer, x1, y, x2, y);
+	}
 }
 
 GraphicsBlock_NodeHeader *GraphicsBlock_Node::Header()
