@@ -25,8 +25,12 @@ struct QNodeViewCamera
 
 struct QNodeViewInputState
 {
+	static constexpr unsigned int DRAG_THRESHOLD = 10;
+
 	bool bLeftMouseDown = false;
 	bool bRightMouseDown = false;
+
+	bool bDraggingNodes = false;
 
 	SDL_Point Position = { -1, -1 };
 	SDL_Point DownPosition[3] = { { -1, -1 }, { -1, -1 }, { -1, -1 } };

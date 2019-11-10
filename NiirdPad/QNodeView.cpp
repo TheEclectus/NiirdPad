@@ -168,6 +168,10 @@ void QNodeView::Input()
 				}
 			}
 			// No Node is found
+			if (Event.user.code == Qt::MouseButton::LeftButton)
+			{
+				_InputState.bDraggingNodes = false;
+			}
 
 			if (Event.user.code == Qt::MouseButton::RightButton)
 			{
@@ -184,13 +188,21 @@ void QNodeView::Input()
 			
 			if (Event.user.code & Qt::MouseButton::LeftButton)
 			{
-				SDL_Point Delta = { reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2) };
-
-				for (auto CurNode : _InputState.SelectedNodes)
+				if (abs(_InputState.DownPosition[0].x - _InputState.Position.x) > QNodeViewInputState::DRAG_THRESHOLD ||
+					abs(_InputState.DownPosition[0].y - _InputState.Position.y) > QNodeViewInputState::DRAG_THRESHOLD)
 				{
-					SDL_Point CurNodePos = CurNode->Position();
-					CurNodePos = { CurNodePos.x + Delta.x, CurNodePos.y + Delta.y };
-					CurNode->SetPosition(CurNodePos);
+					_InputState.bDraggingNodes = true;
+				}
+
+				if (_InputState.bDraggingNodes == true)
+				{
+					SDL_Point Delta = { reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2) };
+					for (auto CurNode : _InputState.SelectedNodes)
+					{
+						SDL_Point CurNodePos = CurNode->Position();
+						CurNodePos = { CurNodePos.x + Delta.x, CurNodePos.y + Delta.y };
+						CurNode->SetPosition(CurNodePos);
+					}
 				}
 			}
 			else if (Event.user.code & Qt::MouseButton::MiddleButton)

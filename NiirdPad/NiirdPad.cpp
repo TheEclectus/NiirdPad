@@ -245,21 +245,22 @@ NiirdPad::NiirdPad(QWidget *parent) :
 		DialogueFile *DiagFile = (DialogueFile*)ui.cmbDiag->itemData(index).value<void*>();
 		this->ui.widget->SetDialogueFile(DiagFile);
 	});
-	
+
 	//ui.widget->setFocus();
 	//this->setMouseTracking(true);
 
 	_loadedProject = new Project(*ui.widget);
 
 	Character *NewChar = _loadedProject->NewCharacter("NIIRB"); // Legally distinct from Niirds™
-	
+
 	DialogueFile *NewDiag = NewChar->NewDialogueFile("diag");
 	Node *NewNode = NewDiag->NewNode();
 	NewNode->SetComment("Presenting, the Niirb");
-	
+
 	auto *Dlg = NewNode->AddDialogue("b i r b");
 	Dlg->SetAll({ "give_money \"krats\" 20" }, "the niirb is a legally distinct creature from the Niird, which is copyright 2016-2019 Meandraco Entertainment");
-
+	auto *Opt = NewNode->AddOption();
+	Opt->SetAll({ "//showif.charisma.8" }, { "give_money \"krats\" 80" }, "Test");
 
 	DialogueFile *NewDiag2 = NewChar->NewDialogueFile("diag 2");
 	Node *NewNode2 = NewDiag2->NewNode();
