@@ -137,10 +137,10 @@ void GraphicsBlock_Text::CalculateSize(int MaxWidthHint, int MaxHeightHint)
 	}
 	else
 	{
-		size_t BufferSize = _Text.size() * 1.1f;
+		size_t BufferSize = (_Text.size() * 1.1f) + 1; // HACK: is it really though?
 		char *Buffer = new char[BufferSize];
 
-		int CharCount = FC_GetWrappedText(_Font, Buffer, BufferSize,_SizeHint.w, _Text.c_str());
+		int CharCount = FC_GetWrappedText(_Font, Buffer, BufferSize, _SizeHint.w, _Text.c_str());
 		_CalculatedText = Buffer;
 
 		_CalculatedBounds = FC_GetBounds(_Font, 0.f, 0.f, FC_AlignEnum::FC_ALIGN_LEFT, FC_MakeScale(1.f, 1.f), _CalculatedText.c_str());
