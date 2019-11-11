@@ -2,5 +2,11 @@
     <qresource prefix="/NiirdPad">
         <file>Resources/Icon1.ico</file>
         <file>Resources/Icon2.ico</file>
+        <file>Resources/nub_full_default.bmp</file>
+        <file>Resources/nub_full_highlight.bmp</file>
+        <file>Resources/nub_in_default.bmp</file>
+        <file>Resources/nub_in_highlight.bmp</file>
+        <file>Resources/nub_out_default.bmp</file>
+        <file>Resources/nub_out_highlight.bmp</file>
     </qresource>
 </RCC>

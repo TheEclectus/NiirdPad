@@ -213,6 +213,17 @@ public:
 	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
 };
 
+class GraphicsBlock_ANub : public AGraphicsBlock
+{
+protected:
+	static const int RADIUS = 8;
+
+public:
+	GraphicsBlock_ANub(SDL_Renderer *AssociatedRenderer);
+	virtual void CalculateSize(int MaxWidthHint = -1, int MaxHeightHint = -1) override;
+	virtual void Render(SDL_Renderer *SDLRenderer, SDL_Point Position) override;
+};
+
 class GraphicsBlock_NodeOutputBox : public AGraphicsBlock
 {
 protected:
@@ -233,6 +244,10 @@ protected:
 	GraphicsBlock_Text *_OptionLabel;
 	GraphicsBlock_Text *_ScriptLabel;
 
+	SDL_Point _NubPoint = { 0, 0 };
+
+	//GraphicsBlock_ANub *_Nub;
+
 public:
 	GraphicsBlock_NodeOutputBox(SDL_Renderer *AssociatedRenderer, FC_Font *TextFont, FC_Font *ScriptFont, const SDL_Color &TextColor = { 255, 255, 255, 255 }, const SDL_Color &ScriptColor = { 173, 216, 230, 255 }, const SDL_Color &VisibilityScriptColor = { 235, 195, 85, 255 } );
 
@@ -243,11 +258,18 @@ public:
 	void SetOption(const std::string &Text);
 	void SetScript(const std::string &Text);
 	
+	const SDL_Point &NubPoint() const;
 };
 
 class GraphicsBlock_NodeOutputBoxSection : public AGraphicsBlock
 {
 protected:
+	FC_Font *_TextFont, *_ScriptFont, *_VisFont;
+	SDL_Color _TextColor, _ScriptColor, *_VisColor;
+
+	std::vector<GraphicsBlock_NodeOutputBox*> _OutputBoxes;
+
+public:
 	static const int	PADDING_LEFT = 5,
 						PADDING_RIGHT = 5,
 						PADDING_TOP = 5,
@@ -257,12 +279,6 @@ protected:
 	static const int	DEFAULT_WIDTH = 300,
 						DEFAULT_HEIGHT = 45;
 
-	FC_Font *_TextFont, *_ScriptFont, *_VisFont;
-	SDL_Color _TextColor, _ScriptColor, *_VisColor;
-
-	std::vector<GraphicsBlock_NodeOutputBox*> _OutputBoxes;
-
-public:
 	GraphicsBlock_NodeOutputBoxSection(SDL_Renderer *AssociatedRenderer, FC_Font *TextFont, FC_Font *ScriptFont, FC_Font *VisFont, const SDL_Color &TextColor = { 255, 255, 255, 255 }, const SDL_Color &ScriptColor = { 173, 216, 230, 255 }, const SDL_Color &VisColor = { 235, 195, 85, 255 });
 	GraphicsBlock_NodeOutputBox *AddOutputBox();
 	std::vector<GraphicsBlock_NodeOutputBox*> &OutputBoxes();

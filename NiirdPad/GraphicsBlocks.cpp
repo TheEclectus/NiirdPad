@@ -381,6 +381,65 @@ void GraphicsBlock_NodeInputBoxSection::Render(SDL_Renderer *SDLRenderer, SDL_Po
 
 #pragma endregion
 
+#pragma region GraphicsBlock_ANub
+
+GraphicsBlock_ANub::GraphicsBlock_ANub(SDL_Renderer *AssociatedRenderer) :
+	AGraphicsBlock(AssociatedRenderer)
+{
+
+}
+
+void GraphicsBlock_ANub::CalculateSize(int MaxWidthHint, int MaxHeightHint)
+{
+
+}
+
+void GraphicsBlock_ANub::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
+{
+	static auto DrawCircle = [](SDL_Renderer * renderer, int32_t centreX, int32_t centreY, int32_t radius)
+	{
+		const int32_t diameter = (radius * 2);
+
+		int32_t x = (radius - 1);
+		int32_t y = 0;
+		int32_t tx = 1;
+		int32_t ty = 1;
+		int32_t error = (tx - diameter);
+
+		while (x >= y)
+		{
+			//  Each of the following renders an octant of the circle
+			SDL_RenderDrawPoint(renderer, centreX + x, centreY - y);
+			SDL_RenderDrawPoint(renderer, centreX + x, centreY + y);
+			//SDL_RenderDrawPoint(renderer, centreX - x, centreY - y);
+			//SDL_RenderDrawPoint(renderer, centreX - x, centreY + y);
+			SDL_RenderDrawPoint(renderer, centreX + y, centreY - x);
+			SDL_RenderDrawPoint(renderer, centreX + y, centreY + x);
+			//SDL_RenderDrawPoint(renderer, centreX - y, centreY - x);
+			//SDL_RenderDrawPoint(renderer, centreX - y, centreY + x);
+
+			if (error <= 0)
+			{
+				++y;
+				error += ty;
+				ty += 2;
+			}
+
+			if (error > 0)
+			{
+				--x;
+				tx += 2;
+				error += (tx - diameter);
+			}
+		}
+	};
+
+	SDL_SetRenderDrawColor(SDLRenderer, 127, 0, 0, 255);
+	DrawCircle(SDLRenderer, Position.x, Position.y, RADIUS);
+}
+
+#pragma endregion
+
 #pragma region GraphicsBlock_NodeOutputBox
 
 GraphicsBlock_NodeOutputBox::GraphicsBlock_NodeOutputBox(SDL_Renderer *AssociatedRenderer, FC_Font *TextFont, FC_Font *ScriptFont, const SDL_Color &TextColor, const SDL_Color &ScriptColor, const SDL_Color &VisibilityScriptColor) :
@@ -394,9 +453,13 @@ GraphicsBlock_NodeOutputBox::GraphicsBlock_NodeOutputBox(SDL_Renderer *Associate
 	_ScriptLabel = new GraphicsBlock_Text(AssociatedRenderer, ScriptFont, ScriptColor);
 	_OptionLabel = new GraphicsBlock_Text(AssociatedRenderer, TextFont, TextColor);
 
+	//_Nub = new GraphicsBlock_ANub(AssociatedRenderer);
+
 	AddChild(_VisibilityLabel);
 	AddChild(_ScriptLabel);
 	AddChild(_OptionLabel);
+
+	//AddChild(_Nub);
 }
 
 void GraphicsBlock_NodeOutputBox::CalculateSize(int MaxWidthHint, int MaxHeightHint)
@@ -431,7 +494,10 @@ void GraphicsBlock_NodeOutputBox::CalculateSize(int MaxWidthHint, int MaxHeightH
 	Size.w += PADDING_LEFT + PADDING_RIGHT;
 	Size.w = std::max(Size.w, DEFAULT_WIDTH);
 
-	_CalculatedBounds = Size;
+	_CalculatedBounds.w = Size.w;
+	_CalculatedBounds.h = Size.h;
+
+	//_Nub->SetPosition({ Size.w + GraphicsBlock_NodeOutputBoxSection::PADDING_RIGHT + 1, Size.h / 2 });
 }
 
 void GraphicsBlock_NodeOutputBox::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
@@ -460,6 +526,11 @@ void GraphicsBlock_NodeOutputBox::SetOption(const std::string &Text)
 	_OptionLabel->SetText(Text);
 }
 
+const SDL_Point &GraphicsBlock_NodeOutputBox::NubPoint() const
+{
+	auto TotalOffset = GetTotalOffset();
+	return { GetBounds().x + GetBounds().w + GraphicsBlock_NodeOutputBoxSection::PADDING_RIGHT, TotalOffset.y + GetBounds().h / 2 };
+}
 
 #pragma endregion
 
@@ -498,7 +569,7 @@ void GraphicsBlock_NodeOutputBoxSection::CalculateSize(int MaxWidthHint, int Max
 	{
 		auto CurBox = _OutputBoxes[i];
 
-		bool bAddSpacing = (_OutputBoxes.size() > 1) && (i < (_OutputBoxes.size() - 1));
+		bool bAddSpacing = (_OutputBoxes.size() > 1) && (i > 0);
 		const int VertSpacing = (bAddSpacing ? SPACING : 0);
 
 		CurBox->CalculateSize();
@@ -532,7 +603,6 @@ void GraphicsBlock_NodeOutputBoxSection::Render(SDL_Renderer *SDLRenderer, SDL_P
 }
 
 #pragma endregion
-
 
 #pragma region GraphicsBlock_Node
 
@@ -605,7 +675,7 @@ void GraphicsBlock_Node::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 		SDL_SetRenderDrawColor(SDLRenderer, 80, 80, 80, 255);
 		int x1 = Position.x + BoxBounds.x + BoxBounds.w;
 		int x2 = x1 + LineWidth;
-		int y = Position.y + BB_Sec.y + (BB_Sec.h / 2);
+		int y = Position.y + BB_Sec.y + BoxBounds.y + (BoxBounds.h / 2);
 		SDL_RenderDrawLine(_Renderer, x1, y, x2, y);
 	}
 }

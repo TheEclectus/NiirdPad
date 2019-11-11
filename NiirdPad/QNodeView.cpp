@@ -1,5 +1,7 @@
 #include "QNodeView.h"
 
+#include <QFile>
+
 #include "DialogueFile.h"
 #include "GraphicsBlocks.h"
 #include "NiirdPad.h"
@@ -329,14 +331,36 @@ void QNodeView::RenderForeground()
 		}
 
 		Node->Graphics().Render(Renderer, BlockRenderPos);
+
+		for (auto OutputBox : Node->Graphics().OutputSection()->OutputBoxes())
+		{
+			auto NubPoint = OutputBox->NubPoint();
+			SDL_Rect RenderTgt{ BlockRenderPos.x + NubPoint.x, BlockRenderPos.y + NubPoint.y - 7, 9, 15 };
+			SDL_RenderCopy(Renderer, _Nubs._OutputDefault, nullptr, &RenderTgt);
+		}
 	}
+
+	//SDL_Rect RenderTgt{ 250, 250, 9, 15 };
+	//SDL_RenderCopy(Renderer, _Nubs._OutputDefault, nullptr, &RenderTgt);
 }
 
 QNodeView::QNodeView(QWidget *Parent) :
 	QSDLPanel(Parent),
 	_FontStore(this->SDLRenderer())
 {
-	auto NewNode = new Node(*this);
+	QFile Nub_OutputDefault(":/NiirdPad/Resources/nub_out_default.bmp");
+	if (Nub_OutputDefault.open(QIODevice::OpenModeFlag::ReadOnly))
+	{
+		auto Bytes = Nub_OutputDefault.readAll();
+
+		//SDL_Surface *Temp = SDL_CreateRGBSurfaceFrom(Bytes.data(), 9, 15, 24, 9 * 3, 0x0000FF, 0x00FF00, 0xFF0000, 0x000000);
+		SDL_Surface *Temp = SDL_LoadBMP_RW(SDL_RWFromConstMem(Bytes.data(), Bytes.size()), 1);
+		SDL_SetColorKey(Temp, 1, 0x00FF00);
+		_Nubs._OutputDefault = SDL_CreateTextureFromSurface(this->SDLRenderer(), Temp);
+		SDL_FreeSurface(Temp);
+	}
+
+	/*auto NewNode = new Node(*this);
 	NewNode->SetComment("Time for a new header. ( ' v ')");
 
 	auto NN_Dlg = NewNode->AddDialogue("blep");
@@ -346,7 +370,7 @@ QNodeView::QNodeView(QWidget *Parent) :
 	auto NN_Opt = NewNode->AddOption();
 	NN_Opt->SetAll({ "//showif.has_krats.20", "//hideif.has_krats.50", "//hideif.has_adats.50" }, { "take_money krats 20" }, "BEEEEEEEEEP ( ' v ') ( ' < ') ( ' v ')");
 
-	_Nodes.push_back(NewNode);
+	_Nodes.push_back(NewNode);*/
 }
 
 const FontStore &QNodeView::FontStore() const
