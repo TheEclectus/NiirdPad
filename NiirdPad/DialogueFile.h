@@ -13,6 +13,7 @@ class Character;
 class Node;
 class NodeDialogue;
 
+// TODO: Store camera information
 class DialogueFile
 {
 private:

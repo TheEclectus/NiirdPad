@@ -57,7 +57,10 @@ protected:
 
 	struct {
 		SDL_Texture *_OutputDefault = nullptr;
+		SDL_Rect _OutputDefaultSize = { 0, 0, 0, 0 };
+
 		SDL_Texture *_OutputHighlighted = nullptr;
+		SDL_Rect _OutputHighlightedSize = { 0, 0, 0, 0 };
 	} _Nubs;
 
 	DialogueFile *_DialogueFile = nullptr;

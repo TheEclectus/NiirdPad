@@ -34,36 +34,6 @@ class NodeOption;
 	- Order shouldn't be assumed by the user; implement as deque.
 */
 
-// Exists SOLELY to create and manage Connection objects. Everything that can act as the
-// input for a connection must have a ConnectionManager.
-class ConnectionManager
-{
-private:
-public:
-};
-
-/*
-	The representation of a connection (and its nature) between an Option and a Dialogue.
-	Has no specialized type, because 
-*/
-class Connection
-{
-	friend class ConnectionManager;
-private:
-	std::string _key;	// <- the key that 'this' will be stored under
-	size_t _index;		// <- the index of the infinite connection
-
-	Connection(ConnectionManager *Src, ConnectionTarget *Tgt);
-	~Connection();
-public:
-};
-
-// Exists SOLELY for back-lookup of connected Options.
-class ConnectionTarget
-{
-
-};
-
 // TODO: In NodeDialogue and NodeOption, store the QScriptEditWindow's ::saveState() data and reset the state of the QSplitter (save this to the project file!)
 
 // TODO: SetAll() must currently be called before _graphics is updated.
