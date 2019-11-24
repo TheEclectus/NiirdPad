@@ -13,6 +13,7 @@ class DialogueFile;
 
 // Node.h
 class Node;
+class NubOutput;
 
 // NiirdPad.h
 class NiirdPad;
@@ -36,7 +37,7 @@ struct QNodeViewInputState
 	SDL_Point DownPosition[3] = { { -1, -1 }, { -1, -1 }, { -1, -1 } };
 
 	std::vector<Node*> SelectedNodes;
-	NubOutput *MousedOver = nullptr;
+	NubOutput *MousedOverNub = nullptr;
 
 	/// <summary>
 	/// Resets all applicable input state information:

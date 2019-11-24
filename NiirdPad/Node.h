@@ -96,8 +96,10 @@ private:
 public:
 	static void LoadTexture(SDL_Renderer *Renderer);
 	static SDL_Texture *Texture();
+	static SDL_Rect TextureSize();
 
 	NubOutput(NodeOption &Parent);
+	NodeOption &Parent();
 };
 
 // TODO: In NodeDialogue and NodeOption, store the QScriptEditWindow's ::saveState() data and reset the state of the QSplitter (save this to the project file!)
@@ -145,6 +147,8 @@ private:
 	NubOutput _nub;
 public:
 	NodeOption(Node &ParentNode, GraphicsBlock_NodeOutputBox *Graphics, const std::vector<std::string> &VisibilityScripts = {}, const const std::vector<std::string> &Functions = {}, const std::string &Text = "");
+
+	Node &Parent();
 
 	void SetAll(const std::vector<std::string> &VisibilityScriptLines, const std::vector<std::string> &FunctionLines, const std::string &Option);
 	void SetVisibilityLines(const std::vector<std::string> &VisibilityLines);

@@ -15,6 +15,7 @@ void QNodeView::Input()
 	SDL_Event Event;
 	while (SDL_PollEvent(&Event))
 	{
+		#pragma region EVENT_MOUSEDOWN
 		if (Event.type == EVENT_MOUSEDOWN)
 		{
 			SDL_Point NewDownPos = { reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2) };
@@ -86,6 +87,8 @@ void QNodeView::Input()
 				_InputState.SelectedNodes.clear();
 			}
 		}
+		#pragma endregion
+		#pragma region EVENT_MOUSEUP
 		else if (Event.type == EVENT_MOUSEUP)
 		{
 			if (Event.user.code == Qt::MouseButton::LeftButton)
@@ -183,11 +186,91 @@ void QNodeView::Input()
 				return;
 			}
 		}
+		#pragma endregion
+		#pragma region EVENT_MOUSEMOVE
 		else if (Event.type == EVENT_MOUSEMOVE)
 		{
-			_InputState.Position = GetMousePosition();// { reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2) };
+			SDL_Point MousePos = GetMousePosition();
+			_InputState.Position = MousePos;// { reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2) };
 			//printf("MouseMove [%c%c%c] (%d, %d)\n", Event.user.code & Qt::MouseButton::LeftButton ? 'L' : ' ', Event.user.code & Qt::MouseButton::MiddleButton ? 'M' : ' ', Event.user.code & Qt::MouseButton::RightButton ? 'R' : ' ', reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2));
 			
+			// Quick cycle-saving trick: if MousedOverNub != nullptr, check it against the mouse position first.
+			if (_InputState.MousedOverNub != nullptr)
+			{
+				NodeOption &CurOpt = _InputState.MousedOverNub->Parent();
+				SDL_Point CurNubPos = CurOpt.Graphics()->NubPoint();
+				SDL_Rect NodeBounds = CurOpt.Parent().Graphics().GetBounds();
+				SDL_Point NodePos = CurOpt.Parent().Position();
+
+				NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
+				NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
+
+				CurNubPos.x += NodeBounds.x;
+				CurNubPos.y += NodeBounds.y;
+
+				// Pythagorean theorem to get the distance from the center of the nub.
+				SDL_Point Distances = { CurNubPos.x - MousePos.x, CurNubPos.y - MousePos.y };
+				int DistanceFromCenter = sqrt(pow(Distances.x, 2) + pow(Distances.y, 2));
+
+				// Radius = (W - 1) / 2
+				const int NubRadius = (NubOutput::TextureSize().w - 1) / 2;
+
+				// Opposite of comparison below
+				if (DistanceFromCenter > NubRadius)
+				{
+					_InputState.MousedOverNub = nullptr;
+				}
+			}
+
+			if (_InputState.MousedOverNub == nullptr)
+			{
+				bool bNubFound = false;
+				// TODO: Only look through the list of VISIBILE nodes (see TODO about occlusion culling)
+				for (auto CurNodeIter = _Nodes.begin(); CurNodeIter != _Nodes.end(); CurNodeIter++)
+				{
+					auto CurNode = *CurNodeIter;
+
+					auto NodePos = CurNode->Position();
+					SDL_Rect NodeBounds = CurNode->Graphics().GetBounds();
+					NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
+					NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
+
+					SDL_Rect NodePlusNubBounds = NodeBounds;
+					// TODO: either make a universal nub texture, or replace .x with NubInput texture size
+					NodePlusNubBounds.x -= NubOutput::TextureSize().w / 2;
+					NodePlusNubBounds.w += NubOutput::TextureSize().w;
+
+					if (SDL_PointInRect(&MousePos, &NodePlusNubBounds))
+					{
+						//fmt::print("Inside node-nub boundaries.\n");
+
+						for (auto CurOpt : CurNode->Options())
+						{
+							SDL_Point CurNubPos = CurOpt->Graphics()->NubPoint();
+							CurNubPos.x += NodeBounds.x;
+							CurNubPos.y += NodeBounds.y;
+
+							// Pythagorean theorem to get the distance from the center of the nub.
+							SDL_Point Distances = { CurNubPos.x - MousePos.x, CurNubPos.y - MousePos.y };
+							int DistanceFromCenter = sqrt(pow(Distances.x, 2) + pow(Distances.y, 2));
+
+							// Radius = (W - 1) / 2
+							const int NubRadius = (NubOutput::TextureSize().w - 1) / 2;
+
+							if (DistanceFromCenter <= NubRadius)
+							{
+								//fmt::print("Inside a nub!\n");
+								_InputState.MousedOverNub = &CurOpt->Nub();
+								break;
+							}
+						}
+					}
+
+					if (bNubFound)
+						break;
+				}
+			}
+
 			if (Event.user.code & Qt::MouseButton::LeftButton)
 			{
 				if (abs(_InputState.DownPosition[0].x - _InputState.Position.x) > QNodeViewInputState::DRAG_THRESHOLD ||
@@ -215,7 +298,9 @@ void QNodeView::Input()
 				_Camera.ViewBox.y -= Delta.y;
 			}
 		}
+		#pragma endregion
 
+		#pragma region SDL Events
 		else if (Event.type == SDL_EventType::SDL_WINDOWEVENT)
 		{
 			SDL_WindowEvent &WinEvent = Event.window;
@@ -230,7 +315,6 @@ void QNodeView::Input()
 				printf_s("Camera adjusted to %dx%d.\n", _Camera.ViewBox.w, _Camera.ViewBox.h);
 			}
 		}
-
 		else if (Event.type == SDL_EventType::SDL_RENDER_TARGETS_RESET)
 		{
 			printf_s("SuS\n");
@@ -241,6 +325,7 @@ void QNodeView::Input()
 			printf_s("sUs\n");
 			_FontStore.ResetFonts((SDL_EventType)Event.type);
 		}
+		#pragma endregion
 	}
 }
 

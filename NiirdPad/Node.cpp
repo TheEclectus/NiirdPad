@@ -116,10 +116,20 @@ SDL_Texture *NubOutput::Texture()
 	return NubOutput::_NubTexture;
 }
 
+SDL_Rect NubOutput::TextureSize()
+{
+	return NubOutput::_NubTextureSize;
+}
+
 NubOutput::NubOutput(NodeOption &Parent) :
 	_parent(Parent)
 {
 	
+}
+
+NodeOption &NubOutput::Parent()
+{
+	return _parent;
 }
 
 
@@ -198,6 +208,11 @@ NodeOption::NodeOption(Node &ParentNode, GraphicsBlock_NodeOutputBox *Graphics, 
 	_nub(*this)
 {
 	
+}
+
+Node &NodeOption::Parent()
+{
+	return _parentNode;
 }
 
 void NodeOption::SetAll(const std::vector<std::string> &VisibilityScriptLines, const std::vector<std::string> &FunctionLines, const std::string &Option)
