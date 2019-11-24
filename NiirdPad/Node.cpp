@@ -97,10 +97,10 @@ void ANub::LoadTextures(SDL_Renderer *Renderer)
 {
 	if (_NubTextureDefault == nullptr)
 	{
-		QFile Nub(":/NiirdPad/Resources/nub_full_default2.bmp");
-		if (Nub.open(QIODevice::OpenModeFlag::ReadOnly))
+		QFile NubDefault(":/NiirdPad/Resources/nub_full_default2.bmp");
+		if (NubDefault.open(QIODevice::OpenModeFlag::ReadOnly))
 		{
-			auto Bytes = Nub.readAll();
+			auto Bytes = NubDefault.readAll();
 
 			//SDL_Surface *Temp = SDL_CreateRGBSurfaceFrom(Bytes.data(), 9, 15, 24, 9 * 3, 0x0000FF, 0x00FF00, 0xFF0000, 0x000000);
 			SDL_Surface *Temp = SDL_LoadBMP_RW(SDL_RWFromConstMem(Bytes.data(), Bytes.size()), 1);
@@ -109,10 +109,14 @@ void ANub::LoadTextures(SDL_Renderer *Renderer)
 			_NubTextureDefault = SDL_CreateTextureFromSurface(Renderer, Temp);
 			SDL_FreeSurface(Temp);
 		}
-		QFile Nub(":/NiirdPad/Resources/nub_full_highlight2.bmp");
-		if (Nub.open(QIODevice::OpenModeFlag::ReadOnly))
+	}
+
+	if (_NubTextureHighlighted == nullptr)
+	{
+		QFile NubHighlighted(":/NiirdPad/Resources/nub_full_highlight2.bmp");
+		if (NubHighlighted.open(QIODevice::OpenModeFlag::ReadOnly))
 		{
-			auto Bytes = Nub.readAll();
+			auto Bytes = NubHighlighted.readAll();
 
 			//SDL_Surface *Temp = SDL_CreateRGBSurfaceFrom(Bytes.data(), 9, 15, 24, 9 * 3, 0x0000FF, 0x00FF00, 0xFF0000, 0x000000);
 			SDL_Surface *Temp = SDL_LoadBMP_RW(SDL_RWFromConstMem(Bytes.data(), Bytes.size()), 1);

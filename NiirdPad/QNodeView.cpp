@@ -425,17 +425,29 @@ void QNodeView::RenderForeground()
 			SDL_RenderCopy(Renderer, ANub::TextureDefault(), nullptr, &RenderTgt);
 		}
 
-		if (_InputState.MousedOverNub)
-		{
-
-		}
-
 		//for (auto OutputBox : Node->Graphics().OutputSection()->OutputBoxes())
 		//{
 		//	auto NubPoint = OutputBox->NubPoint();
 		//	SDL_Rect RenderTgt{ BlockRenderPos.x + NubPoint.x - (_Nubs._OutputDefaultSize.w / 2), BlockRenderPos.y + NubPoint.y - /*7*/ (_Nubs._OutputDefaultSize.h / 2), /*9*/ _Nubs._OutputDefaultSize.w, /*15*/ _Nubs._OutputDefaultSize.h };
 		//	SDL_RenderCopy(Renderer, _Nubs._OutputDefault, nullptr, &RenderTgt);
 		//}
+	}
+
+	if (_InputState.MousedOverNub)
+	{
+		NodeOption &CurOpt = _InputState.MousedOverNub->Parent();
+		SDL_Point NubPoint = CurOpt.Graphics()->NubPoint();
+		SDL_Rect NodeBounds = CurOpt.Parent().Graphics().GetBounds();
+		SDL_Point NodePos = CurOpt.Parent().Position();
+
+		NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
+		NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
+
+		NubPoint.x += NodeBounds.x;
+		NubPoint.y += NodeBounds.y;
+
+		SDL_Rect RenderTgt{ NubPoint.x - (ANub::TextureSize().w / 2), NubPoint.y - (ANub::TextureSize().h / 2), ANub::TextureSize().w, ANub::TextureSize().h };
+		SDL_RenderCopy(Renderer, ANub::TextureHighlighted(), nullptr, &RenderTgt);
 	}
 
 	//SDL_Rect RenderTgt{ 250, 250, 9, 15 };
