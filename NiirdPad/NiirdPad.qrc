@@ -8,5 +8,6 @@
         <file>Resources/nub_in_highlight.bmp</file>
         <file>Resources/nub_out_default.bmp</file>
         <file>Resources/nub_out_highlight.bmp</file>
+        <file>Resources/nub_full_default2.bmp</file>
     </qresource>
 </RCC>

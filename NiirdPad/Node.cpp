@@ -1,6 +1,127 @@
 #include "Node.h"
 
+#include <QFile>
+
 #include "GraphicsBlocks.h"
+
+ConnectionInput::ConnectionInput(ConnectionPointInput &Parent, const std::string &KeyName, ConnectionOutput *Connection) :
+	_parent(Parent),
+	_keyName(KeyName),
+	_connection(Connection)
+{
+
+}
+
+ConnectionPointInput &ConnectionInput::Parent()
+{
+	return _parent;
+}
+
+const std::string &ConnectionInput::KeyName()
+{
+	return _keyName;
+}
+
+ConnectionOutput *ConnectionInput::Connection()
+{
+	return _connection;
+}
+
+void ConnectionInput::SetConnection(ConnectionOutput *NewConnection)
+{
+	_connection = NewConnection;
+}
+
+
+
+ConnectionPointInput::ConnectionPointInput(NodeDialogue &Parent) :
+	_parent(Parent)
+{
+
+}
+
+NodeDialogue &ConnectionPointInput::Parent()
+{
+	return _parent;
+}
+
+std::vector<ConnectionInput*> &ConnectionPointInput::Connections()
+{
+	return _connections;
+}
+
+void ConnectionPointInput::SetKeys(const std::vector<std::string> &Keys)
+{
+	std::vector<ConnectionInput*> NewConnections;
+
+	for (const std::string &CurrentKey : Keys)
+	{
+		// If the key has a matching existing name, sustain the connection.
+		auto FoundKey = std::find_if(_connections.begin(), _connections.end(), [CurrentKey](ConnectionInput* Conn)
+		{
+			if (Conn->KeyName() == CurrentKey)
+			{
+				return true;
+			}
+
+			return false;
+		});
+
+		if (FoundKey != _connections.end()) // found
+		{
+			NewConnections.push_back(*FoundKey);
+			_connections.erase(FoundKey);
+		}
+		else
+		{
+			NewConnections.push_back(new ConnectionInput(*this, CurrentKey, nullptr));
+		}
+	}
+
+	for (auto RemainingKey : _connections)
+	{
+		ConnectionInput *Conn = RemainingKey;
+		delete Conn;
+	}
+	_connections.clear();
+	_connections = NewConnections;
+}
+
+
+
+SDL_Texture *NubOutput::_NubTexture = nullptr;
+SDL_Rect NubOutput::_NubTextureSize = { 0, 0, 0, 0 };
+
+void NubOutput::LoadTexture(SDL_Renderer *Renderer)
+{
+	if (_NubTexture == nullptr)
+	{
+		QFile Nub(":/NiirdPad/Resources/nub_full_default2.bmp");
+		if (Nub.open(QIODevice::OpenModeFlag::ReadOnly))
+		{
+			auto Bytes = Nub.readAll();
+
+			//SDL_Surface *Temp = SDL_CreateRGBSurfaceFrom(Bytes.data(), 9, 15, 24, 9 * 3, 0x0000FF, 0x00FF00, 0xFF0000, 0x000000);
+			SDL_Surface *Temp = SDL_LoadBMP_RW(SDL_RWFromConstMem(Bytes.data(), Bytes.size()), 1);
+			SDL_SetColorKey(Temp, 1, 0x00FF00);
+			_NubTextureSize = { 0, 0, Temp->w, Temp->h };
+			_NubTexture = SDL_CreateTextureFromSurface(Renderer, Temp);
+			SDL_FreeSurface(Temp);
+		}
+	}
+}
+
+SDL_Texture *NubOutput::Texture()
+{
+	return NubOutput::_NubTexture;
+}
+
+NubOutput::NubOutput(NodeOption &Parent) :
+	_parent(Parent)
+{
+	
+}
+
 
 
 NodeDialogue::NodeDialogue(Node &ParentNode, GraphicsBlock_NodeInputBox *Graphics, const std::string &Reference, const std::vector<std::string> &FunctionLines, const std::string &Dialogue) :
@@ -73,7 +194,8 @@ NodeOption::NodeOption(Node &ParentNode, GraphicsBlock_NodeOutputBox *Graphics, 
 	_graphics(Graphics),
 	_visibilityScriptLines(VisibilityScripts),
 	_functionLines(Functions),
-	_option(Text)
+	_option(Text),
+	_nub(*this)
 {
 	
 }
@@ -133,6 +255,11 @@ const std::vector<std::string> &NodeOption::GetFunctionLines() const
 const std::vector<std::string> &NodeOption::GetVisibilityScriptLines() const
 {
 	return _visibilityScriptLines;
+}
+
+NubOutput &NodeOption::Nub()
+{
+	return _nub;
 }
 
 GraphicsBlock_NodeOutputBox *NodeOption::Graphics()
@@ -204,6 +331,11 @@ NodeOption *Node::AddOption()
 	_options.push_back(NewOption);
 
 	return NewOption;
+}
+
+const std::vector<NodeOption*> &Node::Options() const
+{
+	return _options;
 }
 
 void Node::FeatureAtPosition(SDL_Point MousePos, bool &bInHeader, bool &bInInputSection, bool &bInOutputSection, NodeDialogue **const Dlg, NodeOption **const Opt)

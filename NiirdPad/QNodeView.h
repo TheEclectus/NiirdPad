@@ -36,6 +36,7 @@ struct QNodeViewInputState
 	SDL_Point DownPosition[3] = { { -1, -1 }, { -1, -1 }, { -1, -1 } };
 
 	std::vector<Node*> SelectedNodes;
+	NubOutput *MousedOver = nullptr;
 
 	/// <summary>
 	/// Resets all applicable input state information:

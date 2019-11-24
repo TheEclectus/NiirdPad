@@ -332,12 +332,20 @@ void QNodeView::RenderForeground()
 
 		Node->Graphics().Render(Renderer, BlockRenderPos);
 
-		for (auto OutputBox : Node->Graphics().OutputSection()->OutputBoxes())
+		// Draw output nubs
+		for (auto Option : Node->Options())
 		{
-			auto NubPoint = OutputBox->NubPoint();
-			SDL_Rect RenderTgt{ BlockRenderPos.x + NubPoint.x, BlockRenderPos.y + NubPoint.y - 7, 9, 15 };
+			SDL_Point NubPoint = Option->Graphics()->NubPoint();
+			SDL_Rect RenderTgt{ BlockRenderPos.x + NubPoint.x - (_Nubs._OutputDefaultSize.w / 2), BlockRenderPos.y + NubPoint.y - /*7*/ (_Nubs._OutputDefaultSize.h / 2), /*9*/ _Nubs._OutputDefaultSize.w, /*15*/ _Nubs._OutputDefaultSize.h };
 			SDL_RenderCopy(Renderer, _Nubs._OutputDefault, nullptr, &RenderTgt);
 		}
+
+		//for (auto OutputBox : Node->Graphics().OutputSection()->OutputBoxes())
+		//{
+		//	auto NubPoint = OutputBox->NubPoint();
+		//	SDL_Rect RenderTgt{ BlockRenderPos.x + NubPoint.x - (_Nubs._OutputDefaultSize.w / 2), BlockRenderPos.y + NubPoint.y - /*7*/ (_Nubs._OutputDefaultSize.h / 2), /*9*/ _Nubs._OutputDefaultSize.w, /*15*/ _Nubs._OutputDefaultSize.h };
+		//	SDL_RenderCopy(Renderer, _Nubs._OutputDefault, nullptr, &RenderTgt);
+		//}
 	}
 
 	//SDL_Rect RenderTgt{ 250, 250, 9, 15 };
@@ -348,8 +356,10 @@ QNodeView::QNodeView(QWidget *Parent) :
 	QSDLPanel(Parent),
 	_FontStore(this->SDLRenderer())
 {
+	NubOutput::LoadTexture(this->SDLRenderer());
+
 	{
-		QFile Nub_OutputDefault(":/NiirdPad/Resources/nub_out_default.bmp");
+		QFile Nub_OutputDefault(":/NiirdPad/Resources/nub_full_default2.bmp");
 		if (Nub_OutputDefault.open(QIODevice::OpenModeFlag::ReadOnly))
 		{
 			auto Bytes = Nub_OutputDefault.readAll();
