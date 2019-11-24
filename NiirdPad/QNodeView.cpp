@@ -421,8 +421,13 @@ void QNodeView::RenderForeground()
 		for (auto Option : Node->Options())
 		{
 			SDL_Point NubPoint = Option->Graphics()->NubPoint();
-			SDL_Rect RenderTgt{ BlockRenderPos.x + NubPoint.x - (_Nubs._OutputDefaultSize.w / 2), BlockRenderPos.y + NubPoint.y - /*7*/ (_Nubs._OutputDefaultSize.h / 2), /*9*/ _Nubs._OutputDefaultSize.w, /*15*/ _Nubs._OutputDefaultSize.h };
-			SDL_RenderCopy(Renderer, _Nubs._OutputDefault, nullptr, &RenderTgt);
+			SDL_Rect RenderTgt{ BlockRenderPos.x + NubPoint.x - (ANub::TextureSize().w / 2), BlockRenderPos.y + NubPoint.y - (ANub::TextureSize().h / 2), ANub::TextureSize().w, ANub::TextureSize().h };
+			SDL_RenderCopy(Renderer, ANub::TextureDefault(), nullptr, &RenderTgt);
+		}
+
+		if (_InputState.MousedOverNub)
+		{
+
 		}
 
 		//for (auto OutputBox : Node->Graphics().OutputSection()->OutputBoxes())
@@ -441,49 +446,7 @@ QNodeView::QNodeView(QWidget *Parent) :
 	QSDLPanel(Parent),
 	_FontStore(this->SDLRenderer())
 {
-	NubOutput::LoadTexture(this->SDLRenderer());
-
-	{
-		QFile Nub_OutputDefault(":/NiirdPad/Resources/nub_full_default2.bmp");
-		if (Nub_OutputDefault.open(QIODevice::OpenModeFlag::ReadOnly))
-		{
-			auto Bytes = Nub_OutputDefault.readAll();
-
-			//SDL_Surface *Temp = SDL_CreateRGBSurfaceFrom(Bytes.data(), 9, 15, 24, 9 * 3, 0x0000FF, 0x00FF00, 0xFF0000, 0x000000);
-			SDL_Surface *Temp = SDL_LoadBMP_RW(SDL_RWFromConstMem(Bytes.data(), Bytes.size()), 1);
-			SDL_SetColorKey(Temp, 1, 0x00FF00);
-			_Nubs._OutputDefaultSize = { 0, 0, Temp->w, Temp->h };
-			_Nubs._OutputDefault = SDL_CreateTextureFromSurface(this->SDLRenderer(), Temp);
-			SDL_FreeSurface(Temp);
-		}
-	}
-
-	{
-		QFile Nub_OutputHighlighted(":/NiirdPad/Resources/nub_out_highlighted.bmp");
-		if (Nub_OutputHighlighted.open(QIODevice::OpenModeFlag::ReadOnly))
-		{
-			auto Bytes = Nub_OutputHighlighted.readAll();
-
-			//SDL_Surface *Temp = SDL_CreateRGBSurfaceFrom(Bytes.data(), 9, 15, 24, 9 * 3, 0x0000FF, 0x00FF00, 0xFF0000, 0x000000);
-			SDL_Surface *Temp = SDL_LoadBMP_RW(SDL_RWFromConstMem(Bytes.data(), Bytes.size()), 1);
-			SDL_SetColorKey(Temp, 1, 0x00FF00);
-			_Nubs._OutputHighlightedSize = { 0, 0, Temp->w, Temp->h };
-			_Nubs._OutputHighlighted = SDL_CreateTextureFromSurface(this->SDLRenderer(), Temp);
-			SDL_FreeSurface(Temp);
-		}
-	}
-
-	/*auto NewNode = new Node(*this);
-	NewNode->SetComment("Time for a new header. ( ' v ')");
-
-	auto NN_Dlg = NewNode->AddDialogue("blep");
-	NN_Dlg->SetDialogue("Test!");
-	NN_Dlg->SetFunctions({ "give_money \"krats\" 20" });
-
-	auto NN_Opt = NewNode->AddOption();
-	NN_Opt->SetAll({ "//showif.has_krats.20", "//hideif.has_krats.50", "//hideif.has_adats.50" }, { "take_money krats 20" }, "BEEEEEEEEEP ( ' v ') ( ' < ') ( ' v ')");
-
-	_Nodes.push_back(NewNode);*/
+	ANub::LoadTextures(this->SDLRenderer());
 }
 
 const FontStore &QNodeView::FontStore() const

@@ -57,14 +57,6 @@ protected:
 	ScriptEngine *_Engine = nullptr;
 	NiirdPad *_Parent = nullptr;
 
-	struct {
-		SDL_Texture *_OutputDefault = nullptr;
-		SDL_Rect _OutputDefaultSize = { 0, 0, 0, 0 };
-
-		SDL_Texture *_OutputHighlighted = nullptr;
-		SDL_Rect _OutputHighlightedSize = { 0, 0, 0, 0 };
-	} _Nubs;
-
 	DialogueFile *_DialogueFile = nullptr;
 	std::vector<Node*> _Nodes;	// Copy of the list from the current DialogueFile. Order changes frequently, most-recently-clicked Node at front.
 

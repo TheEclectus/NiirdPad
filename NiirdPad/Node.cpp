@@ -89,12 +89,13 @@ void ConnectionPointInput::SetKeys(const std::vector<std::string> &Keys)
 
 
 
-SDL_Texture *NubOutput::_NubTexture = nullptr;
-SDL_Rect NubOutput::_NubTextureSize = { 0, 0, 0, 0 };
+SDL_Texture *ANub::_NubTextureDefault = nullptr;
+SDL_Texture *ANub::_NubTextureHighlighted = nullptr;
+SDL_Rect ANub::_NubTextureSize = { 0, 0, 0, 0 };
 
-void NubOutput::LoadTexture(SDL_Renderer *Renderer)
+void ANub::LoadTextures(SDL_Renderer *Renderer)
 {
-	if (_NubTexture == nullptr)
+	if (_NubTextureDefault == nullptr)
 	{
 		QFile Nub(":/NiirdPad/Resources/nub_full_default2.bmp");
 		if (Nub.open(QIODevice::OpenModeFlag::ReadOnly))
@@ -105,21 +106,41 @@ void NubOutput::LoadTexture(SDL_Renderer *Renderer)
 			SDL_Surface *Temp = SDL_LoadBMP_RW(SDL_RWFromConstMem(Bytes.data(), Bytes.size()), 1);
 			SDL_SetColorKey(Temp, 1, 0x00FF00);
 			_NubTextureSize = { 0, 0, Temp->w, Temp->h };
-			_NubTexture = SDL_CreateTextureFromSurface(Renderer, Temp);
+			_NubTextureDefault = SDL_CreateTextureFromSurface(Renderer, Temp);
+			SDL_FreeSurface(Temp);
+		}
+		QFile Nub(":/NiirdPad/Resources/nub_full_highlight2.bmp");
+		if (Nub.open(QIODevice::OpenModeFlag::ReadOnly))
+		{
+			auto Bytes = Nub.readAll();
+
+			//SDL_Surface *Temp = SDL_CreateRGBSurfaceFrom(Bytes.data(), 9, 15, 24, 9 * 3, 0x0000FF, 0x00FF00, 0xFF0000, 0x000000);
+			SDL_Surface *Temp = SDL_LoadBMP_RW(SDL_RWFromConstMem(Bytes.data(), Bytes.size()), 1);
+			SDL_SetColorKey(Temp, 1, 0x00FF00);
+			//_NubTextureSize = { 0, 0, Temp->w, Temp->h };
+			_NubTextureHighlighted = SDL_CreateTextureFromSurface(Renderer, Temp);
 			SDL_FreeSurface(Temp);
 		}
 	}
 }
 
-SDL_Texture *NubOutput::Texture()
+SDL_Texture *ANub::TextureDefault()
 {
-	return NubOutput::_NubTexture;
+	return NubOutput::_NubTextureDefault;
 }
 
-SDL_Rect NubOutput::TextureSize()
+SDL_Texture *ANub::TextureHighlighted()
+{
+	return NubOutput::_NubTextureHighlighted;
+}
+
+
+const SDL_Rect &ANub::TextureSize()
 {
 	return NubOutput::_NubTextureSize;
 }
+
+
 
 NubOutput::NubOutput(NodeOption &Parent) :
 	_parent(Parent)

@@ -82,11 +82,23 @@ public:
 	ConnectionInput *Connection();
 };
 
-class NubOutput
+class ANub
 {
 private:
-	static SDL_Texture *_NubTexture;
+	static SDL_Texture *_NubTextureDefault, *_NubTextureHighlighted;
 	static SDL_Rect _NubTextureSize;
+public:
+	static void LoadTextures(SDL_Renderer *Renderer);
+	static SDL_Texture *TextureDefault();
+	static SDL_Texture *TextureHighlighted();
+	static const SDL_Rect &TextureSize();
+};
+
+class NubOutput : public ANub
+{
+private:
+	//static SDL_Texture *_NubTexture;
+	//static SDL_Rect _NubTextureSize;
 
 	NodeOption &_parent;
 	std::vector<ConnectionOutput*> _connections;
@@ -94,9 +106,9 @@ private:
 	// "Positionless"? On mouse move events, just check in a radius around the NubPoint()
 	//SDL_Point _position = { 0, 0 };
 public:
-	static void LoadTexture(SDL_Renderer *Renderer);
-	static SDL_Texture *Texture();
-	static SDL_Rect TextureSize();
+	//static void LoadTexture(SDL_Renderer *Renderer);
+	//static SDL_Texture *Texture();
+	//static SDL_Rect TextureSize();
 
 	NubOutput(NodeOption &Parent);
 	NodeOption &Parent();
