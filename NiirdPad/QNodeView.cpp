@@ -28,6 +28,12 @@ void QNodeView::Input()
 				_InputState.DownPosition[2] = NewDownPos;
 			//printf("MouseDown (%d, %d)\n", reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2));
 
+			if (_InputState.MousedOverNub != nullptr)
+			{
+				_InputState.DraggingNub = _InputState.MousedOverNub;
+				return;
+			}
+
 			/*
 				===================
 				NODE CLICK SCANNING
@@ -109,6 +115,34 @@ void QNodeView::Input()
 				===================
 			*/
 			auto KeyboardMods = SDL_GetModState();
+
+			// It's only going to be set if the nub currently has the mouse over it, so.
+			if (_InputState.MousedOverNub != nullptr)
+			{
+				if (Event.user.code == Qt::MouseButton::RightButton)
+				{
+					QMenu Context("Context Menu", this);
+
+					auto M = Context.addMenu("The party is...");
+					M->addMenu("killing it");
+					M->addMenu("doing alright");
+					M->addMenu("in peril");
+					auto M2 = M->addMenu("fucked");
+					M2->addMenu("and Kyr is...");
+					M2->addMenu("and Kirakh is...");
+					auto M3 = M2->addMenu("and Lukian is...");
+					M2->addMenu("and Alphonse is...");
+
+					M3->addAction("a bug");
+					M3->addAction("dying");
+					M3->addAction("to blame");
+
+					Context.exec(mapToGlobal(QPoint(ReleasePos.x, ReleasePos.y)));
+				}
+
+				return;
+			}
+
 			bool bNodeFound = false;
 			// TODO: Only look through the list of VISIBILE nodes (see TODO about occlusion culling)
 			for (auto CurNode : _Nodes)
@@ -176,6 +210,7 @@ void QNodeView::Input()
 			if (Event.user.code == Qt::MouseButton::LeftButton)
 			{
 				_InputState.bDraggingNodes = false;
+				_InputState.DraggingNub = nullptr;
 			}
 
 			if (Event.user.code == Qt::MouseButton::RightButton)
@@ -273,12 +308,22 @@ void QNodeView::Input()
 
 			if (Event.user.code & Qt::MouseButton::LeftButton)
 			{
-				if (abs(_InputState.DownPosition[0].x - _InputState.Position.x) > QNodeViewInputState::DRAG_THRESHOLD ||
-					abs(_InputState.DownPosition[0].y - _InputState.Position.y) > QNodeViewInputState::DRAG_THRESHOLD)
+				if ((abs(_InputState.DownPosition[0].x - _InputState.Position.x) > QNodeViewInputState::DRAG_THRESHOLD || abs(_InputState.DownPosition[0].y - _InputState.Position.y) > QNodeViewInputState::DRAG_THRESHOLD) 
+					&& !_InputState.bDraggingNodes
+					&& _InputState.DraggingNub == nullptr) // So the drag can't initiate when a nub is being dragged
 				{
 					_InputState.bDraggingNodes = true;
+
+					SDL_Point Delta = { _InputState.Position.x - _InputState.DownPosition[0].x, _InputState.Position.y - _InputState.DownPosition[0].y };
+					for (auto CurNode : _InputState.SelectedNodes)
+					{
+						SDL_Point CurNodePos = CurNode->Position();
+						CurNodePos = { CurNodePos.x + Delta.x, CurNodePos.y + Delta.y };
+						CurNode->SetPosition(CurNodePos);
+					}
 				}
 
+				// Only drag the selected Nodes if a nub isn't moused over
 				if (_InputState.bDraggingNodes == true)
 				{
 					SDL_Point Delta = { reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2) };

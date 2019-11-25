@@ -13,6 +13,7 @@ class DialogueFile;
 
 // Node.h
 class Node;
+class ANub;
 class NubOutput;
 
 // NiirdPad.h
@@ -38,6 +39,7 @@ struct QNodeViewInputState
 
 	std::vector<Node*> SelectedNodes;
 	NubOutput *MousedOverNub = nullptr;
+	ANub *DraggingNub = nullptr;
 
 	/// <summary>
 	/// Resets all applicable input state information:
