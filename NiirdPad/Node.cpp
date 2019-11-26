@@ -157,6 +157,11 @@ NodeOption &NubOutput::Parent()
 	return _parent;
 }
 
+const ANub::NubType NubOutput::GetNubType()
+{
+	return NubType::Output;
+}
+
 
 
 NodeDialogue::NodeDialogue(Node &ParentNode, GraphicsBlock_NodeInputBox *Graphics, const std::string &Reference, const std::vector<std::string> &FunctionLines, const std::string &Dialogue) :

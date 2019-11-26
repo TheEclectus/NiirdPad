@@ -123,19 +123,21 @@ void QNodeView::Input()
 				{
 					QMenu Context("Context Menu", this);
 
-					auto M = Context.addMenu("The party is...");
-					M->addMenu("killing it");
-					M->addMenu("doing alright");
-					M->addMenu("in peril");
-					auto M2 = M->addMenu("fucked");
-					M2->addMenu("and Kyr is...");
-					M2->addMenu("and Kirakh is...");
-					auto M3 = M2->addMenu("and Lukian is...");
-					M2->addMenu("and Alphonse is...");
+					auto M = Context.addMenu("Nexivian");
+					auto M2 = M->addMenu("Bank Account");
+					M->addMenu("FurAffinity Account");
+					auto M3 = M->addMenu("Reputation");
 
-					M3->addAction("a bug");
-					M3->addAction("dying");
-					M3->addAction("to blame");
+					M2->addAction("Edit");
+					M2->addAction("Delete");
+
+					M3->addAction("Silly Doodles");
+					M3->addAction("Commissions");
+					M3->addAction("Secret Gore Alt");
+					auto M4 = M3->addMenu("Hunt for the Bog Wife");
+
+					M4->addAction("\"Give me a hint\"");
+					M4->addAction("<<< HER LOCATION >>>")->setEnabled(false);
 
 					Context.exec(mapToGlobal(QPoint(ReleasePos.x, ReleasePos.y)));
 				}
@@ -232,10 +234,22 @@ void QNodeView::Input()
 			// Quick cycle-saving trick: if MousedOverNub != nullptr, check it against the mouse position first.
 			if (_InputState.MousedOverNub != nullptr)
 			{
-				NodeOption &CurOpt = _InputState.MousedOverNub->Parent();
-				SDL_Point CurNubPos = CurOpt.Graphics()->NubPoint();
-				SDL_Rect NodeBounds = CurOpt.Parent().Graphics().GetBounds();
-				SDL_Point NodePos = CurOpt.Parent().Position();
+				SDL_Point CurNubPos = { 0, 0 };
+				SDL_Rect NodeBounds = { 0, 0, 0, 0 };
+				SDL_Point NodePos = { 0, 0 };
+
+				if (_InputState.MousedOverNub->GetNubType() == ANub::NubType::Output)
+				{
+					NodeOption &CurOpt = static_cast<NubOutput*>(_InputState.MousedOverNub)->Parent();
+					CurNubPos = CurOpt.Graphics()->NubPoint();
+					NodeBounds = CurOpt.Parent().Graphics().GetBounds();
+					NodePos = CurOpt.Parent().Position();
+				}
+				else if (_InputState.MousedOverNub->GetNubType() == ANub::NubType::Input)
+				{
+
+				}
+				
 
 				NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
 				NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
@@ -437,6 +451,29 @@ void QNodeView::RenderForeground()
 
 	SDL_Renderer *Renderer = SDLRenderer();
 
+	if (_InputState.DraggingNub)
+	{
+		if (_InputState.DraggingNub->GetNubType() == ANub::NubType::Output)
+		{
+			NodeOption &CurOpt = static_cast<NubOutput*>(_InputState.DraggingNub)->Parent();
+			SDL_Point NubPoint = CurOpt.Graphics()->NubPoint();
+			SDL_Rect NodeBounds = CurOpt.Parent().Graphics().GetBounds();
+			SDL_Point NodePos = CurOpt.Parent().Position();
+
+			NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
+			NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
+
+			NubPoint.x += NodeBounds.x;
+			NubPoint.y += NodeBounds.y;
+
+			DrawBezierCurve(NubPoint, _InputState.Position);
+		}
+		else if (_InputState.DraggingNub->GetNubType() == ANub::NubType::Input)
+		{
+
+		}
+	}
+
 	// TODO: occlusion culling (list of visible nodes, updated on camera movement)
 	for (auto Node : _Nodes)
 	{
@@ -497,6 +534,65 @@ void QNodeView::RenderForeground()
 
 	//SDL_Rect RenderTgt{ 250, 250, 9, 15 };
 	//SDL_RenderCopy(Renderer, _Nubs._OutputDefault, nullptr, &RenderTgt);
+}
+
+void QNodeView::DrawBezierCurve(const SDL_Point &StartPt, const SDL_Point &EndPt)
+{
+	#define GetPt(n1, n2, perc) ((int)(n1 + ((n2 - n1) * perc)))
+
+	SDL_Point Ctrl1, Ctrl2;
+	if (StartPt.x <= EndPt.x)
+	{
+		int PtDiff = (EndPt.x - StartPt.x) * 0.10f;
+
+		Ctrl1 = { EndPt.x - PtDiff, StartPt.y };
+		Ctrl2 = { StartPt.x + PtDiff, EndPt.y };
+	}
+	else
+	{
+		float DiffMult = 1.5f;
+		int PtDiff = abs(EndPt.x - StartPt.x);
+
+		Ctrl1 = { StartPt.x + (int)((float)PtDiff * DiffMult), StartPt.y };
+		Ctrl2 = { EndPt.x - (int)((float)PtDiff * DiffMult), EndPt.y };
+	}
+
+	const size_t NumSegments = 20;
+	//size_t NumSegments = std::max(5, std::abs(std::abs(Origin.x - End.y) - std::abs(Origin.y - End.y)) / 100);
+
+	//std::vector<SDL_Point> Segments;
+	SDL_Point Segments[NumSegments + 1];
+	//Segments.push_back(StartPt);
+	Segments[0] = StartPt;
+
+	const float PercentStep = 1.f / (float)NumSegments;
+	float Percent = PercentStep;
+	for (size_t i = 1u; i <= NumSegments-1; i++)
+	{
+		SDL_Point PtA{ GetPt(StartPt.x, Ctrl1.x, Percent), GetPt(StartPt.y, Ctrl1.y, Percent) };
+		SDL_Point PtB{ GetPt(Ctrl1.x, Ctrl2.x, Percent), GetPt(Ctrl1.y, Ctrl2.y, Percent) };
+		SDL_Point PtC{ GetPt(Ctrl2.x, EndPt.x, Percent), GetPt(Ctrl2.y, EndPt.y, Percent) };
+
+		SDL_Point PtM{ GetPt(PtA.x, PtB.x, Percent), GetPt(PtA.y, PtB.y, Percent) };
+		SDL_Point PtN{ GetPt(PtB.x, PtC.x, Percent), GetPt(PtB.y, PtC.y, Percent) };
+
+		SDL_Point Dest{ GetPt(PtM.x, PtN.x, Percent), GetPt(PtM.y, PtN.y, Percent) };
+		//Segments.push_back(Dest);
+		Segments[i] = Dest;
+		Percent += PercentStep;
+	}
+	//Segments.push_back(EndPt);
+	Segments[NumSegments] = EndPt;
+
+	/*for (size_t i = 0u; i <= NumSegments; i++)
+	{
+		DrawThickLine(gra, Color, 2, Segments[i - 1], Segments[i]);
+	}*/
+
+	SDL_SetRenderDrawColor(this->SDLRenderer(), 255, 255, 255, 255);
+	SDL_RenderDrawLines(this->SDLRenderer(), Segments, NumSegments + 1);
+
+	#undef GetPt
 }
 
 QNodeView::QNodeView(QWidget *Parent) :

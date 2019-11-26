@@ -38,7 +38,7 @@ struct QNodeViewInputState
 	SDL_Point DownPosition[3] = { { -1, -1 }, { -1, -1 }, { -1, -1 } };
 
 	std::vector<Node*> SelectedNodes;
-	NubOutput *MousedOverNub = nullptr;
+	ANub *MousedOverNub = nullptr;
 	ANub *DraggingNub = nullptr;
 
 	/// <summary>
@@ -72,6 +72,8 @@ protected:
 
 	void RenderBackground();
 	void RenderForeground();
+
+	void DrawBezierCurve(const SDL_Point &Start, const SDL_Point &End);
 
 public:
 	QNodeView(QWidget *Parent);

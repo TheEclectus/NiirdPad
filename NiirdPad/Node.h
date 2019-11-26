@@ -88,10 +88,18 @@ private:
 	static SDL_Texture *_NubTextureDefault, *_NubTextureHighlighted;
 	static SDL_Rect _NubTextureSize;
 public:
+	enum class NubType
+	{
+		Input,	// Dialogue
+		Output	// Option
+	};
+
 	static void LoadTextures(SDL_Renderer *Renderer);
 	static SDL_Texture *TextureDefault();
 	static SDL_Texture *TextureHighlighted();
 	static const SDL_Rect &TextureSize();
+
+	virtual const NubType GetNubType() = 0;
 };
 
 class NubOutput : public ANub
@@ -112,6 +120,7 @@ public:
 
 	NubOutput(NodeOption &Parent);
 	NodeOption &Parent();
+	const NubType GetNubType() override;
 };
 
 // TODO: In NodeDialogue and NodeOption, store the QScriptEditWindow's ::saveState() data and reset the state of the QSplitter (save this to the project file!)
