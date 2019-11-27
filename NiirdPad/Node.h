@@ -142,6 +142,8 @@ private:
 public:
 	NodeDialogue(Node &ParentNode, GraphicsBlock_NodeInputBox *Graphics, const std::string &Reference, const std::vector<std::string> &FunctionLines = {}, const std::string &Dialogue = "");
 
+	Node &Parent();
+
 	void SetAll(const std::vector<std::string> &FunctionLines, const std::string &Dialogue);
 	void SetReference(const std::string &Reference);
 	void SetFunctions(const std::vector<std::string> &FunctionLines);

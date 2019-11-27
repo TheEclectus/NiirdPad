@@ -28,7 +28,7 @@ void QNodeView::Input()
 				_InputState.DownPosition[2] = NewDownPos;
 			//printf("MouseDown (%d, %d)\n", reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2));
 
-			if (_InputState.MousedOverNub != nullptr)
+			if (_InputState.MousedOverNub != nullptr && Event.user.code == Qt::MouseButton::LeftButton)
 			{
 				_InputState.DraggingNub = _InputState.MousedOverNub;
 				return;
@@ -121,6 +121,8 @@ void QNodeView::Input()
 			{
 				if (Event.user.code == Qt::MouseButton::RightButton)
 				{
+					auto Nub = _InputState.MousedOverNub;
+					_InputState.MousedOverNub = nullptr;
 					QMenu Context("Context Menu", this);
 
 					auto M = Context.addMenu("Nexivian");
@@ -142,6 +144,17 @@ void QNodeView::Input()
 					Context.exec(mapToGlobal(QPoint(ReleasePos.x, ReleasePos.y)));
 				}
 
+				if (Event.user.code == Qt::MouseButton::LeftButton && _InputState.DraggingNub != nullptr)
+				{
+					// Connection code
+				}
+				//return;
+			}
+
+			if (Event.user.code == Qt::MouseButton::LeftButton)
+			{
+				_InputState.bDraggingNodes = false;
+				_InputState.DraggingNub = nullptr;
 				return;
 			}
 
@@ -209,12 +222,7 @@ void QNodeView::Input()
 				}
 			}
 			// No Node is found
-			if (Event.user.code == Qt::MouseButton::LeftButton)
-			{
-				_InputState.bDraggingNodes = false;
-				_InputState.DraggingNub = nullptr;
-			}
-
+			
 			if (Event.user.code == Qt::MouseButton::RightButton)
 			{
 				QMenu Context("Context Menu", this);
@@ -293,9 +301,11 @@ void QNodeView::Input()
 					{
 						//fmt::print("Inside node-nub boundaries.\n");
 
-						for (auto CurOpt : CurNode->Options())
+						// TODO: optimize, consider checking both the left and right halves of the bounding box to check whther it'll be an inpiut or an output that's being moused over.
+
+						for (auto CurDiag : CurNode->Dialogues())
 						{
-							SDL_Point CurNubPos = CurOpt->Graphics()->NubPoint();
+							SDL_Point CurNubPos = CurDiag->Graphics()->NubPoint();
 							CurNubPos.x += NodeBounds.x;
 							CurNubPos.y += NodeBounds.y;
 
@@ -309,8 +319,32 @@ void QNodeView::Input()
 							if (DistanceFromCenter <= NubRadius)
 							{
 								//fmt::print("Inside a nub!\n");
-								_InputState.MousedOverNub = &CurOpt->Nub();
+								_InputState.MousedOverNub = &CurDiag->Nub();
 								break;
+							}
+						}
+
+						if (!bNubFound)
+						{
+							for (auto CurOpt : CurNode->Options())
+							{
+								SDL_Point CurNubPos = CurOpt->Graphics()->NubPoint();
+								CurNubPos.x += NodeBounds.x;
+								CurNubPos.y += NodeBounds.y;
+
+								// Pythagorean theorem to get the distance from the center of the nub.
+								SDL_Point Distances = { CurNubPos.x - MousePos.x, CurNubPos.y - MousePos.y };
+								int DistanceFromCenter = sqrt(pow(Distances.x, 2) + pow(Distances.y, 2));
+
+								// Radius = (W - 1) / 2
+								const int NubRadius = (NubOutput::TextureSize().w - 1) / 2;
+
+								if (DistanceFromCenter <= NubRadius)
+								{
+									//fmt::print("Inside a nub!\n");
+									_InputState.MousedOverNub = &CurOpt->Nub();
+									break;
+								}
 							}
 						}
 					}
@@ -451,6 +485,7 @@ void QNodeView::RenderForeground()
 
 	SDL_Renderer *Renderer = SDLRenderer();
 
+	#pragma region Connection Preview Beziers
 	if (_InputState.DraggingNub)
 	{
 		if (_InputState.DraggingNub->GetNubType() == ANub::NubType::Output)
@@ -470,9 +505,21 @@ void QNodeView::RenderForeground()
 		}
 		else if (_InputState.DraggingNub->GetNubType() == ANub::NubType::Input)
 		{
+			NodeDialogue &CurDiag = static_cast<NubInput*>(_InputState.DraggingNub)->Parent();
+			SDL_Point NubPoint = CurDiag.Graphics()->NubPoint();
+			SDL_Rect NodeBounds = CurDiag.Parent().Graphics().GetBounds();
+			SDL_Point NodePos = CurDiag.Parent().Position();
 
+			NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
+			NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
+
+			NubPoint.x += NodeBounds.x;
+			NubPoint.y += NodeBounds.y;
+
+			DrawBezierCurve(_InputState.Position, NubPoint);
 		}
 	}
+	#pragma endregion
 
 	// TODO: occlusion culling (list of visible nodes, updated on camera movement)
 	for (auto Node : _Nodes)
@@ -531,6 +578,22 @@ void QNodeView::RenderForeground()
 			SDL_Point NubPoint = CurOpt.Graphics()->NubPoint();
 			SDL_Rect NodeBounds = CurOpt.Parent().Graphics().GetBounds();
 			SDL_Point NodePos = CurOpt.Parent().Position();
+
+			NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
+			NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
+
+			NubPoint.x += NodeBounds.x;
+			NubPoint.y += NodeBounds.y;
+
+			SDL_Rect RenderTgt{ NubPoint.x - (ANub::TextureSize().w / 2), NubPoint.y - (ANub::TextureSize().h / 2), ANub::TextureSize().w, ANub::TextureSize().h };
+			SDL_RenderCopy(Renderer, ANub::TextureHighlighted(), nullptr, &RenderTgt);
+		}
+		else if (_InputState.MousedOverNub->GetNubType() == ANub::NubType::Input)
+		{
+			NodeDialogue &CurDiag = static_cast<NubInput*>(_InputState.MousedOverNub)->Parent();
+			SDL_Point NubPoint = CurDiag.Graphics()->NubPoint();
+			SDL_Rect NodeBounds = CurDiag.Parent().Graphics().GetBounds();
+			SDL_Point NodePos = CurDiag.Parent().Position();
 
 			NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
 			NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;

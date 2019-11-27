@@ -177,6 +177,11 @@ NodeDialogue::NodeDialogue(Node &ParentNode, GraphicsBlock_NodeInputBox *Graphic
 	//_graphics = new GraphicsBlock_NodeInputBox(Renderer, )
 }
 
+Node &NodeDialogue::Parent()
+{
+	return _parentNode;
+}
+
 void NodeDialogue::SetAll(const std::vector<std::string> &FunctionLines, const std::string &Dialogue)
 {
 	SetFunctions(FunctionLines);
