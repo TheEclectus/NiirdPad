@@ -310,6 +310,12 @@ void GraphicsBlock_NodeInputBox::SetDialogue(const std::string &Text)
 	_DialogueLabel->SetText(Text);
 }
 
+const SDL_Point &GraphicsBlock_NodeInputBox::NubPoint() const
+{
+	auto TotalOffset = GetTotalOffset();
+	return { GetBounds().x, TotalOffset.y + GetBounds().h / 2 };
+}
+
 #pragma endregion
 
 #pragma region GraphicsBlock_NodeInputBoxSection
