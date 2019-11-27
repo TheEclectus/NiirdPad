@@ -4,7 +4,7 @@
 
 #include "GraphicsBlocks.h"
 
-ConnectionInput::ConnectionInput(ConnectionPointInput &Parent, const std::string &KeyName, ConnectionOutput *Connection) :
+ConnectionInput::ConnectionInput(NubInput &Parent, const std::string &KeyName, ConnectionOutput *Connection) :
 	_parent(Parent),
 	_keyName(KeyName),
 	_connection(Connection)
@@ -12,7 +12,7 @@ ConnectionInput::ConnectionInput(ConnectionPointInput &Parent, const std::string
 
 }
 
-ConnectionPointInput &ConnectionInput::Parent()
+NubInput &ConnectionInput::Parent()
 {
 	return _parent;
 }
@@ -34,58 +34,43 @@ void ConnectionInput::SetConnection(ConnectionOutput *NewConnection)
 
 
 
-ConnectionPointInput::ConnectionPointInput(NodeDialogue &Parent) :
-	_parent(Parent)
-{
-
-}
-
-NodeDialogue &ConnectionPointInput::Parent()
-{
-	return _parent;
-}
-
-std::vector<ConnectionInput*> &ConnectionPointInput::Connections()
-{
-	return _connections;
-}
-
-void ConnectionPointInput::SetKeys(const std::vector<std::string> &Keys)
-{
-	std::vector<ConnectionInput*> NewConnections;
-
-	for (const std::string &CurrentKey : Keys)
-	{
-		// If the key has a matching existing name, sustain the connection.
-		auto FoundKey = std::find_if(_connections.begin(), _connections.end(), [CurrentKey](ConnectionInput* Conn)
-		{
-			if (Conn->KeyName() == CurrentKey)
-			{
-				return true;
-			}
-
-			return false;
-		});
-
-		if (FoundKey != _connections.end()) // found
-		{
-			NewConnections.push_back(*FoundKey);
-			_connections.erase(FoundKey);
-		}
-		else
-		{
-			NewConnections.push_back(new ConnectionInput(*this, CurrentKey, nullptr));
-		}
-	}
-
-	for (auto RemainingKey : _connections)
-	{
-		ConnectionInput *Conn = RemainingKey;
-		delete Conn;
-	}
-	_connections.clear();
-	_connections = NewConnections;
-}
+// Saving for now, for posterity and/or recycling.
+//void ConnectionPointInput::SetKeys(const std::vector<std::string> &Keys)
+//{
+//	std::vector<ConnectionInput*> NewConnections;
+//
+//	for (const std::string &CurrentKey : Keys)
+//	{
+//		// If the key has a matching existing name, sustain the connection.
+//		auto FoundKey = std::find_if(_connections.begin(), _connections.end(), [CurrentKey](ConnectionInput* Conn)
+//		{
+//			if (Conn->KeyName() == CurrentKey)
+//			{
+//				return true;
+//			}
+//
+//			return false;
+//		});
+//
+//		if (FoundKey != _connections.end()) // found
+//		{
+//			NewConnections.push_back(*FoundKey);
+//			_connections.erase(FoundKey);
+//		}
+//		else
+//		{
+//			NewConnections.push_back(new ConnectionInput(*this, CurrentKey, nullptr));
+//		}
+//	}
+//
+//	for (auto RemainingKey : _connections)
+//	{
+//		ConnectionInput *Conn = RemainingKey;
+//		delete Conn;
+//	}
+//	_connections.clear();
+//	_connections = NewConnections;
+//}
 
 
 
@@ -138,10 +123,27 @@ SDL_Texture *ANub::TextureHighlighted()
 	return NubOutput::_NubTextureHighlighted;
 }
 
-
 const SDL_Rect &ANub::TextureSize()
 {
 	return NubOutput::_NubTextureSize;
+}
+
+
+
+NubInput::NubInput(NodeDialogue &Parent) :
+	_parent(Parent)
+{
+
+}
+
+NodeDialogue &NubInput::Parent()
+{
+	return _parent;
+}
+
+const ANub::NubType NubInput::GetNubType()
+{
+	return ANub::NubType::Input;
 }
 
 
@@ -169,7 +171,8 @@ NodeDialogue::NodeDialogue(Node &ParentNode, GraphicsBlock_NodeInputBox *Graphic
 	_graphics(Graphics),
 	_reference(Reference),
 	_dialogue(Dialogue),
-	_functionLines(FunctionLines)
+	_functionLines(FunctionLines),
+	_nub(*this)
 {
 	//_graphics = new GraphicsBlock_NodeInputBox(Renderer, )
 }
@@ -220,6 +223,11 @@ const std::string &NodeDialogue::GetDialogue() const
 const std::vector<std::string> &NodeDialogue::GetFunctionLines() const
 {
 	return _functionLines;
+}
+
+NubInput &NodeDialogue::Nub()
+{
+	return _nub;
 }
 
 GraphicsBlock_NodeInputBox *NodeDialogue::Graphics()
@@ -366,6 +374,11 @@ void Node::RemoveDialogue(NodeDialogue *Dlg)
 	}
 
 	_graphics->InputSection()->RemoveInputBox(Dlg->Graphics());
+}
+
+const std::vector<NodeDialogue*> &Node::Dialogues() const
+{
+	return _dialogues;
 }
 
 NodeOption *Node::AddOption()

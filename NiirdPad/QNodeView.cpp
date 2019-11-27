@@ -499,6 +499,14 @@ void QNodeView::RenderForeground()
 
 		Node->Graphics().Render(Renderer, BlockRenderPos);
 
+		// Draw input nubs
+		for (auto Dialogue : Node->Dialogues())
+		{
+			SDL_Point NubPoint = Dialogue->Graphics()->NubPoint();
+			SDL_Rect RenderTgt{ BlockRenderPos.x + NubPoint.x - (ANub::TextureSize().w / 2), BlockRenderPos.y + NubPoint.y - (ANub::TextureSize().h / 2), ANub::TextureSize().w, ANub::TextureSize().h };
+			SDL_RenderCopy(Renderer, ANub::TextureDefault(), nullptr, &RenderTgt);
+		}
+
 		// Draw output nubs
 		for (auto Option : Node->Options())
 		{
@@ -517,19 +525,22 @@ void QNodeView::RenderForeground()
 
 	if (_InputState.MousedOverNub)
 	{
-		NodeOption &CurOpt = _InputState.MousedOverNub->Parent();
-		SDL_Point NubPoint = CurOpt.Graphics()->NubPoint();
-		SDL_Rect NodeBounds = CurOpt.Parent().Graphics().GetBounds();
-		SDL_Point NodePos = CurOpt.Parent().Position();
+		if (_InputState.MousedOverNub->GetNubType() == ANub::NubType::Output)
+		{
+			NodeOption &CurOpt = static_cast<NubOutput*>(_InputState.MousedOverNub)->Parent();
+			SDL_Point NubPoint = CurOpt.Graphics()->NubPoint();
+			SDL_Rect NodeBounds = CurOpt.Parent().Graphics().GetBounds();
+			SDL_Point NodePos = CurOpt.Parent().Position();
 
-		NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
-		NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
+			NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
+			NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
 
-		NubPoint.x += NodeBounds.x;
-		NubPoint.y += NodeBounds.y;
+			NubPoint.x += NodeBounds.x;
+			NubPoint.y += NodeBounds.y;
 
-		SDL_Rect RenderTgt{ NubPoint.x - (ANub::TextureSize().w / 2), NubPoint.y - (ANub::TextureSize().h / 2), ANub::TextureSize().w, ANub::TextureSize().h };
-		SDL_RenderCopy(Renderer, ANub::TextureHighlighted(), nullptr, &RenderTgt);
+			SDL_Rect RenderTgt{ NubPoint.x - (ANub::TextureSize().w / 2), NubPoint.y - (ANub::TextureSize().h / 2), ANub::TextureSize().w, ANub::TextureSize().h };
+			SDL_RenderCopy(Renderer, ANub::TextureHighlighted(), nullptr, &RenderTgt);
+		}
 	}
 
 	//SDL_Rect RenderTgt{ 250, 250, 9, 15 };

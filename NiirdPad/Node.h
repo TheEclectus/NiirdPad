@@ -18,13 +18,14 @@ class DialogueFile;
 
 // Forward Declarations
 class ConnectionInput;
-class ConnectionPointInput;
+//class ConnectionPointInput;
 
 class ConnectionOutput;
-class ConnectionPointOutput;
+//class ConnectionPointOutput;
 
 class ANub;
 class NubOutput;
+class NubInput;
 
 class NodeDialogue;
 class NodeOption;
@@ -46,37 +47,25 @@ class NodeOption;
 class ConnectionInput
 {
 private:
-	ConnectionPointInput &_parent;
+	NubInput &_parent;
 	std::string _keyName;
 	ConnectionOutput *_connection = nullptr;
 public:
-	ConnectionInput(ConnectionPointInput &Parent, const std::string &KeyName, ConnectionOutput *Connection = nullptr);
-	ConnectionPointInput &Parent();
+	ConnectionInput(NubInput &Parent, const std::string &KeyName, ConnectionOutput *Connection = nullptr);
+	NubInput &Parent();
 	const std::string &KeyName();
 	ConnectionOutput *Connection();
 	void SetConnection(ConnectionOutput *NewConnection);
 };
 
-class ConnectionPointInput
-{
-private:
-	NodeDialogue &_parent;
-	std::vector<ConnectionInput*> _connections;
-public:
-	ConnectionPointInput(NodeDialogue &Parent);
-	NodeDialogue &Parent();
-	std::vector<ConnectionInput*> &Connections();
-	void SetKeys(const std::vector<std::string> &Keys);
-};
-
 class ConnectionOutput
 {
 private:
-	NodeOption &_parent;
+	NubOutput &_parent;
 	std::string _keyName;
 	ConnectionInput *_connection = nullptr;
 public:
-	ConnectionOutput(const std::string &KeyName, ConnectionInput *Connection = nullptr);
+	ConnectionOutput(NubOutput &Parent, const std::string &KeyName, ConnectionInput *Connection = nullptr);
 	NodeOption &Parent();
 	const std::string &KeyName();
 	ConnectionInput *Connection();
@@ -100,6 +89,18 @@ public:
 	static const SDL_Rect &TextureSize();
 
 	virtual const NubType GetNubType() = 0;
+};
+
+class NubInput : public ANub
+{
+private:
+	NodeDialogue &_parent;
+	std::vector<ConnectionInput*> _connections;
+
+public:
+	NubInput(NodeDialogue &Parent);
+	NodeDialogue &Parent();
+	const NubType GetNubType() override;
 };
 
 class NubOutput : public ANub
@@ -136,6 +137,8 @@ private:
 	std::string _reference, _dialogue;	// Dialogue text has '\n' replaced with '<br>'s
 	std::vector<std::string> _functionLines;
 	//std::string _reference, _script, _dialogue;
+
+	NubInput _nub;
 public:
 	NodeDialogue(Node &ParentNode, GraphicsBlock_NodeInputBox *Graphics, const std::string &Reference, const std::vector<std::string> &FunctionLines = {}, const std::string &Dialogue = "");
 
@@ -148,6 +151,8 @@ public:
 	const std::string &GetReference() const;
 	const std::string &GetDialogue() const;
 	const std::vector<std::string> &GetFunctionLines() const;
+
+	NubInput &Nub();
 
 	GraphicsBlock_NodeInputBox *Graphics();
 };
@@ -209,7 +214,7 @@ public:
 
 	NodeDialogue *AddDialogue(const std::string &Reference);
 	void RemoveDialogue(NodeDialogue *Dlg);
-	const std::vector<const NodeDialogue*> &Dialogues() const;
+	const std::vector<NodeDialogue*> &Dialogues() const;
 
 	NodeOption *AddOption();
 	const std::vector<NodeOption*> &Options() const;
