@@ -143,6 +143,7 @@ void QNodeView::Input()
 					M4->addAction("<<< HER LOCATION >>>")->setEnabled(false);
 
 					Context.exec(mapToGlobal(QPoint(ReleasePos.x, ReleasePos.y)));
+					return;
 				}
 
 				if (Event.user.code == Qt::MouseButton::LeftButton && _InputState.DraggingNub != nullptr)
@@ -209,12 +210,19 @@ void QNodeView::Input()
 										//std::string Reference = Dlg->GetReference();
 										this->_Parent->ReferenceEditWindow()->editReference(Dlg);
 									});
-									Context.addSeparator();
 								}
-								else
+
+								Context.addSeparator();
+							}
+							else if (bOptSection)
+							{
+								Context.addAction("New Option");
+								if (Opt)
 								{
-									Context.addSeparator();
+									Context.addAction("Edit Option");
+									Context.addAction("Delete Option");
 								}
+								Context.addSeparator();
 							}
 
 							Context.addAction("Delete Node");

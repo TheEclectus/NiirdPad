@@ -427,6 +427,7 @@ void Node::FeatureAtPosition(SDL_Point MousePos, bool &bInHeader, bool &bInInput
 			if (SDL_PointInRect(&MousePos, &Dialogue))
 			{
 				*Dlg = CurrentDialogue;
+				break;
 				//return true;
 			}
 		}
@@ -435,6 +436,22 @@ void Node::FeatureAtPosition(SDL_Point MousePos, bool &bInHeader, bool &bInInput
 	else if (SDL_PointInRect(&MousePos, &Outputs->GetBounds()))
 	{
 		bInOutputSection = true;
+
+		for (auto CurrentOption : _options)
+		{
+			auto Option = CurrentOption->Graphics()->GetBounds();
+			auto OptOffset = CurrentOption->Graphics()->GetTotalOffset();
+
+			Option.x = OptOffset.x;
+			Option.y = OptOffset.y;
+
+			if (SDL_PointInRect(&MousePos, &Option))
+			{
+				*Opt = CurrentOption;
+				break;
+				//return true;
+			}
+		}
 	}
 
 	// TODO: implement header checking, and be able to return it as a parameter
