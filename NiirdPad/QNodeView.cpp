@@ -6,6 +6,7 @@
 #include "GraphicsBlocks.h"
 #include "NiirdPad.h"
 #include "Node.h"
+#include "QReferenceEditWindow.h"
 #include "QScriptEditWindow.h"
 
 void QNodeView::Input()
@@ -187,7 +188,9 @@ void QNodeView::Input()
 							QMenu Context("Context Menu", this);
 							if (bHeader)
 							{
-								Context.addAction("Edit Comment");
+								Context.addAction("Edit Comment", [this, CurNode]() {
+									
+								});
 							}
 
 							if (bDlgSection)
@@ -202,7 +205,10 @@ void QNodeView::Input()
 									});
 									Context.addAction("Delete Dialogue");
 									Context.addSeparator();
-									Context.addAction("Edit Index");
+									Context.addAction("Edit Index", [this, Dlg] {
+										//std::string Reference = Dlg->GetReference();
+										this->_Parent->ReferenceEditWindow()->editReference(Dlg);
+									});
 									Context.addSeparator();
 								}
 								else
@@ -390,6 +396,56 @@ void QNodeView::Input()
 				_Camera.ViewBox.x -= Delta.x;
 				_Camera.ViewBox.y -= Delta.y;
 			}
+		}
+		#pragma endregion
+		#pragma region EVENT_MOUSEDOUBLECLICK
+		if (Event.type == EVENT_MOUSEDOUBLECLICK)
+		{
+			SDL_Point DoubleClickPos = GetMousePosition();
+
+			bool bNodeFound = false;
+			// TODO: Only look through the list of VISIBILE nodes (see TODO about occlusion culling)
+			for (auto CurNode : _Nodes)
+			{
+				auto NodePos = CurNode->Position();
+				auto NodeBounds = CurNode->Graphics().GetBounds();
+				NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
+				NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
+
+				// A Node is found
+				if (SDL_PointInRect(&DoubleClickPos, &NodeBounds))
+				{
+					if (Event.user.code == Qt::MouseButton::LeftButton)
+					{
+						SDL_Point PointInsideNode = { DoubleClickPos.x - NodeBounds.x, DoubleClickPos.y - NodeBounds.y };
+
+						bool bHeader = false;
+						bool bDlgSection = false;
+						bool bOptSection = false;
+						NodeDialogue *Dlg = nullptr;
+						NodeOption *Opt = nullptr;
+
+						CurNode->FeatureAtPosition(PointInsideNode, bHeader, bDlgSection, bOptSection, &Dlg, &Opt);
+						if (bHeader || bDlgSection || bOptSection)
+						{
+							if (bHeader)
+							{
+								
+							}
+
+							if (bDlgSection)
+							{
+								this->_Parent->ScriptEditWindow()->dialogueFragment(Dlg);
+							}
+
+							return;
+						}
+
+						break;
+					}
+				}
+			}
+			// No Node is found
 		}
 		#pragma endregion
 

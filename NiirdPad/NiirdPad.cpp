@@ -192,7 +192,8 @@ void NiirdPad::ImportConfirmationMessageBox(std::vector<std::string> Warnings, R
 NiirdPad::NiirdPad(QWidget *parent) :
 	QMainWindow(parent),
 	_scriptEngine(),
-	_scriptEditWindow(new QScriptEditWindow(this, _scriptEngine, false))
+	_scriptEditWindow(new QScriptEditWindow(this, _scriptEngine, false)),
+	_referenceEditWindow(new QReferenceEditWindow(this))
 {
 	ui.setupUi(this);
 
@@ -279,4 +280,9 @@ NiirdPad::NiirdPad(QWidget *parent) :
 QScriptEditWindow *NiirdPad::ScriptEditWindow()
 {
 	return _scriptEditWindow;
+}
+
+QReferenceEditWindow *NiirdPad::ReferenceEditWindow()
+{
+	return _referenceEditWindow;
 }

@@ -1,0 +1,35 @@
+NiirdPad user documentation
+===========================
+1. Definitions
+2. Controls
+
+1. Definitions
+--------------
+	Comment
+		A note that can be added to a Node. Does not display in-game, nor does it affect
+		the flow of branching dialogue in any way.
+
+	Dialogue
+		Functions executed and lines of text to be displayed indicating a character's 
+		spoken lines and/or actions. 
+		Always has an Index, and is paired with a single Input Nub.
+
+	Function
+		A TUScript operation that affects the game's state, and may or may not affect the
+		destination Index of a particular Option.
+
+	Node
+		A Node is a single dialogue-response hub, consisting of one or more Dialogues 
+		and one or more Options. 
+		May optionally contain a comment.
+
+	Nub (Input, Output)
+		A Nub is a connection point between a Dialogue and an Option. Input Nubs may only
+		be connected to Output Nubs. In the event that an Output Nub has more than one
+		possible destination because of an index-modifying Function, a context menu will
+		be displayed for the user to select which branching path is to be connected.
+
+	Option
+		Lines of text to be displayed if accompanying Visibility conditions are met, with
+		Functions that are executed if the player selects the Option.
+		Paired with a single Output Nub.

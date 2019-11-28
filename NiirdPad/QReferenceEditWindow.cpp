@@ -4,6 +4,8 @@
 
 #include <tao\pegtl.hpp>
 
+#include "Node.h"
+
 void QReferenceEditWindow::MakeError(const std::string &Message)
 {
 	ui.lblInfo->setText(Message.c_str());
@@ -81,6 +83,19 @@ QReferenceEditWindow::QReferenceEditWindow(QWidget *parent)
 QReferenceEditWindow::~QReferenceEditWindow()
 {
 
+}
+
+void QReferenceEditWindow::editReference(NodeDialogue *EditNode)
+{
+	_dialogue = EditNode;
+	this->setWindowTitle(QString("Edit Reference - ").append(EditNode->GetReference().c_str()));
+
+	this->show();
+
+	/*int Res = exec();
+	if (Res == QDialog::Accepted)
+		Result = this->ui.txtReferenceEdit->text().toStdString();
+	return Res;*/
 }
 
 int QReferenceEditWindow::NewReference(QWidget *Parent, std::string &Result)

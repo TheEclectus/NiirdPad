@@ -185,4 +185,7 @@
       <Filter>Source Files\Lua Scripts</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="User Docs.txt" />
+  </ItemGroup>
 </Project>

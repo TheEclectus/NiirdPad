@@ -5,6 +5,7 @@
 #include "ui_NiirdPad.h"
 
 #include "ImportWorker.h"
+#include "QReferenceEditWindow.h"
 #include "QScriptEditWindow.h"
 #include "ScriptEngine.h"
 
@@ -19,6 +20,7 @@ private:
 	//QMessageBox *_importMessageBox;
 	ScriptEngine _scriptEngine;
 	QScriptEditWindow *_scriptEditWindow;
+	QReferenceEditWindow *_referenceEditWindow;
 
 	Project *_loadedProject;
 
@@ -32,4 +34,5 @@ public slots:
 public:
 	NiirdPad(QWidget *parent = Q_NULLPTR);
 	QScriptEditWindow *ScriptEditWindow();
+	QReferenceEditWindow *ReferenceEditWindow();
 };

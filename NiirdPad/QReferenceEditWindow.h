@@ -3,6 +3,9 @@
 #include <QDialog>
 #include "ui_QReferenceEditWindow.h"
 
+// Node.h
+class NodeDialogue;
+
 class QReferenceEditWindow : public QDialog
 {
 	Q_OBJECT
@@ -10,6 +13,7 @@ class QReferenceEditWindow : public QDialog
 private:
 	Ui::QReferenceEditWindow ui;
 	bool bErroneous = false;
+	NodeDialogue *_dialogue = nullptr;
 
 	void MakeError(const std::string &Message);
 	void MakeClean();
@@ -20,6 +24,8 @@ public:
 	static int NewReference(QWidget *Parent, std::string &Result);
 	static int EditReference(QWidget *Parent, std::string &Result);
 
-	QReferenceEditWindow(QWidget *parent = Q_NULLPTR);
+	void editReference(NodeDialogue *EditNode);
+
+	QReferenceEditWindow(QWidget *parent);
 	~QReferenceEditWindow();
 };

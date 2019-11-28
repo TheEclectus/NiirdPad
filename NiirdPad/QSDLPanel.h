@@ -45,10 +45,15 @@ private:
 protected:
 	// .data1 = x, .data2 = y, .code = Qt::MouseButton
 	uint32_t EVENT_MOUSEDOWN;
+
 	// .data1 = x, .data2 = y, .code = Qt::MouseButton
 	uint32_t EVENT_MOUSEUP;
+
 	// .data1 = x, .data2 = y, .code = Qt::MouseButtons OR'd together (buttons held)
 	uint32_t EVENT_MOUSEMOVE;
+
+	// .data1 = x, .data2 = y, .code = Qt::MouseButton
+	uint32_t EVENT_MOUSEDOUBLECLICK;
 
 	virtual void Input();
 	virtual void Logic();
@@ -57,6 +62,7 @@ protected:
 	void mousePressEvent(QMouseEvent *event) override;
 	void mouseReleaseEvent(QMouseEvent *event) override;
 	void mouseMoveEvent(QMouseEvent *event) override;
+	void mouseDoubleClickEvent(QMouseEvent *event) override;
 
 private slots:
 	void ProcessInternal();

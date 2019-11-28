@@ -8,6 +8,7 @@ void QSDLPanel::_RegisterEvents()
 	EVENT_MOUSEDOWN		= UserEventsStart + 0;
 	EVENT_MOUSEUP		= UserEventsStart + 1;
 	EVENT_MOUSEMOVE		= UserEventsStart + 2;
+	EVENT_MOUSEDOUBLECLICK	= UserEventsStart + 3;
 }
 
 void QSDLPanel::Input()
@@ -82,6 +83,23 @@ void QSDLPanel::mouseMoveEvent(QMouseEvent *event)
 		User.data1 = reinterpret_cast<void*>(DeltaX);
 		User.data2 = reinterpret_cast<void*>(DeltaY);
 	}
+
+	_LastMousePosition = { event->x(), event->y() };
+
+	SDL_PushEvent(&NewEvent);
+}
+
+void QSDLPanel::mouseDoubleClickEvent(QMouseEvent *event)
+{
+	SDL_Event NewEvent;
+	SDL_UserEvent &User = NewEvent.user;
+
+	memset(&NewEvent, 0, sizeof(SDL_Event));
+
+	User.type = EVENT_MOUSEDOUBLECLICK;
+	User.code = event->button();
+	User.data1 = reinterpret_cast<void*>(event->x());
+	User.data2 = reinterpret_cast<void*>(event->y());
 
 	_LastMousePosition = { event->x(), event->y() };
 
