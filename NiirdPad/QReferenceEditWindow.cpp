@@ -1,6 +1,10 @@
 #include "QReferenceEditWindow.h"
 
+#include <QEvent>
 #include <QMessageBox>
+#include <QWidget>
+
+#include <QTextBlock>
 
 #include <tao\pegtl.hpp>
 
@@ -55,6 +59,32 @@ bool QReferenceEditWindow::IsValidReference()
 	return true;
 }
 
+void QReferenceEditWindow::Close()
+{
+	if (bChangesMade && QMessageBox::warning(this, "Unsaved Changes", "Any changes will be discarded.\nContinue?", QMessageBox::StandardButton::Ok, QMessageBox::StandardButton::Cancel) == QMessageBox::StandardButton::Cancel)
+		return;
+
+	ResetForm();
+	reject();
+}
+
+void QReferenceEditWindow::ResetForm()
+{
+	_dialogue = nullptr;
+	
+	ui.txtReferenceEdit->clear();	// Order is important here
+	bChangesMade = false;			// or else this will be set to true
+
+	MakeClean();
+}
+
+void QReferenceEditWindow::FormAccepted()
+{
+	_dialogue->SetReference(ui.txtReferenceEdit->text().toStdString());
+
+	ResetForm();
+}
+
 QReferenceEditWindow::QReferenceEditWindow(QWidget *parent)
 	: QDialog(parent)
 {
@@ -64,8 +94,16 @@ QReferenceEditWindow::QReferenceEditWindow(QWidget *parent)
 
 	connect(ui.txtReferenceEdit, &QLineEdit::textChanged, [this]() {
 		bErroneous = !IsValidReference();
+
+		if (this->isVisible())
+		{
+			if (!bChangesMade)
+				setWindowTitle(windowTitle().append("*"));
+			bChangesMade = true;
+		}
 	});
 
+	connect(this, &QDialog::accepted, this, &QReferenceEditWindow::FormAccepted);
 	connect(ui.btnAccept, &QPushButton::clicked, [this]() {
 		if (bErroneous)
 		{
@@ -77,7 +115,7 @@ QReferenceEditWindow::QReferenceEditWindow(QWidget *parent)
 
 		accept();
 	});
-	connect(ui.btnCancel, &QPushButton::clicked, this, &QDialog::reject);
+	connect(ui.btnCancel, &QPushButton::clicked, this, &QReferenceEditWindow::Close);
 }
 
 QReferenceEditWindow::~QReferenceEditWindow()
@@ -85,10 +123,16 @@ QReferenceEditWindow::~QReferenceEditWindow()
 
 }
 
+void QReferenceEditWindow::closeEvent(QCloseEvent *Event)
+{
+	Event->ignore();
+}
+
 void QReferenceEditWindow::editReference(NodeDialogue *EditNode)
 {
 	_dialogue = EditNode;
-	this->setWindowTitle(QString("Edit Reference - ").append(EditNode->GetReference().c_str()));
+	this->setWindowTitle(QString("Edit Reference [").append(EditNode->GetReference().c_str()).append("]"));
+	ui.txtReferenceEdit->setText(EditNode->GetReference().c_str());
 
 	this->show();
 
