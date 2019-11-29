@@ -79,6 +79,7 @@ public:
 	QNodeView(QWidget *Parent);
 	const FontStore &FontStore() const;
 
+	DialogueFile *GetDialogueFile();
 	void SetDialogueFile(DialogueFile *File);
 
 	// HACK: So you can't miss the HACK label for setting a crucial pointer outside the constructor, fuckhead

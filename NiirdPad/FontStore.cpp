@@ -8,6 +8,7 @@ FontStore::FontStore(SDL_Renderer *AssociatedRenderer) :
 
 	auto FontNodeComment = FC_CreateFont();
 	//FC_LoadFont(FontNodeComment, AssociatedRenderer, "segoeuil.ttf", 12, { 255, 255, 255, 255 }, 0);
+	// TODO: Load from Qt resources
 	FC_LoadFont(FontNodeComment, AssociatedRenderer, "sserife.fon", 12, { 255, 255, 255, 255 }, 0);
 	_Fonts[static_cast<uint8_t>(Role::NodeComment)] = FontNodeComment;
 

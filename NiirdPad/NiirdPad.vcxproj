@@ -133,6 +133,7 @@
     <ClCompile Include="QScriptEditWindow.cpp" />
     <ClCompile Include="QSDLPanel.cpp" />
     <ClCompile Include="QTUScriptDatabase.cpp" />
+    <ClCompile Include="ReferenceDatabase.cpp" />
     <ClCompile Include="SDL_FontCache.c" />
     <ClCompile Include="ScriptEngine.cpp" />
   </ItemGroup>

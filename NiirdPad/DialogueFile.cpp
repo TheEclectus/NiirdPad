@@ -3,12 +3,19 @@
 #include "Character.h"
 #include "Node.h"
 #include "QNodeView.h"
+#include "ReferenceDatabase.h"
 
 DialogueFile::DialogueFile(Character &ParentCharacter, const std::string &Filename) :
 	_parentCharacter(ParentCharacter),
+	_referenceDatabase(new ReferenceDatabase()),
 	_filename(Filename)
 {
 
+}
+
+ReferenceDatabase &DialogueFile::GetReferenceDatabase()
+{
+	return *_referenceDatabase;
 }
 
 const std::string &DialogueFile::GetFilename() const
@@ -30,7 +37,7 @@ Node *DialogueFile::NewNode(const SDL_Point &Position)
 {
 	auto &NodeView = _parentCharacter.GetNodeView();
 
-	Node *NewNode = new Node(NodeView, Position);
+	Node *NewNode = new Node(*this, NodeView, Position);
 	_nodes.push_back(NewNode);
 
 	return NewNode;

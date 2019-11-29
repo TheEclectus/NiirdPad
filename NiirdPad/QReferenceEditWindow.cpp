@@ -2,13 +2,13 @@
 
 #include <QEvent>
 #include <QMessageBox>
-#include <QWidget>
-
 #include <QTextBlock>
+#include <QWidget>
 
 #include <tao\pegtl.hpp>
 
 #include "Node.h"
+#include "ReferenceDatabase.h"
 
 void QReferenceEditWindow::MakeError(const std::string &Message)
 {
@@ -50,6 +50,14 @@ bool QReferenceEditWindow::IsValidReference()
 			return false;
 		}
 
+		auto Res = _database->Find(ui.txtReferenceEdit->text().toStdString());
+		if (Res != nullptr && Res != _dialogue)
+		{
+			MakeError("Reference already exists.");
+			ui.btnAccept->setDisabled(true);
+			return false;
+		}
+
 		ui.btnAccept->setDisabled(false);
 	}
 
@@ -61,7 +69,7 @@ bool QReferenceEditWindow::IsValidReference()
 
 void QReferenceEditWindow::Close()
 {
-	if (bChangesMade && QMessageBox::warning(this, "Unsaved Changes", "Any changes will be discarded.\nContinue?", QMessageBox::StandardButton::Ok, QMessageBox::StandardButton::Cancel) == QMessageBox::StandardButton::Cancel)
+	if (_bChangesMade && QMessageBox::warning(this, "Unsaved Changes", "Any changes will be discarded.\nContinue?", QMessageBox::StandardButton::Ok, QMessageBox::StandardButton::Cancel) == QMessageBox::StandardButton::Cancel)
 		return;
 
 	ResetForm();
@@ -73,39 +81,46 @@ void QReferenceEditWindow::ResetForm()
 	_dialogue = nullptr;
 	
 	ui.txtReferenceEdit->clear();	// Order is important here
-	bChangesMade = false;			// or else this will be set to true
+	_bChangesMade = false;			// or else this will be set to true
 
 	MakeClean();
 }
 
 void QReferenceEditWindow::FormAccepted()
 {
-	_dialogue->SetReference(ui.txtReferenceEdit->text().toStdString());
+	if (_database->Rename(_dialogue->GetReference(), ui.txtReferenceEdit->text().toStdString()))
+	{
+		_dialogue->SetReference(ui.txtReferenceEdit->text().toStdString());
 
-	ResetForm();
+		ResetForm();
+	}
+	else
+	{
+		QMessageBox::warning(this, "Warning", "Something went wrong and QReferenceDatabase::Rename() didn't work.\nTell Eclip.", QMessageBox::StandardButton::Ok);
+	}
 }
 
-QReferenceEditWindow::QReferenceEditWindow(QWidget *parent)
-	: QDialog(parent)
+QReferenceEditWindow::QReferenceEditWindow(QWidget *Parent) :
+	QDialog(Parent)
 {
 	ui.setupUi(this);
 
-	bErroneous = !IsValidReference();
+	_bErroneous = !IsValidReference();
 
 	connect(ui.txtReferenceEdit, &QLineEdit::textChanged, [this]() {
-		bErroneous = !IsValidReference();
+		_bErroneous = !IsValidReference();
 
 		if (this->isVisible())
 		{
-			if (!bChangesMade)
+			if (!_bChangesMade)
 				setWindowTitle(windowTitle().append("*"));
-			bChangesMade = true;
+			_bChangesMade = true;
 		}
 	});
 
 	connect(this, &QDialog::accepted, this, &QReferenceEditWindow::FormAccepted);
 	connect(ui.btnAccept, &QPushButton::clicked, [this]() {
-		if (bErroneous)
+		if (_bErroneous)
 		{
 			if (QMessageBox::warning(this, "Warning", "There are errors with this reference name.\nContinue anyways?", QMessageBox::StandardButton::Ok, QMessageBox::StandardButton::Cancel) == QMessageBox::StandardButton::Cancel)
 			{
@@ -128,9 +143,22 @@ void QReferenceEditWindow::closeEvent(QCloseEvent *Event)
 	Event->ignore();
 }
 
-void QReferenceEditWindow::editReference(NodeDialogue *EditNode)
+void QReferenceEditWindow::newReference(NodeDialogue *NewNode, ReferenceDatabase &Database)
+{
+	_dialogue = NewNode;
+	_database = &Database;
+
+	this->setWindowTitle(QString("New Reference"));
+	ui.txtReferenceEdit->setText(NewNode->GetReference().c_str());
+
+	this->show();
+}
+
+void QReferenceEditWindow::editReference(NodeDialogue *EditNode, ReferenceDatabase &Database)
 {
 	_dialogue = EditNode;
+	_database = &Database;
+
 	this->setWindowTitle(QString("Edit Reference [").append(EditNode->GetReference().c_str()).append("]"));
 	ui.txtReferenceEdit->setText(EditNode->GetReference().c_str());
 
@@ -144,19 +172,25 @@ void QReferenceEditWindow::editReference(NodeDialogue *EditNode)
 
 int QReferenceEditWindow::NewReference(QWidget *Parent, std::string &Result)
 {
+	/*ReferenceDatabase Dummy;
 	QReferenceEditWindow RefEdit(Parent);
 	RefEdit.setWindowTitle("New Reference");
 
 	int Res = RefEdit.exec();
 	if (Res == QDialog::Accepted)
 		Result = RefEdit.ui.txtReferenceEdit->text().toStdString();
-	return Res;
+	return Res;*/
+
+	return 0;
 }
 
 int QReferenceEditWindow::EditReference(QWidget *Parent, std::string &Result)
 {
+	/*ReferenceDatabase Dummy;
 	QReferenceEditWindow RefEdit(Parent);
 	RefEdit.setWindowTitle("Edit Reference");
 
-	return RefEdit.exec();
+	return RefEdit.exec();*/
+
+	return 0;
 }

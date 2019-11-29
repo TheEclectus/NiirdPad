@@ -208,7 +208,7 @@ void QNodeView::Input()
 									Context.addSeparator();
 									Context.addAction("Edit Index", [this, Dlg] {
 										//std::string Reference = Dlg->GetReference();
-										this->_Parent->ReferenceEditWindow()->editReference(Dlg);
+										this->_Parent->ReferenceEditWindow()->editReference(Dlg, _DialogueFile->GetReferenceDatabase());
 									});
 								}
 
@@ -240,7 +240,10 @@ void QNodeView::Input()
 			if (Event.user.code == Qt::MouseButton::RightButton)
 			{
 				QMenu Context("Context Menu", this);
-				Context.addAction("Create Node");
+				Context.addAction("Create Node", [this]() {
+					// Use _DialogueFile->NewNode(), and add its return value to the front of _Nodes!
+					
+				});
 				Context.exec(mapToGlobal(QPoint(ReleasePos.x, ReleasePos.y)));
 				return;
 			}
@@ -743,6 +746,11 @@ QNodeView::QNodeView(QWidget *Parent) :
 const FontStore &QNodeView::FontStore() const
 {
 	return _FontStore;
+}
+
+DialogueFile *QNodeView::GetDialogueFile()
+{
+	return _DialogueFile;
 }
 
 void QNodeView::SetDialogueFile(DialogueFile *File)

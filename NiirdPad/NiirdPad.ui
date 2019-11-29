@@ -157,6 +157,7 @@
     </widget>
     <addaction name="menuEdit_Reference_Window"/>
     <addaction name="menuEditScriptWindow"/>
+    <addaction name="actionDump_Reference_Database"/>
    </widget>
    <widget class="QMenu" name="menuTUScript">
     <property name="title">
@@ -254,6 +255,11 @@
   <action name="actionEditScriptWindowOption">
    <property name="text">
     <string>Option Fragment</string>
+   </property>
+  </action>
+  <action name="actionDump_Reference_Database">
+   <property name="text">
+    <string>Dump Reference Database For Current File</string>
    </property>
   </action>
  </widget>

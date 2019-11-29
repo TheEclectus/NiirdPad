@@ -48,6 +48,7 @@ public:
     QAction *actionEditScriptWindow_Dialogue;
     QAction *actionEditScriptWindowDialogue;
     QAction *actionEditScriptWindowOption;
+    QAction *actionDump_Reference_Database;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
     QFrame *frame;
@@ -108,6 +109,8 @@ public:
         actionEditScriptWindowDialogue->setObjectName(QString::fromUtf8("actionEditScriptWindowDialogue"));
         actionEditScriptWindowOption = new QAction(NiirdPadClass);
         actionEditScriptWindowOption->setObjectName(QString::fromUtf8("actionEditScriptWindowOption"));
+        actionDump_Reference_Database = new QAction(NiirdPadClass);
+        actionDump_Reference_Database->setObjectName(QString::fromUtf8("actionDump_Reference_Database"));
         centralWidget = new QWidget(NiirdPadClass);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         horizontalLayout = new QHBoxLayout(centralWidget);
@@ -200,6 +203,7 @@ public:
         menuFile->addAction(actionExport_Project);
         menuDebug->addAction(menuEdit_Reference_Window->menuAction());
         menuDebug->addAction(menuEditScriptWindow->menuAction());
+        menuDebug->addAction(actionDump_Reference_Database);
         menuEdit_Reference_Window->addAction(actionEditReferenceWindowNew);
         menuEdit_Reference_Window->addAction(actionEditReferenceWindowEdit);
         menuEditScriptWindow->addAction(actionEditScriptWindowOption);
@@ -233,6 +237,7 @@ public:
         actionEditScriptWindow_Dialogue->setText(QApplication::translate("NiirdPadClass", "Dialogue Fragment", nullptr));
         actionEditScriptWindowDialogue->setText(QApplication::translate("NiirdPadClass", "Dialogue Fragment", nullptr));
         actionEditScriptWindowOption->setText(QApplication::translate("NiirdPadClass", "Option Fragment", nullptr));
+        actionDump_Reference_Database->setText(QApplication::translate("NiirdPadClass", "Dump Reference Database For Current File", nullptr));
         label->setText(QApplication::translate("NiirdPadClass", "Character", nullptr));
         label_2->setText(QApplication::translate("NiirdPadClass", "Dialogue File", nullptr));
         menuFile->setTitle(QApplication::translate("NiirdPadClass", "File", nullptr));

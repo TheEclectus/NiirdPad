@@ -195,7 +195,7 @@ public:
 class Node
 {
 private:
-	//DialogueFile &_parentFile;
+	DialogueFile &_parentFile;
 	// Owning
 	GraphicsBlock_Node *_graphics;
 	std::vector<NodeDialogue*> _dialogues;
@@ -204,7 +204,7 @@ private:
 	SDL_Point _position;
 
 public:
-	Node(QNodeView &NodeView, SDL_Point Position = { 0,0 });
+	Node(DialogueFile &Parent, QNodeView &NodeView, SDL_Point Position = { 0,0 });
 	~Node();
 
 	GraphicsBlock_Node &Graphics();
@@ -214,6 +214,7 @@ public:
 
 	void SetComment(const std::string &Comment);
 
+	// TODO: Make an AddDialogue where the user is prompted to create a new one
 	NodeDialogue *AddDialogue(const std::string &Reference);
 	void RemoveDialogue(NodeDialogue *Dlg);
 	const std::vector<NodeDialogue*> &Dialogues() const;

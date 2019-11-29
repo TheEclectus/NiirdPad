@@ -2,7 +2,9 @@
 
 #include <QFile>
 
+#include "DialogueFile.h"
 #include "GraphicsBlocks.h"
+#include "ReferenceDatabase.h"
 
 ConnectionInput::ConnectionInput(NubInput &Parent, const std::string &KeyName, ConnectionOutput *Connection) :
 	_parent(Parent),
@@ -327,7 +329,8 @@ GraphicsBlock_NodeOutputBox *NodeOption::Graphics()
 
 
 
-Node::Node(QNodeView &NodeView, SDL_Point Position) :
+Node::Node(DialogueFile &Parent, QNodeView &NodeView, SDL_Point Position) :
+	_parentFile(Parent),
 	_graphics(new GraphicsBlock_Node(NodeView.SDLRenderer(), NodeView.FontStore().GetFont(FontStore::Role::NodeComment))),
 	_position(Position)
 {
@@ -361,13 +364,22 @@ void Node::SetComment(const std::string &Comment)
 
 NodeDialogue *Node::AddDialogue(const std::string &Reference)
 {
-	GraphicsBlock_NodeInputBox *NewInputBoxGraphics = _graphics->InputSection()->AddInputBox();
-	NodeDialogue *NewDialogue = new NodeDialogue(*this, NewInputBoxGraphics, "", {}, "");
-	NewDialogue->SetReference(Reference);
+	auto &ReferenceDbase = _parentFile.GetReferenceDatabase();
+	if (ReferenceDbase.Find(Reference) == nullptr)
+	{
+		GraphicsBlock_NodeInputBox *NewInputBoxGraphics = _graphics->InputSection()->AddInputBox();
+		NodeDialogue *NewDialogue = new NodeDialogue(*this, NewInputBoxGraphics, "", {}, "");
+		ReferenceDbase.New(Reference, NewDialogue);
+		NewDialogue->SetReference(Reference);
 
-	_dialogues.push_back(NewDialogue);
+		_dialogues.push_back(NewDialogue);
 
-	return NewDialogue;
+		return NewDialogue;
+	}
+	else
+	{
+		return nullptr;
+	}
 }
 
 void Node::RemoveDialogue(NodeDialogue *Dlg)

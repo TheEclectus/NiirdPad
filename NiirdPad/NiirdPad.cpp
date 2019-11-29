@@ -13,6 +13,7 @@
 #include "ImportWorker.h"
 #include "QReferenceEditWindow.h"
 #include "QScriptEditWindow.h"
+#include "ReferenceDatabase.h"
 
 #include "Character.h"
 #include "DialogueFile.h"
@@ -224,6 +225,14 @@ NiirdPad::NiirdPad(QWidget *parent) :
 		std::string Res = "";
 		QReferenceEditWindow::EditReference(this, Res);
 	});
+	connect(ui.actionDump_Reference_Database, &QAction::triggered, [this]() {
+		fmt::print("====== REFERENCE DUMP ======\n");
+		for (auto i : this->ui.widget->GetDialogueFile()->GetReferenceDatabase().Map())
+		{
+			fmt::print("{} - {}\n", i.first, fmt::ptr(i.second));
+		}
+		fmt::print("============================\n");
+	});
 	connect(ui.actionImportConsole, &QAction::triggered, [this]() {
 		//QImportConsole Con(this);
 		//Con.exec();
@@ -246,6 +255,9 @@ NiirdPad::NiirdPad(QWidget *parent) :
 		DialogueFile *DiagFile = (DialogueFile*)ui.cmbDiag->itemData(index).value<void*>();
 		this->ui.widget->SetDialogueFile(DiagFile);
 	});
+
+	// TODO: Hide debug menu and console when not launched with --debug flag
+	//ui.menuDebug->menuAction()->setVisible(false);
 
 	//ui.widget->setFocus();
 	//this->setMouseTracking(true);

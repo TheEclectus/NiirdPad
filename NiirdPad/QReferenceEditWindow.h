@@ -6,15 +6,20 @@
 // Node.h
 class NodeDialogue;
 
+// ReferenceDatabase.h
+class ReferenceDatabase;
+
 class QReferenceEditWindow : public QDialog
 {
 	Q_OBJECT
 
 private:
 	Ui::QReferenceEditWindow ui;
-	bool bErroneous = false;
-	bool bChangesMade = false;
-	NodeDialogue *_dialogue = nullptr;
+	ReferenceDatabase *_database = nullptr;
+
+	bool _bErroneous = false;
+	bool _bChangesMade = false;
+	NodeDialogue *_dialogue = nullptr;	// If nullptr, we're making a new reference
 
 	void MakeError(const std::string &Message);
 	void MakeClean();
@@ -29,9 +34,10 @@ public:
 	static int NewReference(QWidget *Parent, std::string &Result);
 	static int EditReference(QWidget *Parent, std::string &Result);
 
-	QReferenceEditWindow(QWidget *parent);
+	QReferenceEditWindow(QWidget *Parent);
 	~QReferenceEditWindow();
 	void closeEvent(QCloseEvent *event) override;
 
-	void editReference(NodeDialogue *EditNode);
+	void newReference(NodeDialogue *NewNode, ReferenceDatabase &Database);
+	void editReference(NodeDialogue *EditNode, ReferenceDatabase &Database);
 };
