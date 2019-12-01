@@ -201,9 +201,20 @@ void NodeDialogue::SetReference(const std::string &Reference)
 void NodeDialogue::SetFunctions(const std::vector<std::string> &FunctionLines)
 {
 	_functionLines = FunctionLines;
+
+	auto &Engine = _parentNode.ParentFile().ParentCharacter().GetNodeView().GetNiirdPad()->ScriptEngine();
+	bool bErrorFound = false;	// TODO: Currently not implemented. Consider changing the outline or fill color of the GraphicsBox.
+	
 	std::string FunctionLinesString = "";
 	for (std::string Line : FunctionLines)
 	{
+		std::string FuncError = "";
+		std::vector<std::string> Keys;
+		if (!Engine.bScriptIsValid(Line, Keys, FuncError))
+		{
+			bErrorFound = true;
+		}
+
 		if (FunctionLinesString.length() == 0)
 			FunctionLinesString += Line;
 		else
