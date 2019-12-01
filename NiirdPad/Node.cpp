@@ -213,7 +213,15 @@ void NodeDialogue::SetFunctions(const std::vector<std::string> &FunctionLines)
 
 void NodeDialogue::SetDialogue(const std::string &Dialogue)
 {
-	_dialogue = Dialogue;
+	std::string FormattedDialogue = Dialogue;
+	size_t Pos = FormattedDialogue.find('\n');
+	while (Pos != std::string::npos)
+	{
+		FormattedDialogue.replace(Pos, 1, "<br>");
+		Pos = FormattedDialogue.find('\n');
+	}
+
+	_dialogue = FormattedDialogue;
 	_graphics->SetDialogue(Dialogue);
 }
 
@@ -293,6 +301,7 @@ void NodeOption::SetFunctions(const std::vector<std::string> &FunctionLines)
 			FunctionLinesString += "\n" + Line;
 	}
 
+	// TODO: change SetScript to SetFunction or something. It's confusing as-is.
 	_graphics->SetScript(FunctionLinesString);
 }
 

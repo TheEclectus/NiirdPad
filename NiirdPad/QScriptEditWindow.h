@@ -23,6 +23,7 @@ private:
 
 	NodeDialogue *_dialogue;
 	NodeOption *_option;
+	//std::vector<std::string> _keys;
 
 	void ResetTimer();
 	

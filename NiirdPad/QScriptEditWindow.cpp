@@ -254,6 +254,7 @@ void QScriptEditWindow::ResetTimer()
 void QScriptEditWindow::ValidateScripts()
 {
 	//ui.txtErrors->clear();
+	//_keys.clear();
 
 	QTextDocument &QtDoc = *ui.txtScripts->document();
 	std::vector<std::string> Lines = {};
@@ -375,6 +376,7 @@ void QScriptEditWindow::ResetForm()
 	ui.txtScripts->clear();
 	ui.txtText->clear();
 	ui.txtVisibility->clear();
+	//_keys.clear();
 
 	VisMakeClean();
 	ScriptsMakeClean();
@@ -398,12 +400,6 @@ void QScriptEditWindow::FormAccepted()
 		std::string DialogueText = this->ui.txtText->toPlainText().toStdString();
 
 		// TODO: remove trailing newlines?
-		size_t Pos = DialogueText.find('\n');
-		while (Pos != std::string::npos)
-		{
-			DialogueText.replace(Pos, 1, "<br>");
-			Pos = DialogueText.find('\n');
-		}
 		_dialogue->SetAll(FunctionLines, DialogueText);
 
 		_dialogue = nullptr;

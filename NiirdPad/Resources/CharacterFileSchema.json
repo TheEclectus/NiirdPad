@@ -1,0 +1,129 @@
+{
+	"definitions": {
+		"connection": {
+			"properties": {
+				"branchOption": {
+					"type": "string"
+				},
+				"destIndex": {
+					"type": "string",
+					"pattern": "([_a-z])+"
+				}
+			}
+		},
+		"dialogue": {
+			"properties": {
+				"index": {
+					"type": "string",
+					"pattern": "([_a-z])+"
+				},
+				"text": {
+					"type": "string"
+				},
+				"functionLines": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			}
+		},
+		"option": {
+			"properties": {
+				"text": {
+					"type": "string"
+				},
+				"visibilityLines": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"functionLines": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"connections": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/connection"
+					}
+				}
+			}
+		},
+		"position": {
+			"properties": {
+				"x": {
+					"type": "integer"
+				},
+				"y": {
+					"type": "integer"
+				}
+			}
+		},
+		"node": {
+			"properties": {
+				"comment": {
+					"type": "string"
+				},
+				"scenePosition": {
+					"$ref": "#/definitions/position"
+				},
+				"dialogues": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/dialogue"
+					}
+				},
+				"options": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/option"
+					}
+				}
+			}
+		},
+		"file": {
+			"properties": {
+				"comment": {
+					"type": "string"
+				},
+				"filename": {
+					"type": "string"
+				},
+				"nodes": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/node"
+					}
+				}
+			}
+		},
+		"character": {
+			"properties": {
+				"comment": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"files": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/file"
+					}
+				}
+			}
+		},
+	},
+    "type": "object",
+    
+    "title": "Character File Schema 1.0",
+	"properties": {
+		"Test File": {
+			"$ref": "#/definitions/file"
+		}
+	}
+}
