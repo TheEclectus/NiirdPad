@@ -13,6 +13,11 @@ DialogueFile::DialogueFile(Character &ParentCharacter, const std::string &Filena
 
 }
 
+Character &DialogueFile::ParentCharacter()
+{
+	return _parentCharacter;
+}
+
 ReferenceDatabase &DialogueFile::GetReferenceDatabase()
 {
 	return *_referenceDatabase;

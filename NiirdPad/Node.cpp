@@ -2,8 +2,10 @@
 
 #include <QFile>
 
+#include "Character.h"
 #include "DialogueFile.h"
 #include "GraphicsBlocks.h"
+#include "NiirdPad.h"
 #include "ReferenceDatabase.h"
 
 ConnectionInput::ConnectionInput(NubInput &Parent, const std::string &KeyName, ConnectionOutput *Connection) :
@@ -278,9 +280,23 @@ void NodeOption::SetAll(const std::vector<std::string> &VisibilityScriptLines, c
 void NodeOption::SetVisibilityLines(const std::vector<std::string> &VisibilityLines)
 {
 	_functionLines = VisibilityLines;
+
+	// It's time to smoke crack
+	// That's what we're smoking here
+	// We're smoking crack
+	auto &Engine = _parentNode.ParentFile().ParentCharacter().GetNodeView().GetNiirdPad()->ScriptEngine();
+	bool bErrorFound = false;	// TODO: Currently not implemented. Consider changing the outline or fill color of the GraphicsBox.
+
 	std::string VisLinesString = "";
 	for (std::string Line : VisibilityLines)
 	{
+		// Checking for erroneous vis scripts here
+		std::string VisError = "";
+		if (!Engine.bVisConditionIsValid(Line, VisError))
+		{
+			bErrorFound = true;
+		}
+
 		if (VisLinesString.length() == 0)
 			VisLinesString += Line;
 		else
@@ -292,9 +308,20 @@ void NodeOption::SetVisibilityLines(const std::vector<std::string> &VisibilityLi
 void NodeOption::SetFunctions(const std::vector<std::string> &FunctionLines)
 {
 	_functionLines = FunctionLines;
+
+	auto &Engine = _parentNode.ParentFile().ParentCharacter().GetNodeView().GetNiirdPad()->ScriptEngine();
+	bool bErrorFound = false;	// TODO: Currently not implemented. Consider changing the outline or fill color of the GraphicsBox.
+
 	std::string FunctionLinesString = "";
 	for (std::string Line : FunctionLines)
 	{
+		std::string FuncError = "";
+		std::vector<std::string> Keys;
+		if (!Engine.bScriptIsValid(Line, Keys, FuncError))
+		{
+			bErrorFound = true;
+		}
+
 		if (FunctionLinesString.length() == 0)
 			FunctionLinesString += Line;
 		else
@@ -354,6 +381,11 @@ Node::~Node()
 GraphicsBlock_Node &Node::Graphics()
 {
 	return *_graphics;
+}
+
+DialogueFile &Node::ParentFile()
+{
+	return _parentFile;
 }
 
 void Node::SetPosition(const SDL_Point &Position)

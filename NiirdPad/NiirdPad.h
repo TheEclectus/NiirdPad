@@ -35,4 +35,5 @@ public:
 	NiirdPad(QWidget *parent = Q_NULLPTR);
 	QScriptEditWindow *ScriptEditWindow();
 	QReferenceEditWindow *ReferenceEditWindow();
+	ScriptEngine &ScriptEngine();
 };

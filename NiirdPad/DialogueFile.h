@@ -28,6 +28,8 @@ private:
 public:
 	DialogueFile(Character &ParentCharacter, const std::string &Filename);
 
+	Character &ParentCharacter();
+
 	ReferenceDatabase &GetReferenceDatabase();
 	const std::string &GetFilename() const;
 	const std::map<std::string, NodeDialogue*> &GetIndices() const;

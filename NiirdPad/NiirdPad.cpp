@@ -273,7 +273,7 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	auto *Dlg = NewNode->AddDialogue("b i r b");
 	Dlg->SetAll({ "give_money \"krats\" 20" }, "the niirb is a legally distinct creature from the Niird, which is copyright 2016-2019 Meandraco Entertainment");
 	auto *Opt = NewNode->AddOption();
-	Opt->SetAll({ "//showif.charisma.8" }, { "give_money \"krats\" 80" }, "Test");
+	Opt->SetAll({ "//showif.has_stat.charisma.8" }, { "give_money \"krats\" 80" }, "Test");
 	auto *Opt2 = NewNode->AddOption();
 	Opt2->SetAll({ "//showif.charisma.8" }, { "give_money \"krats\" 80" }, "Tests");
 
@@ -297,4 +297,9 @@ QScriptEditWindow *NiirdPad::ScriptEditWindow()
 QReferenceEditWindow *NiirdPad::ReferenceEditWindow()
 {
 	return _referenceEditWindow;
+}
+
+ScriptEngine &NiirdPad::ScriptEngine()
+{
+	return _scriptEngine;
 }

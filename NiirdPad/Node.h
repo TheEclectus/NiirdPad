@@ -209,6 +209,8 @@ public:
 
 	GraphicsBlock_Node &Graphics();
 
+	DialogueFile &ParentFile();
+
 	void SetPosition(const SDL_Point &Position);
 	const SDL_Point &Position();
 

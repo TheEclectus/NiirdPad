@@ -85,6 +85,7 @@ public:
 	// HACK: So you can't miss the HACK label for setting a crucial pointer outside the constructor, fuckhead
 	void SetEngine(ScriptEngine *Engine);
 
+	NiirdPad *GetNiirdPad();
 	// HACK: hee hee hoo hoo ho ho it's ME AGAIN, THE HACK LABEL >:D
 	void SetNiirdPad(NiirdPad *NP);
 };

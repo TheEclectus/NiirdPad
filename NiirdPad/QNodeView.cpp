@@ -774,6 +774,11 @@ void QNodeView::SetEngine(ScriptEngine *Engine)
 	_Engine = Engine;
 }
 
+NiirdPad *QNodeView::GetNiirdPad()
+{
+	return _Parent;
+}
+
 void QNodeView::SetNiirdPad(NiirdPad *NP)
 {
 	_Parent = NP;

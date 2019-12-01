@@ -16,7 +16,7 @@ class Character
 {
 private:
 	Project &_parentProject;
-	QNodeView &_nodeView;
+	QNodeView &_nodeView;	// Used in Node constructor for DialogueFiles.
 	//std::string _name;
 	std::map<std::string, DialogueFile*> _dialogueFiles;
 public:
