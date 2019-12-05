@@ -46,16 +46,21 @@ class NodeOption;
 // Owned by a ConnectionPoint, which is basically a map of AConnections.
 class ConnectionInput
 {
+	friend class ConnectionOutput;
 private:
 	NubInput &_parent;
-	std::string _keyName;
-	ConnectionOutput *_connection = nullptr;
+	std::vector<ConnectionOutput*> _connections;
+	//std::string _keyName;
+	//ConnectionOutput *_connection = nullptr;
+
+	// Neither of these should ever be called except by a ConnectionOutput performing a dis/connection.
+	void Connect(ConnectionOutput *Destination);
+	void Disconnect(ConnectionOutput *Destination);
 public:
-	ConnectionInput(NubInput &Parent, const std::string &KeyName, ConnectionOutput *Connection = nullptr);
+	ConnectionInput(NubInput &Parent, const std::string &KeyName, const std::vector<ConnectionOutput*> &Connections = {});
 	NubInput &Parent();
-	const std::string &KeyName();
-	ConnectionOutput *Connection();
-	void SetConnection(ConnectionOutput *NewConnection);
+	//const std::string &KeyName();
+	const std::vector<ConnectionOutput*> &Connections();
 };
 
 class ConnectionOutput
@@ -66,9 +71,12 @@ private:
 	ConnectionInput *_connection = nullptr;
 public:
 	ConnectionOutput(NubOutput &Parent, const std::string &KeyName, ConnectionInput *Connection = nullptr);
-	NodeOption &Parent();
+	NubOutput &Parent();
 	const std::string &KeyName();
 	ConnectionInput *Connection();
+
+	void Connect(ConnectionInput *Destination);
+	void Disconnect();
 };
 
 class ANub
@@ -122,6 +130,8 @@ public:
 	NubOutput(NodeOption &Parent);
 	NodeOption &Parent();
 	const NubType GetNubType() override;
+	void SetConnectionKeys(const std::vector<std::string> &Keys);
+
 };
 
 // TODO: In NodeDialogue and NodeOption, store the QScriptEditWindow's ::saveState() data and reset the state of the QSplitter (save this to the project file!)

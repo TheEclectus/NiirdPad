@@ -8,10 +8,9 @@
 #include "NiirdPad.h"
 #include "ReferenceDatabase.h"
 
-ConnectionInput::ConnectionInput(NubInput &Parent, const std::string &KeyName, ConnectionOutput *Connection) :
+ConnectionInput::ConnectionInput(NubInput &Parent, const std::string &KeyName, const std::vector<ConnectionOutput*> &Connections) :
 	_parent(Parent),
-	_keyName(KeyName),
-	_connection(Connection)
+	_connections(Connections)
 {
 
 }
@@ -21,19 +20,88 @@ NubInput &ConnectionInput::Parent()
 	return _parent;
 }
 
-const std::string &ConnectionInput::KeyName()
+const std::vector<ConnectionOutput*> &ConnectionInput::Connections()
+{
+	return _connections;
+}
+
+void ConnectionInput::Connect(ConnectionOutput *Destination)
+{
+	auto Res = std::find(_connections.begin(), _connections.end(), Destination);
+
+	// There's already a connection.
+	if (Res != _connections.end())
+		return;
+
+	_connections.push_back(Destination);
+}
+
+void ConnectionInput::Disconnect(ConnectionOutput *Destination)
+{
+	auto Res = std::find(_connections.begin(), _connections.end(), Destination);
+	
+	// There's no connection.
+	if (Res == _connections.end())
+		return;
+
+	_connections.erase(Res);
+}
+
+
+
+ConnectionOutput::ConnectionOutput(NubOutput &Parent, const std::string &KeyName, ConnectionInput *Connection) :
+	_parent(Parent),
+	_keyName(KeyName),
+	_connection(Connection)
+{
+
+}
+
+NubOutput &ConnectionOutput::Parent()
+{
+	return _parent;
+}
+
+const std::string &ConnectionOutput::KeyName()
 {
 	return _keyName;
 }
 
-ConnectionOutput *ConnectionInput::Connection()
+ConnectionInput *ConnectionOutput::Connection()
 {
 	return _connection;
 }
 
-void ConnectionInput::SetConnection(ConnectionOutput *NewConnection)
+void ConnectionOutput::Connect(ConnectionInput *Destination)
 {
-	_connection = NewConnection;
+	// If it's already connected to the destination, save some steps.
+	if (_connection == Destination)
+		return;
+
+	// Disconnect the original connection if it exists.
+	if (_connection)
+		this->Disconnect();
+
+	// Add self to the list of connections on the ConnectionInput side.
+	Destination->Connect(this);
+	// Set the destination as the active connection 
+	_connection = Destination;
+
+	fmt::print("Connected {} to {}.\n", fmt::ptr(this), fmt::ptr(Destination));
+}
+
+void ConnectionOutput::Disconnect()
+{
+	// If there's no active connection, don't do anything.
+	if (_connection == nullptr)
+		return;
+
+	fmt::print("Disconnected {} from {}", fmt::ptr(this), fmt::ptr(_connection));
+
+	// Disconnect from the ConnectionInput side.
+	_connection->Disconnect(this);
+	// Set the connection to nullptr.
+	_connection = nullptr;
 }
 
 
@@ -166,6 +234,42 @@ NodeOption &NubOutput::Parent()
 const ANub::NubType NubOutput::GetNubType()
 {
 	return NubType::Output;
+}
+
+void NubOutput::SetConnectionKeys(const std::vector<std::string> &Keys)
+{
+	std::vector<ConnectionOutput*> NewConnections;
+	std::unordered_map<std::string, ConnectionOutput*> OldConns;
+	for (auto &CurOldConn : _connections)
+	{
+		if (CurOldConn->Connection() != nullptr)	// Live connections only; unused ones are pruned.
+			OldConns.insert({ CurOldConn->KeyName(), CurOldConn });
+	}
+
+	// Compare the new connections against the old ones. If there's a match, then maintain the old connection pointer.
+	for (auto &NewKey : Keys)
+	{
+		auto Res = OldConns.find(NewKey);
+		if (Res != OldConns.end())
+		{
+			NewConnections.push_back((*Res).second);	// Add it (should be added sequentially?)
+			OldConns.erase(Res);						// Remove it from the copied list of old connections
+		}
+		else // It's a new key
+		{
+			ConnectionOutput *NewConn = new ConnectionOutput(*this, Res->first, nullptr);
+
+			NewConnections.push_back(NewConn);
+		}
+	}
+
+	// Disconnect and delete the remaining old connections
+	for (auto &CurOldConn : OldConns)
+	{
+		ConnectionOutput *OldConnPtr = CurOldConn.second;
+		OldConnPtr->Disconnect();
+		delete OldConnPtr;
+	}
 }
 
 
