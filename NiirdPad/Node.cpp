@@ -8,9 +8,9 @@
 #include "NiirdPad.h"
 #include "ReferenceDatabase.h"
 
-ConnectionInput::ConnectionInput(NubInput &Parent, const std::string &KeyName, const std::vector<ConnectionOutput*> &Connections) :
+ConnectionInput::ConnectionInput(NubInput &Parent, const std::vector<ConnectionOutput*> &Connections) :
 	_parent(Parent),
-	_connections(Connections)
+	_incomingConnections(Connections)
 {
 
 }
@@ -20,31 +20,31 @@ NubInput &ConnectionInput::Parent()
 	return _parent;
 }
 
-const std::vector<ConnectionOutput*> &ConnectionInput::Connections()
+const std::vector<ConnectionOutput*> &ConnectionInput::IncomingConnections()
 {
-	return _connections;
+	return _incomingConnections;
 }
 
 void ConnectionInput::Connect(ConnectionOutput *Destination)
 {
-	auto Res = std::find(_connections.begin(), _connections.end(), Destination);
+	auto Res = std::find(_incomingConnections.begin(), _incomingConnections.end(), Destination);
 
 	// There's already a connection.
-	if (Res != _connections.end())
+	if (Res != _incomingConnections.end())
 		return;
 
-	_connections.push_back(Destination);
+	_incomingConnections.push_back(Destination);
 }
 
 void ConnectionInput::Disconnect(ConnectionOutput *Destination)
 {
-	auto Res = std::find(_connections.begin(), _connections.end(), Destination);
+	auto Res = std::find(_incomingConnections.begin(), _incomingConnections.end(), Destination);
 	
 	// There's no connection.
-	if (Res == _connections.end())
+	if (Res == _incomingConnections.end())
 		return;
 
-	_connections.erase(Res);
+	_incomingConnections.erase(Res);
 }
 
 
@@ -203,7 +203,8 @@ const SDL_Rect &ANub::TextureSize()
 
 
 NubInput::NubInput(NodeDialogue &Parent) :
-	_parent(Parent)
+	_parent(Parent),
+	_connection(*this, {})
 {
 
 }
@@ -216,6 +217,11 @@ NodeDialogue &NubInput::Parent()
 const ANub::NubType NubInput::GetNubType()
 {
 	return ANub::NubType::Input;
+}
+
+ConnectionInput &NubInput::Connection()
+{
+	return _connection;
 }
 
 
@@ -257,7 +263,7 @@ void NubOutput::SetConnectionKeys(const std::vector<std::string> &Keys)
 		}
 		else // It's a new key
 		{
-			ConnectionOutput *NewConn = new ConnectionOutput(*this, Res->first, nullptr);
+			ConnectionOutput *NewConn = new ConnectionOutput(*this, NewKey, nullptr);
 
 			NewConnections.push_back(NewConn);
 		}
@@ -270,6 +276,13 @@ void NubOutput::SetConnectionKeys(const std::vector<std::string> &Keys)
 		OldConnPtr->Disconnect();
 		delete OldConnPtr;
 	}
+
+	_connections = NewConnections;
+}
+
+std::vector<ConnectionOutput*> &NubOutput::Connections()
+{
+	return _connections;
 }
 
 
@@ -318,6 +331,7 @@ void NodeDialogue::SetFunctions(const std::vector<std::string> &FunctionLines)
 		{
 			bErrorFound = true;
 		}
+		// LASTTIME: you were looking at ScriptEngine to make sure erroneous scripts go the "__default__" key as well as non-IM functions.
 
 		if (FunctionLinesString.length() == 0)
 			FunctionLinesString += Line;
@@ -428,6 +442,9 @@ void NodeOption::SetFunctions(const std::vector<std::string> &FunctionLines)
 	bool bErrorFound = false;	// TODO: Currently not implemented. Consider changing the outline or fill color of the GraphicsBox.
 
 	std::string FunctionLinesString = "";
+	bool bHasIndexModifyingFunction = false;
+	std::vector<std::string> PendingKeys;
+
 	for (std::string Line : FunctionLines)
 	{
 		std::string FuncError = "";
@@ -437,11 +454,31 @@ void NodeOption::SetFunctions(const std::vector<std::string> &FunctionLines)
 			bErrorFound = true;
 		}
 
+		if (Keys.size() > 0)
+		{
+			if (!bHasIndexModifyingFunction)
+			{
+				bHasIndexModifyingFunction = true;
+				PendingKeys = Keys;
+			}
+			else
+			{
+				bErrorFound = true;
+			}
+		}
+
 		if (FunctionLinesString.length() == 0)
 			FunctionLinesString += Line;
 		else
 			FunctionLinesString += "\n" + Line;
 	}
+
+	if (bErrorFound || !bHasIndexModifyingFunction)
+	{
+		PendingKeys = { "__default__" };	// Should be the only key
+	}
+
+	_nub.SetConnectionKeys(PendingKeys);
 
 	// TODO: change SetScript to SetFunction or something. It's confusing as-is.
 	_graphics->SetScript(FunctionLinesString);

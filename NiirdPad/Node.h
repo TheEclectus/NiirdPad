@@ -49,7 +49,7 @@ class ConnectionInput
 	friend class ConnectionOutput;
 private:
 	NubInput &_parent;
-	std::vector<ConnectionOutput*> _connections;
+	std::vector<ConnectionOutput*> _incomingConnections;
 	//std::string _keyName;
 	//ConnectionOutput *_connection = nullptr;
 
@@ -57,10 +57,10 @@ private:
 	void Connect(ConnectionOutput *Destination);
 	void Disconnect(ConnectionOutput *Destination);
 public:
-	ConnectionInput(NubInput &Parent, const std::string &KeyName, const std::vector<ConnectionOutput*> &Connections = {});
+	ConnectionInput(NubInput &Parent, const std::vector<ConnectionOutput*> &Connections = {});
 	NubInput &Parent();
 	//const std::string &KeyName();
-	const std::vector<ConnectionOutput*> &Connections();
+	const std::vector<ConnectionOutput*> &IncomingConnections();
 };
 
 class ConnectionOutput
@@ -103,12 +103,13 @@ class NubInput : public ANub
 {
 private:
 	NodeDialogue &_parent;
-	std::vector<ConnectionInput*> _connections;
+	ConnectionInput _connection;
 
 public:
 	NubInput(NodeDialogue &Parent);
 	NodeDialogue &Parent();
 	const NubType GetNubType() override;
+	ConnectionInput &Connection();
 };
 
 class NubOutput : public ANub
@@ -131,6 +132,8 @@ public:
 	NodeOption &Parent();
 	const NubType GetNubType() override;
 	void SetConnectionKeys(const std::vector<std::string> &Keys);
+	std::vector<ConnectionOutput*> &Connections();
+
 
 };
 

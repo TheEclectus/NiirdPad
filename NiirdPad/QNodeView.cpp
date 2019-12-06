@@ -149,6 +149,22 @@ void QNodeView::Input()
 				if (Event.user.code == Qt::MouseButton::LeftButton && _InputState.DraggingNub != nullptr)
 				{
 					// Connection code
+					if (_InputState.DraggingNub->GetNubType() != _InputState.MousedOverNub->GetNubType())
+					{
+						NubInput *InputSide = static_cast<NubInput*>((_InputState.DraggingNub->GetNubType() == ANub::NubType::Input) ? _InputState.DraggingNub : _InputState.MousedOverNub);
+						NubOutput *OutputSide = static_cast<NubOutput*>((_InputState.DraggingNub->GetNubType() == ANub::NubType::Output) ? _InputState.DraggingNub : _InputState.MousedOverNub);
+
+						auto &OutputConns = OutputSide->Connections();	// .size() == 0 means there's only a default connection to be made.
+						if (OutputConns.size() == 1 && OutputConns[0]->KeyName() == "__default__")
+						{
+							// Don't show the context menu, just connect it
+							OutputSide->Connections()[0]->Connect(&InputSide->Connection());
+						}
+						else
+						{
+							
+						}
+					}
 				}
 				//return;
 			}
@@ -551,6 +567,44 @@ void QNodeView::RenderForeground()
 	SDL_Point TopLeft = { _Camera.ViewBox.x - (_Camera.ViewBox.w / 2), _Camera.ViewBox.y - (_Camera.ViewBox.h / 2) };
 
 	SDL_Renderer *Renderer = SDLRenderer();
+
+	#pragma region Active Connection Beziers
+	for (auto Node : _Nodes)
+	{
+		for (auto Opt : Node->Options())
+		{
+			SDL_Point OutputNubPoint = Opt->Graphics()->NubPoint();
+			SDL_Rect OutNodeBounds = Opt->Parent().Graphics().GetBounds();
+			SDL_Point OutNodePos = Opt->Parent().Position();
+
+			OutNodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + OutNodePos.x;
+			OutNodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + OutNodePos.y;
+
+			OutputNubPoint.x += OutNodeBounds.x;
+			OutputNubPoint.y += OutNodeBounds.y;
+
+			for (auto Conn : Opt->Nub().Connections())
+			{
+				if (Conn->Connection() != nullptr)
+				{
+					NodeDialogue &EndFrag = Conn->Connection()->Parent().Parent();
+
+					SDL_Point InputNubPoint = EndFrag.Graphics()->NubPoint();
+					SDL_Rect InputNodeBounds = EndFrag.Parent().Graphics().GetBounds();
+					SDL_Point InputNodePos = EndFrag.Parent().Position();
+
+					InputNodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + InputNodePos.x;
+					InputNodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + InputNodePos.y;
+
+					InputNubPoint.x += InputNodeBounds.x;
+					InputNubPoint.y += InputNodeBounds.y;
+
+					DrawBezierCurve(OutputNubPoint, InputNubPoint);
+				}
+			}
+		}
+	}
+	#pragma endregion
 
 	#pragma region Connection Preview Beziers
 	if (_InputState.DraggingNub)

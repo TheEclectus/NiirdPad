@@ -122,6 +122,7 @@ bool ScriptEngine::bScriptIsValid(const std::string &Script, std::vector<std::st
 	if (FindRes == _validationFunctions.end())
 	{
 		ErrorString = fmt::format("Function '{0}' not defined.", FunctionName);
+		//ConnectionKeys.push_back("__default__");
 		return false;
 	}
 
@@ -132,6 +133,7 @@ bool ScriptEngine::bScriptIsValid(const std::string &Script, std::vector<std::st
 	if (!FunctionRes.valid())
 	{
 		ErrorString = FunctionRes;
+		//ConnectionKeys.push_back("__default__");
 		return false;
 	}
 
@@ -148,6 +150,10 @@ bool ScriptEngine::bScriptIsValid(const std::string &Script, std::vector<std::st
 		{
 			ConnectionKeys.push_back(CurKey.second.as<std::string>());
 		}
+	}
+	else
+	{
+		//ConnectionKeys.push_back("__default__");
 	}
 
 	return bIsValid;
