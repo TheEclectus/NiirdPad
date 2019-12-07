@@ -58,6 +58,7 @@ private:
 	void Disconnect(ConnectionOutput *Destination);
 public:
 	ConnectionInput(NubInput &Parent, const std::vector<ConnectionOutput*> &Connections = {});
+	~ConnectionInput();
 	NubInput &Parent();
 	//const std::string &KeyName();
 	const std::vector<ConnectionOutput*> &IncomingConnections();
@@ -71,6 +72,7 @@ private:
 	ConnectionInput *_connection = nullptr;
 public:
 	ConnectionOutput(NubOutput &Parent, const std::string &KeyName, ConnectionInput *Connection = nullptr);
+	~ConnectionOutput();
 	NubOutput &Parent();
 	const std::string &KeyName();
 	ConnectionInput *Connection();
@@ -154,6 +156,7 @@ private:
 	NubInput _nub;
 public:
 	NodeDialogue(Node &ParentNode, GraphicsBlock_NodeInputBox *Graphics, const std::string &Reference, const std::vector<std::string> &FunctionLines = {}, const std::string &Dialogue = "");
+	~NodeDialogue();
 
 	Node &Parent();
 

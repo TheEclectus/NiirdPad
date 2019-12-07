@@ -15,6 +15,14 @@ ConnectionInput::ConnectionInput(NubInput &Parent, const std::vector<ConnectionO
 
 }
 
+ConnectionInput::~ConnectionInput()
+{
+	for (auto CurConn : _incomingConnections)
+	{
+		CurConn->Disconnect();
+	}
+}
+
 NubInput &ConnectionInput::Parent()
 {
 	return _parent;
@@ -55,6 +63,11 @@ ConnectionOutput::ConnectionOutput(NubOutput &Parent, const std::string &KeyName
 	_connection(Connection)
 {
 
+}
+
+ConnectionOutput::~ConnectionOutput()
+{
+	Disconnect();
 }
 
 NubOutput &ConnectionOutput::Parent()
@@ -296,6 +309,11 @@ NodeDialogue::NodeDialogue(Node &ParentNode, GraphicsBlock_NodeInputBox *Graphic
 	_nub(*this)
 {
 	//_graphics = new GraphicsBlock_NodeInputBox(Renderer, )
+}
+
+NodeDialogue::~NodeDialogue()
+{
+	
 }
 
 Node &NodeDialogue::Parent()
@@ -580,10 +598,10 @@ void Node::RemoveDialogue(NodeDialogue *Dlg)
 	auto Res = std::find(_dialogues.begin(), _dialogues.end(), Dlg);
 	if (Res != _dialogues.end())
 	{
+		_graphics->InputSection()->RemoveInputBox(Dlg->Graphics());
+		delete Dlg;
 		_dialogues.erase(Res);
 	}
-
-	_graphics->InputSection()->RemoveInputBox(Dlg->Graphics());
 }
 
 const std::vector<NodeDialogue*> &Node::Dialogues() const

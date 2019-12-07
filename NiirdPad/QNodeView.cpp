@@ -73,7 +73,7 @@ void QNodeView::Input()
 						
 						// Brings last-clicked Node to the top
 						_Nodes.erase(CurNodeIter);
-						_Nodes.insert(_Nodes.begin(), CurNode);
+						_Nodes.insert(_Nodes.end(), CurNode);
 
 						bNodeFound = true;
 						break;
@@ -348,7 +348,9 @@ void QNodeView::Input()
 										//QScriptEditWindow::EditDialogueFragment(_Parent->window(), *this->_Engine, *Dlg);
 										this->_Parent->ScriptEditWindow()->dialogueFragment(Dlg);
 									});
-									Context.addAction("Delete Dialogue");
+									Context.addAction("Delete Dialogue", [this, CurNode, Dlg]() {
+										CurNode->RemoveDialogue(Dlg);
+									});
 									Context.addSeparator();
 									Context.addAction("Edit Index", [this, Dlg] {
 										//std::string Reference = Dlg->GetReference();
@@ -386,9 +388,12 @@ void QNodeView::Input()
 			if (Event.user.code == Qt::MouseButton::RightButton)
 			{
 				QMenu Context("Context Menu", this);
-				Context.addAction("Create Node", [this]() {
+				auto *NodesList = &_Nodes;
+				SDL_Point CreatePos = { ReleasePos.x + _Camera.ViewBox.x - (_Camera.ViewBox.w/2), ReleasePos.y + _Camera.ViewBox.y - (_Camera.ViewBox.h / 2) };
+
+				Context.addAction("Create Node", [this, CreatePos, NodesList]() {
 					// Use _DialogueFile->NewNode(), and add its return value to the front of _Nodes!
-					
+					NodesList->insert(NodesList->begin(), this->_DialogueFile->NewNode(CreatePos));
 				});
 				Context.exec(mapToGlobal(QPoint(ReleasePos.x, ReleasePos.y)));
 				return;

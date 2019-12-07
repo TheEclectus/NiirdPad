@@ -63,6 +63,7 @@ void AGraphicsBlock::RemoveChild(AGraphicsBlock *Child)
 	if (Res != this->_ChildBlocks.end())
 	{
 		this->_ChildBlocks.erase(Res);
+		Dirty();
 	}
 }
 
@@ -345,8 +346,8 @@ void GraphicsBlock_NodeInputBoxSection::RemoveInputBox(GraphicsBlock_NodeInputBo
 	auto Res = std::find(_InputBoxes.begin(), _InputBoxes.end(), Target);
 	if (Res != _InputBoxes.end())
 	{
-		RemoveChild(Target);
 		_InputBoxes.erase(Res);
+		RemoveChild(Target);
 	}
 }
 
