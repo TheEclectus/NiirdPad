@@ -25,6 +25,8 @@ private:
 	NodeOption *_option;
 	//std::vector<std::string> _keys;
 
+	bool _bChangesMade = false;
+
 	void ResetTimer();
 	
 	void ValidateScripts();
@@ -35,6 +37,7 @@ private:
 	void VisMakeClean();
 	void VisMakeError(const std::string &Message);
 
+	void Close();
 	void ResetForm();
 	void FormAccepted();
 

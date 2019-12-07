@@ -1,5 +1,6 @@
 #include "QScriptEditWindow.h"
 
+#include <QMessageBox>
 #include <QTextBlock>
 #include <QTextDocument>
 
@@ -39,9 +40,26 @@ QScriptEditWindow::QScriptEditWindow(QWidget *parent, ScriptEngine &Engine, bool
 	{
 		accept();
 	});
-	connect(ui.btnCancel, &QPushButton::clicked, this, &QDialog::reject);
+	connect(ui.btnCancel, &QPushButton::clicked, this, &QScriptEditWindow::Close);
 	connect(ui.txtScripts, &QTextEdit::textChanged, this, &QScriptEditWindow::ResetTimer);
+	connect(ui.txtScripts, &QTextEdit::textChanged, [this]() {
+		if (this->isVisible())
+		{
+			if (!_bChangesMade)
+				setWindowTitle(windowTitle().append("*"));
+			_bChangesMade = true;
+		}
+	});
+
 	connect(ui.txtVisibility, &QTextEdit::textChanged, this, &QScriptEditWindow::ResetTimer);
+	connect(ui.txtVisibility, &QTextEdit::textChanged, [this]() {
+		if (this->isVisible())
+		{
+			if (!_bChangesMade)
+				setWindowTitle(windowTitle().append("*"));
+			_bChangesMade = true;
+		}
+	});
 
 	connect(&_updateTimer, &QTimer::timeout, this, &QScriptEditWindow::ValidateScripts);
 	connect(&_updateTimer, &QTimer::timeout, this, &QScriptEditWindow::ValidateVisConditions);
@@ -373,6 +391,15 @@ void QScriptEditWindow::VisMakeError(const std::string &Message)
 	ui.lblVisErrors->setPalette(Pal);
 }
 
+void QScriptEditWindow::Close()
+{
+	if (_bChangesMade && QMessageBox::warning(this, "Unsaved Changes", "Any changes will be discarded.\nContinue?", QMessageBox::StandardButton::Ok, QMessageBox::StandardButton::Cancel) == QMessageBox::StandardButton::Cancel)
+		return;
+
+	ResetForm();
+	reject();
+}
+
 void QScriptEditWindow::ResetForm()
 {
 	ui.txtScripts->clear();
@@ -382,6 +409,8 @@ void QScriptEditWindow::ResetForm()
 
 	this->_dialogue = nullptr;
 	this->_option = nullptr;
+
+	_bChangesMade = false;
 
 	VisMakeClean();
 	ScriptsMakeClean();
