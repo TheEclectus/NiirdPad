@@ -126,7 +126,7 @@ void QNodeView::Input()
 					_InputState.MousedOverNub = nullptr;
 					QMenu Context("Context Menu", this);
 
-					auto M = Context.addMenu("Nexivian");
+					/*auto M = Context.addMenu("Nexivian");
 					auto M2 = M->addMenu("Bank Account");
 					M->addMenu("FurAffinity Account");
 					auto M3 = M->addMenu("Reputation");
@@ -140,7 +140,118 @@ void QNodeView::Input()
 					auto M4 = M3->addMenu("Hunt for the Bog Wife");
 
 					M4->addAction("\"Give me a hint\"");
-					M4->addAction("<<< HER LOCATION >>>")->setEnabled(false);
+					M4->addAction("<<< HER LOCATION >>>")->setEnabled(false);*/
+
+					if (Nub->GetNubType() == ANub::NubType::Output)
+					{
+						NubOutput *OutputSide = static_cast<NubOutput*>(Nub);
+						auto &OutputConns = OutputSide->Connections();
+
+						if (OutputConns.size() == 1 && OutputConns[0]->KeyName() == "__default__")
+						{
+							auto DefaultConn = OutputConns[0];
+							auto ActDisconnect = Context.addAction("Disconnect", [DefaultConn]() {
+								DefaultConn->Disconnect();
+							});
+
+							QNodeViewCamera *Camera = &_Camera;
+							auto ActJumpTo = Context.addAction("Jump To Destination", [Camera, DefaultConn]() {
+								NodeDialogue &DestFrag = DefaultConn->Connection()->Parent().Parent();
+								Node &DestNode = DestFrag.Parent();
+
+								auto NodePos = DestNode.Position();
+								//auto NodeBounds = DestNode.Graphics().GetBounds();
+
+								auto FragPos = DestFrag.Graphics()->GetTotalOffset();
+								NodePos.x += FragPos.x;
+								NodePos.y += FragPos.y;
+
+								Camera->ViewBox.x = NodePos.x;
+								Camera->ViewBox.y = NodePos.y;
+							});
+
+							if (DefaultConn->Connection() == nullptr)
+							{
+								ActDisconnect->setDisabled(true);
+								ActJumpTo->setDisabled(true);
+							}
+						}
+						else
+						{
+							for (auto CurConn : OutputConns)
+							{
+								std::string KeyName = CurConn->KeyName();
+								auto NewMenu = Context.addMenu(KeyName.c_str());
+
+								auto ActDisconnect = NewMenu->addAction("Disconnect", [CurConn]() {
+									CurConn->Disconnect();
+								});
+
+								QNodeViewCamera *Camera = &_Camera;
+								auto ActJumpTo = NewMenu->addAction("Jump To Destination", [Camera, CurConn]() {
+									NodeDialogue &DestFrag = CurConn->Connection()->Parent().Parent();
+									Node &DestNode = DestFrag.Parent();
+
+									auto NodePos = DestNode.Position();
+									//auto NodeBounds = DestNode.Graphics().GetBounds();
+
+									auto FragPos = DestFrag.Graphics()->GetTotalOffset();
+									NodePos.x += FragPos.x;
+									NodePos.y += FragPos.y;
+
+									Camera->ViewBox.x = NodePos.x;
+									Camera->ViewBox.y = NodePos.y;
+								});
+
+								if (CurConn->Connection() == nullptr)
+								{
+									NewMenu->setDisabled(true);
+								}
+							}
+						}
+					}
+					else
+					{
+						NubInput *InputSide = static_cast<NubInput*>(Nub);
+						auto &IncomingConnections = InputSide->Connection().IncomingConnections();
+						for (auto CurConn : IncomingConnections)
+						{
+							std::string KeyName = (CurConn->KeyName() == "__default__") ? fmt::format("Default {}", fmt::ptr(CurConn)) : CurConn->KeyName();
+							auto NewMenu = Context.addMenu(KeyName.c_str());
+
+							auto ActDisconnect = NewMenu->addAction("Disconnect", [CurConn]() {
+								CurConn->Disconnect();
+							});
+
+							QNodeViewCamera *Camera = &_Camera;
+							auto ActJumpTo = NewMenu->addAction("Jump To Source", [Camera, CurConn]() {
+								NodeOption &DestFrag = CurConn->Parent().Parent();
+								Node &DestNode = DestFrag.Parent();
+
+								auto NodePos = DestNode.Position();
+								//auto NodeBounds = DestNode.Graphics().GetBounds();
+
+								auto FragPos = DestFrag.Graphics()->GetTotalOffset();
+								auto FragBounds = DestFrag.Graphics()->GetBounds();
+								NodePos.x += FragPos.x + FragBounds.w;
+								NodePos.y += FragPos.y;
+
+								Camera->ViewBox.x = NodePos.x;
+								Camera->ViewBox.y = NodePos.y;
+							});
+
+							if (CurConn->Connection() == nullptr)
+							{
+								NewMenu->setDisabled(true);
+							}
+						}
+
+						if (IncomingConnections.size() == 0)
+						{
+							auto ActEmpty = Context.addAction("No inbound connections");
+							ActEmpty->setEnabled(false);
+						}
+					}
 
 					Context.exec(mapToGlobal(QPoint(ReleasePos.x, ReleasePos.y)));
 					return;
@@ -162,8 +273,25 @@ void QNodeView::Input()
 						}
 						else
 						{
-							
+							QMenu Context("Key Selection", this);
+							for (auto CurConn : OutputSide->Connections())
+							{
+								std::string KeyName = (CurConn->Connection() != nullptr ? "*" : "") + CurConn->KeyName();
+								auto NewAction = Context.addAction(KeyName.c_str(), [this, CurConn, InputSide]() {
+									CurConn->Connect(&InputSide->Connection());
+								});
+								
+								if (CurConn->Connection() != nullptr)
+								{
+									auto NewFont = NewAction->font();
+									NewFont.setBold(true);
+									NewAction->setFont(NewFont);
+								}
+							}
+							Context.exec(mapToGlobal(QPoint(ReleasePos.x, ReleasePos.y)));
 						}
+
+						//return;
 					}
 				}
 				//return;

@@ -275,7 +275,7 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	auto *Opt = NewNode->AddOption();
 	Opt->SetAll({ "//showif.has_stat.charisma.8" }, { "give_money krats 80" }, "Test");
 	auto *Opt2 = NewNode->AddOption();
-	Opt2->SetAll({ "//showif.charisma.8" }, { "give_money \"krats\" 80" }, "Tests");
+	Opt2->SetAll({ "//showif.charisma.8" }, { "day_night_gate" }, "Tests");
 
 	DialogueFile *NewDiag2 = NewChar->NewDialogueFile("diag 2");
 	Node *NewNode2 = NewDiag2->NewNode();
