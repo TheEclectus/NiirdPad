@@ -363,7 +363,9 @@ void QNodeView::Input()
 								Context.addAction("New Option");
 								if (Opt)
 								{
-									Context.addAction("Edit Option");
+									Context.addAction("Edit Option", [this, Opt]() {
+										this->_Parent->ScriptEditWindow()->optionFragment(Opt);
+									});
 									Context.addAction("Delete Option");
 								}
 								Context.addSeparator();
@@ -588,9 +590,14 @@ void QNodeView::Input()
 								
 							}
 
-							if (bDlgSection)
+							if (bDlgSection && Dlg != nullptr)
 							{
 								this->_Parent->ScriptEditWindow()->dialogueFragment(Dlg);
+							}
+
+							if (bOptSection && Opt != nullptr)
+							{
+								this->_Parent->ScriptEditWindow()->optionFragment(Opt);
 							}
 
 							return;

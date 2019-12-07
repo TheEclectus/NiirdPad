@@ -408,7 +408,7 @@ void NodeOption::SetAll(const std::vector<std::string> &VisibilityScriptLines, c
 
 void NodeOption::SetVisibilityLines(const std::vector<std::string> &VisibilityLines)
 {
-	_functionLines = VisibilityLines;
+	_visibilityScriptLines = VisibilityLines;
 
 	// It's time to smoke crack
 	// That's what we're smoking here

@@ -13,7 +13,9 @@
 
 QScriptEditWindow::QScriptEditWindow(QWidget *parent, ScriptEngine &Engine, bool bHideVisConditions) :
 	QDialog(parent),
-	_scriptEngine(Engine)
+	_scriptEngine(Engine),
+	_option(nullptr),
+	_dialogue(nullptr)
 {
 	ui.setupUi(this);
 
@@ -232,7 +234,7 @@ void QScriptEditWindow::optionFragment(NodeOption *Option)
 	this->ui.txtText->setPlainText(FormattedOption.c_str());
 
 	this->ui.txtVisibility->clear();
-	for (auto &CurVisLine : _option->GetFunctionLines())
+	for (auto &CurVisLine : _option->GetVisibilityScriptLines())
 	{
 		this->ui.txtVisibility->append(CurVisLine.c_str());
 	}
@@ -377,6 +379,9 @@ void QScriptEditWindow::ResetForm()
 	ui.txtText->clear();
 	ui.txtVisibility->clear();
 	//_keys.clear();
+
+	this->_dialogue = nullptr;
+	this->_option = nullptr;
 
 	VisMakeClean();
 	ScriptsMakeClean();
