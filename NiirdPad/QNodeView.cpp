@@ -341,7 +341,7 @@ void QNodeView::Input()
 
 							if (bDlgSection)
 							{
-								Context.addAction("New Dialogue");
+								Context.addAction("x New Dialogue");
 								if (Dlg)
 								{
 									// NEXTTIME: See if you can't pass the NiirdPad instance as the parent, somehow. The refreshing stops and only the background color is shown when the edit window is opened.
@@ -363,18 +363,18 @@ void QNodeView::Input()
 							}
 							else if (bOptSection)
 							{
-								Context.addAction("New Option");
+								Context.addAction("x New Option");
 								if (Opt)
 								{
 									Context.addAction("Edit Option", [this, Opt]() {
 										this->_Parent->ScriptEditWindow()->optionFragment(Opt);
 									});
-									Context.addAction("Delete Option");
+									Context.addAction("x Delete Option");
 								}
 								Context.addSeparator();
 							}
 
-							Context.addAction("Delete Node");
+							Context.addAction("x Delete Node");
 
 							Context.exec(mapToGlobal(QPoint(ReleasePos.x, ReleasePos.y)));
 							return;
@@ -593,7 +593,7 @@ void QNodeView::Input()
 						{
 							if (bHeader)
 							{
-								
+								this->_Parent->CommentEditWindow()->editComment(CurNode);
 							}
 
 							if (bDlgSection && Dlg != nullptr)
