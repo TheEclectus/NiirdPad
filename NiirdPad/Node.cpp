@@ -570,7 +570,13 @@ const SDL_Point &Node::Position()
 
 void Node::SetComment(const std::string &Comment)
 {
+	_comment = Comment;
 	_graphics->Header()->SetText(Comment);
+}
+
+const std::string &Node::GetComment() const
+{
+	return _comment;
 }
 
 NodeDialogue *Node::AddDialogue(const std::string &Reference)

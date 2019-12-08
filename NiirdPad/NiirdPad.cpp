@@ -193,6 +193,7 @@ void NiirdPad::ImportConfirmationMessageBox(std::vector<std::string> Warnings, R
 NiirdPad::NiirdPad(QWidget *parent) :
 	QMainWindow(parent),
 	_scriptEngine(),
+	_commentEditWindow(new QCommentEditWindow(this)),
 	_scriptEditWindow(new QScriptEditWindow(this, _scriptEngine, false)),
 	_referenceEditWindow(new QReferenceEditWindow(this))
 {
@@ -287,6 +288,11 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	ResetCharacterCombo();
 
 	//ui.widget->SetDialogueFile(NewDiag);
+}
+
+QCommentEditWindow *NiirdPad::CommentEditWindow()
+{
+	return _commentEditWindow;
 }
 
 QScriptEditWindow *NiirdPad::ScriptEditWindow()

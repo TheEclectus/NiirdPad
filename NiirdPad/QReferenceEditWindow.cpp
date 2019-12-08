@@ -141,6 +141,7 @@ QReferenceEditWindow::~QReferenceEditWindow()
 void QReferenceEditWindow::closeEvent(QCloseEvent *Event)
 {
 	Event->ignore();
+	Close();
 }
 
 void QReferenceEditWindow::newReference(NodeDialogue *NewNode, ReferenceDatabase &Database)

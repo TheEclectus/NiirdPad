@@ -334,8 +334,9 @@ void QNodeView::Input()
 							if (bHeader)
 							{
 								Context.addAction("Edit Comment", [this, CurNode]() {
-									
+									this->_Parent->CommentEditWindow()->editComment(CurNode);
 								});
+								Context.addSeparator();
 							}
 
 							if (bDlgSection)

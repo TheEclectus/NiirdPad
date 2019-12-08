@@ -171,8 +171,8 @@ int QScriptEditWindow::EditOptionFragment(QWidget *Parent, ScriptEngine &Engine,
 
 void QScriptEditWindow::closeEvent(QCloseEvent *event)
 {
-	// Same logic as btnCancel goes here
 	event->ignore();
+	Close();
 }
 
 void QScriptEditWindow::dialogueFragment(NodeDialogue *Dialogue)
@@ -182,10 +182,14 @@ void QScriptEditWindow::dialogueFragment(NodeDialogue *Dialogue)
 
 	_dialogue = Dialogue;
 
+	this->setWindowTitle("Edit Dialogue Fragment");
 	ui.txtVisibility->setEnabled(false);
 	ui.txtVisibility->hide();
 	ui.lblVisErrors->setEnabled(false);
 	ui.lblVisErrors->hide();
+
+	//TODO: save this to the NodeDialogue state
+	//int blorp = ui.splitter->saveState().size();
 
 	ui.splitter->handle(1)->setEnabled(false);
 	ui.splitter->handle(1)->setVisible(false);
@@ -228,10 +232,11 @@ void QScriptEditWindow::optionFragment(NodeOption *Option)
 
 	_option = Option;
 
+	this->setWindowTitle("Edit Option Fragment");
 	ui.txtVisibility->setEnabled(true);
 	ui.txtVisibility->show();
 	ui.lblVisErrors->setEnabled(true);
-	ui.lblVisErrors->hide();
+	ui.lblVisErrors->show();
 
 	ui.splitter->handle(1)->setEnabled(true);
 	ui.splitter->handle(1)->setVisible(true);
@@ -396,8 +401,8 @@ void QScriptEditWindow::Close()
 	if (_bChangesMade && QMessageBox::warning(this, "Unsaved Changes", "Any changes will be discarded.\nContinue?", QMessageBox::StandardButton::Ok, QMessageBox::StandardButton::Cancel) == QMessageBox::StandardButton::Cancel)
 		return;
 
-	ResetForm();
 	reject();
+	ResetForm();
 }
 
 void QScriptEditWindow::ResetForm()

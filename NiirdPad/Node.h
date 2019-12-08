@@ -214,6 +214,7 @@ private:
 	DialogueFile &_parentFile;
 	// Owning
 	GraphicsBlock_Node *_graphics;
+	std::string _comment;
 	std::vector<NodeDialogue*> _dialogues;
 	std::vector<NodeOption*> _options;
 
@@ -231,6 +232,7 @@ public:
 	const SDL_Point &Position();
 
 	void SetComment(const std::string &Comment);
+	const std::string &GetComment() const;
 
 	// TODO: Make an AddDialogue where the user is prompted to create a new one
 	NodeDialogue *AddDialogue(const std::string &Reference);
