@@ -245,6 +245,14 @@ NubOutput::NubOutput(NodeOption &Parent) :
 	
 }
 
+NubOutput::~NubOutput()
+{
+	for (auto CurConn : _connections)
+	{
+		delete CurConn;
+	}
+}
+
 NodeOption &NubOutput::Parent()
 {
 	return _parent;
@@ -623,6 +631,17 @@ NodeOption *Node::AddOption()
 	_options.push_back(NewOption);
 
 	return NewOption;
+}
+
+void Node::RemoveOption(NodeOption *Opt)
+{
+	auto Res = std::find(_options.begin(), _options.end(), Opt);
+	if (Res != _options.end())
+	{
+		_graphics->OutputSection()->RemoveOutputBox(Opt->Graphics());
+		delete Opt;
+		_options.erase(Res);
+	}
 }
 
 const std::vector<NodeOption*> &Node::Options() const

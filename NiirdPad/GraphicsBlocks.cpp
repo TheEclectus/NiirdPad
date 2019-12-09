@@ -563,6 +563,16 @@ GraphicsBlock_NodeOutputBox *GraphicsBlock_NodeOutputBoxSection::AddOutputBox()
 	return NewBox;
 }
 
+void GraphicsBlock_NodeOutputBoxSection::RemoveOutputBox(GraphicsBlock_NodeOutputBox *Target)
+{
+	auto Res = std::find(_OutputBoxes.begin(), _OutputBoxes.end(), Target);
+	if (Res != _OutputBoxes.end())
+	{
+		_OutputBoxes.erase(Res);
+		RemoveChild(Target);
+	}
+}
+
 std::vector<GraphicsBlock_NodeOutputBox*> &GraphicsBlock_NodeOutputBoxSection::OutputBoxes()
 {
 	return _OutputBoxes;

@@ -369,7 +369,9 @@ void QNodeView::Input()
 									Context.addAction("Edit Option", [this, Opt]() {
 										this->_Parent->ScriptEditWindow()->optionFragment(Opt);
 									});
-									Context.addAction("x Delete Option");
+									Context.addAction("Delete Option", [this, CurNode, Opt]() {
+										CurNode->RemoveOption(Opt);
+									});
 								}
 								Context.addSeparator();
 							}

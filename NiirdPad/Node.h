@@ -131,6 +131,7 @@ public:
 	//static SDL_Rect TextureSize();
 
 	NubOutput(NodeOption &Parent);
+	~NubOutput();
 	NodeOption &Parent();
 	const NubType GetNubType() override;
 	void SetConnectionKeys(const std::vector<std::string> &Keys);
@@ -240,6 +241,7 @@ public:
 	const std::vector<NodeDialogue*> &Dialogues() const;
 
 	NodeOption *AddOption();
+	void RemoveOption(NodeOption *Opt);
 	const std::vector<NodeOption*> &Options() const;
 
 	// MousePos must be adjusted for position. [0,0] is top-left
