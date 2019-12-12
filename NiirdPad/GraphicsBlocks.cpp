@@ -359,7 +359,7 @@ void GraphicsBlock_NodeInputBoxSection::CalculateSize(int MaxWidthHint, int MaxH
 	{
 		auto CurBox = _InputBoxes[i];
 
-		bool bAddSpacing = (_InputBoxes.size() > 1) && (i < (_InputBoxes.size() - 1));
+		bool bAddSpacing = (_InputBoxes.size() > 1) && (i > 0);
 		const int VertSpacing = (bAddSpacing ? SPACING : 0);
 
 		CurBox->CalculateSize();
