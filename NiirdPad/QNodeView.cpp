@@ -341,7 +341,9 @@ void QNodeView::Input()
 
 							if (bDlgSection)
 							{
-								Context.addAction("x New Dialogue");
+								Context.addAction("New Dialogue", [this, CurNode]() {
+									this->_Parent->ReferenceEditWindow()->newReference(CurNode, _DialogueFile->GetReferenceDatabase());
+								});
 								if (Dlg)
 								{
 									// NEXTTIME: See if you can't pass the NiirdPad instance as the parent, somehow. The refreshing stops and only the background color is shown when the edit window is opened.
@@ -363,7 +365,11 @@ void QNodeView::Input()
 							}
 							else if (bOptSection)
 							{
-								Context.addAction("x New Option");
+								Context.addAction("New Option", [this, CurNode]() {
+									auto NewFrag = CurNode->AddOption();
+									this->_Parent->ScriptEditWindow()->optionFragment(NewFrag);
+									CurNode->Graphics().Dirty();
+								});
 								if (Opt)
 								{
 									Context.addAction("Edit Option", [this, Opt]() {
@@ -979,4 +985,20 @@ NiirdPad *QNodeView::GetNiirdPad()
 void QNodeView::SetNiirdPad(NiirdPad *NP)
 {
 	_Parent = NP;
+}
+
+void QNodeView::ConnectToReferenceEditWindow()
+{
+	connect(_Parent->ReferenceEditWindow(), &QReferenceEditWindow::NewReferenceCreated, [this](const std::string &Reference, Node *Destination) {
+		if (Destination != nullptr)
+		{
+			auto NewDlg = Destination->AddDialogue(Reference);
+			this->_Parent->ScriptEditWindow()->dialogueFragment(NewDlg);
+		}
+		else
+		{
+			// ???
+		}
+
+	});
 }

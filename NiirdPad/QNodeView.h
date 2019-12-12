@@ -88,4 +88,7 @@ public:
 	NiirdPad *GetNiirdPad();
 	// HACK: hee hee hoo hoo ho ho it's ME AGAIN, THE HACK LABEL >:D
 	void SetNiirdPad(NiirdPad *NP);
+
+	// HACK: Jesus christ three HACK tags in a row
+	void ConnectToReferenceEditWindow();
 };

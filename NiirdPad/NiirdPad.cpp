@@ -202,6 +202,7 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	// HACK: hack attack, whack your shmack and clack your knacks :^)
 	ui.widget->SetEngine(&_scriptEngine);
 	ui.widget->SetNiirdPad(this);
+	ui.widget->ConnectToReferenceEditWindow();
 
 	connect(ui.actionImportProject, &QAction::triggered, [this]() {
 		this->Import();

@@ -609,9 +609,12 @@ NodeDialogue *Node::AddDialogue(const std::string &Reference)
 
 void Node::RemoveDialogue(NodeDialogue *Dlg)
 {
+	auto &ReferenceDbase = _parentFile.GetReferenceDatabase();
+
 	auto Res = std::find(_dialogues.begin(), _dialogues.end(), Dlg);
 	if (Res != _dialogues.end())
 	{
+		ReferenceDbase.Delete(Dlg->GetReference());
 		_graphics->InputSection()->RemoveInputBox(Dlg->Graphics());
 		delete Dlg;
 		_dialogues.erase(Res);

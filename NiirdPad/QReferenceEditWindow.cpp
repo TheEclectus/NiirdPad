@@ -79,6 +79,7 @@ void QReferenceEditWindow::Close()
 void QReferenceEditWindow::ResetForm()
 {
 	_dialogue = nullptr;
+	_destNode = nullptr;
 	
 	ui.txtReferenceEdit->clear();	// Order is important here
 	_bChangesMade = false;			// or else this will be set to true
@@ -88,15 +89,36 @@ void QReferenceEditWindow::ResetForm()
 
 void QReferenceEditWindow::FormAccepted()
 {
-	if (_database->Rename(_dialogue->GetReference(), ui.txtReferenceEdit->text().toStdString()))
+	if (_dialogue != nullptr)
 	{
-		_dialogue->SetReference(ui.txtReferenceEdit->text().toStdString());
+		if (_database->Rename(_dialogue->GetReference(), ui.txtReferenceEdit->text().toStdString()))
+		{
+			_dialogue->SetReference(ui.txtReferenceEdit->text().toStdString());
 
-		ResetForm();
+			ResetForm();
+		}
+		else
+		{
+			QMessageBox::warning(this, "Warning", "Something went wrong and QReferenceDatabase::Rename() didn't work.\nTell Eclip.", QMessageBox::StandardButton::Ok);
+			
+			ResetForm();
+		}
 	}
-	else
+	else if (_destNode)
 	{
-		QMessageBox::warning(this, "Warning", "Something went wrong and QReferenceDatabase::Rename() didn't work.\nTell Eclip.", QMessageBox::StandardButton::Ok);
+		std::string NewReference = ui.txtReferenceEdit->text().toStdString();
+		if (_database->Find(NewReference) == nullptr)
+		{
+			emit NewReferenceCreated(NewReference, _destNode);
+
+			ResetForm();
+		}
+		else
+		{
+			QMessageBox::warning(this, "Warning", "Something went wrong and an existing reference name was allowed to pass.\nTell Eclip.", QMessageBox::StandardButton::Ok);
+
+			ResetForm();
+		}
 	}
 }
 
@@ -144,14 +166,15 @@ void QReferenceEditWindow::closeEvent(QCloseEvent *Event)
 	Close();
 }
 
-void QReferenceEditWindow::newReference(NodeDialogue *NewNode, ReferenceDatabase &Database)
+void QReferenceEditWindow::newReference(Node *Dest, ReferenceDatabase &Database)
 {
-	_dialogue = NewNode;
+	_destNode = Dest;
 	_database = &Database;
 
 	this->setWindowTitle(QString("New Reference"));
-	ui.txtReferenceEdit->setText(NewNode->GetReference().c_str());
+	ui.txtReferenceEdit->setText("");
 
+	IsValidReference();
 	this->show();
 }
 
