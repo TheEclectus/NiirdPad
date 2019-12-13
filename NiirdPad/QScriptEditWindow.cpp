@@ -189,8 +189,14 @@ void QScriptEditWindow::dialogueFragment(NodeDialogue *Dialogue)
 	ui.lblVisErrors->hide();
 
 	//TODO: save this to the NodeDialogue state
-	//int blorp = ui.splitter->saveState().size();
+	//int blorp = ui.splitter->saveState();
 
+	auto WindowState = Dialogue->WindowState();
+	if (WindowState.size() > 0)
+	{
+		ui.splitter->restoreState(WindowState);
+	}
+	
 	ui.splitter->handle(1)->setEnabled(false);
 	ui.splitter->handle(1)->setVisible(false);
 
@@ -436,8 +442,9 @@ void QScriptEditWindow::FormAccepted()
 		}
 		strtk::remove_empty_strings(FunctionLines);
 
-		std::string DialogueText = this->ui.txtText->toPlainText().toStdString();
+		_dialogue->WindowState() = ui.splitter->saveState();
 
+		std::string DialogueText = this->ui.txtText->toPlainText().toStdString();
 		// TODO: remove trailing newlines?
 		_dialogue->SetAll(FunctionLines, DialogueText);
 

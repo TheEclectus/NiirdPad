@@ -153,6 +153,7 @@ private:
 	std::string _reference, _dialogue;	// Dialogue text has '\n' replaced with '<br>'s
 	std::vector<std::string> _functionLines;
 	//std::string _reference, _script, _dialogue;
+	QByteArray _windowState;
 
 	NubInput _nub;
 public:
@@ -170,6 +171,7 @@ public:
 	const std::string &GetReference() const;
 	const std::string &GetDialogue() const;
 	const std::vector<std::string> &GetFunctionLines() const;
+	QByteArray &WindowState();
 
 	NubInput &Nub();
 

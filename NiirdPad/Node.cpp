@@ -397,6 +397,11 @@ const std::vector<std::string> &NodeDialogue::GetFunctionLines() const
 	return _functionLines;
 }
 
+QByteArray &NodeDialogue::WindowState()
+{
+	return _windowState;
+}
+
 NubInput &NodeDialogue::Nub()
 {
 	return _nub;
