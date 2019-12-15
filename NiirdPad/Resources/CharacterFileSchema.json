@@ -20,6 +20,9 @@
 				"text": {
 					"type": "string"
 				},
+				"editorWindowState": {
+					"type": "string"
+				},
 				"functionLines": {
 					"type": "array",
 					"items": {
@@ -31,6 +34,9 @@
 		"option": {
 			"properties": {
 				"text": {
+					"type": "string"
+				},
+				"editorWindowState": {
 					"type": "string"
 				},
 				"visibilityLines": {
@@ -116,11 +122,11 @@
 					}
 				}
 			}
-		},
+		}
 	},
-    "type": "object",
-    
-    "title": "Character File Schema 1.0",
+	"type": "object",
+
+	"title": "Character File Schema 1.0",
 	"properties": {
 		"Test File": {
 			"$ref": "#/definitions/file"
