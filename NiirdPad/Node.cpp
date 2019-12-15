@@ -536,6 +536,11 @@ const std::vector<std::string> &NodeOption::GetVisibilityScriptLines() const
 	return _visibilityScriptLines;
 }
 
+QByteArray &NodeOption::WindowState()
+{
+	return _windowState;
+}
+
 NubOutput &NodeOption::Nub()
 {
 	return _nub;

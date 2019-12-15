@@ -20,6 +20,29 @@ QScriptEditWindow::QScriptEditWindow(QWidget *parent, ScriptEngine &Engine, bool
 {
 	ui.setupUi(this);
 
+	// ORDER IS IMPORTANT.
+	// DIALOGUE EDIT SETUP
+	ui.txtVisibility->setEnabled(false);
+	ui.txtVisibility->hide();
+	ui.lblVisErrors->setEnabled(false);
+	ui.lblVisErrors->hide();
+
+	ui.splitter->handle(1)->setEnabled(false);
+	ui.splitter->handle(1)->setVisible(false);
+
+	_DefaultSizeDialogues = ui.splitter->saveState();
+
+	// OPION EDIT SETUP
+	ui.txtVisibility->setEnabled(true);
+	ui.txtVisibility->show();
+	ui.lblVisErrors->setEnabled(true);
+	ui.lblVisErrors->show();
+
+	ui.splitter->handle(1)->setEnabled(true);
+	ui.splitter->handle(1)->setVisible(true);
+
+	_DefaultSizeOptions = ui.splitter->saveState();
+
 	//this->setWindowFlags(Qt::Dialog | Qt::Desktop);
 
 	//ui.splitter->setCollapsible(0, true);
@@ -188,17 +211,17 @@ void QScriptEditWindow::dialogueFragment(NodeDialogue *Dialogue)
 	ui.lblVisErrors->setEnabled(false);
 	ui.lblVisErrors->hide();
 
+	ui.splitter->handle(1)->setEnabled(false);
+	ui.splitter->handle(1)->setVisible(false);
+
 	//TODO: save this to the NodeDialogue state
 	//int blorp = ui.splitter->saveState();
 
 	auto WindowState = Dialogue->WindowState();
 	if (WindowState.size() > 0)
-	{
 		ui.splitter->restoreState(WindowState);
-	}
-	
-	ui.splitter->handle(1)->setEnabled(false);
-	ui.splitter->handle(1)->setVisible(false);
+	else
+		ui.splitter->restoreState(_DefaultSizeDialogues);
 
 	/*
 		1. Dialogue text needs to have "<br>"s replaced with newlines.
@@ -246,6 +269,12 @@ void QScriptEditWindow::optionFragment(NodeOption *Option)
 
 	ui.splitter->handle(1)->setEnabled(true);
 	ui.splitter->handle(1)->setVisible(true);
+
+	auto WindowState = Option->WindowState();
+	if (WindowState.size() > 0)
+		ui.splitter->restoreState(WindowState);
+	else
+		ui.splitter->restoreState(_DefaultSizeOptions);
 
 	/*
 		1. Dialogue text needs to have "<br>"s replaced with newlines.
@@ -467,6 +496,8 @@ void QScriptEditWindow::FormAccepted()
 			VisLines.push_back(CurLine.text().toStdString());
 		}
 		strtk::remove_empty_strings(VisLines);
+
+		_option->WindowState() = ui.splitter->saveState();
 
 		std::string OptionText = this->ui.txtText->toPlainText().toStdString();
 

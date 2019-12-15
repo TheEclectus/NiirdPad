@@ -25,6 +25,8 @@ private:
 	NodeOption *_option;
 	//std::vector<std::string> _keys;
 
+	QByteArray _DefaultSizeDialogues, _DefaultSizeOptions;
+
 	bool _bChangesMade = false;
 
 	void ResetTimer();

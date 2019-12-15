@@ -190,6 +190,7 @@ private:
 	//std::string _pointer, _visibilityScripts, _functions, _text;
 	std::string _option;
 	std::vector<std::string> _visibilityScriptLines, _functionLines;
+	QByteArray _windowState;
 
 	NubOutput _nub;
 public:
@@ -205,6 +206,7 @@ public:
 	const std::string &GetOption() const;
 	const std::vector<std::string> &GetFunctionLines() const;
 	const std::vector<std::string> &GetVisibilityScriptLines() const;
+	QByteArray &WindowState();
 
 	NubOutput &Nub();
 
