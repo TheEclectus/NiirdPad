@@ -122,6 +122,22 @@
 					}
 				}
 			}
+		},
+		"project": {
+			"properties": {
+				"comment": {
+					"type": "string"
+				},
+				"version": {
+					"type":  "string"
+				},
+				"characters": {
+					"type": "array",
+					"items": {
+						"$ref":  "#/definitions/character"
+					}
+				}
+			}
 		}
 	},
 	"type": "object",
@@ -129,7 +145,7 @@
 	"title": "Character File Schema 1.0",
 	"properties": {
 		"Test File": {
-			"$ref": "#/definitions/file"
+			"$ref": "#/definitions/character"
 		}
 	}
 }

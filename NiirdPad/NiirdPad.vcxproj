@@ -30,7 +30,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>D:\Dropbox\Programming\Libraries\Scripting\LuaJIT-2.0.5\src;D:\Dropbox\Programming\Libraries\Scripting\sol2\single;D:\Programming Libraries\Graphics\SDL2_ttf-2.0.15\include;D:\Programming Libraries\Graphics\SDL2-2.0.9\include;D:\Dropbox\Programming\Libraries\Utilities\PEGTL\include;D:\Dropbox\Programming\Libraries\Utilities\strtk;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Programming Libraries\Database\rapidjson\include;D:\Dropbox\Programming\Libraries\Scripting\LuaJIT-2.0.5\src;D:\Dropbox\Programming\Libraries\Scripting\sol2\single;D:\Programming Libraries\Graphics\SDL2_ttf-2.0.15\include;D:\Programming Libraries\Graphics\SDL2-2.0.9\include;D:\Dropbox\Programming\Libraries\Utilities\PEGTL\include;D:\Dropbox\Programming\Libraries\Utilities\strtk;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Dropbox\Programming\Libraries\Scripting\LuaJIT-2.0.5\src;D:\Programming Libraries\Graphics\SDL2_ttf-2.0.15\lib\x86;D:\Programming Libraries\Graphics\SDL2-2.0.9\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

@@ -276,8 +276,10 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	Dlg->SetAll({ "give_money \"krats\" 20" }, "the niirb is a legally distinct creature from the Niird, which is copyright 2016-2019 Meandraco Entertainment");
 	auto *Opt = NewNode->AddOption();
 	Opt->SetAll({ "//showif.has_stat.charisma.8" }, { "give_money krats 80" }, "Test");
+	Opt->Nub().Connections()[0]->Connect(&Dlg->Nub().Connection());
+
 	auto *Opt2 = NewNode->AddOption();
-	Opt2->SetAll({ "//showif.charisma.8" }, { "day_night_gate" }, "Tests");
+	Opt2->SetAll({ "//showif.charisma.8" }, { "day_night_gate" }, "Test 2: Electric Boogaloo");
 
 	DialogueFile *NewDiag2 = NewChar->NewDialogueFile("diag 2");
 	Node *NewNode2 = NewDiag2->NewNode();
@@ -287,6 +289,8 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	Dlg2->SetAll({ "give_money \"krats\" 80" }, "plz no sue");
 
 	ResetCharacterCombo();
+
+	NewChar->SaveAs("./testoutput.json");
 
 	//ui.widget->SetDialogueFile(NewDiag);
 }

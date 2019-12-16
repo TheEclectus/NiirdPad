@@ -10,6 +10,6 @@
         <file>Resources/nub_out_highlight.bmp</file>
         <file>Resources/nub_full_default2.bmp</file>
         <file>Resources/nub_full_highlight2.bmp</file>
-        <file>Resources/CharacterFileSchema.json</file>
+        <file>Resources/Schema.json</file>
     </qresource>
 </RCC>

@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include <rapidjson\document.h>
+#include <rapidjson\rapidjson.h>
 #include <SDL.h>
 
 // Character.h
@@ -23,7 +25,7 @@ private:
 	Character &_parentCharacter;
 	ReferenceDatabase *_referenceDatabase;
 	std::string _filename;
-	std::map<std::string, NodeDialogue*> _indices;	// non-owning NodeDialogue pointers
+	//std::map<std::string, NodeDialogue*> _indices;	// non-owning NodeDialogue pointers
 	std::vector<Node*> _nodes;
 public:
 	DialogueFile(Character &ParentCharacter, const std::string &Filename);
@@ -32,8 +34,10 @@ public:
 
 	ReferenceDatabase &GetReferenceDatabase();
 	const std::string &GetFilename() const;
-	const std::map<std::string, NodeDialogue*> &GetIndices() const;
+	//const std::map<std::string, NodeDialogue*> &GetIndices() const;
 	const std::vector<Node*> &GetNodes() const;
+
+	void Save(rapidjson::Document &Doc, rapidjson::Value &Value) const;
 
 	Node *NewNode(const SDL_Point &Position = { 0,0 });
 };

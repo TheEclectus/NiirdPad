@@ -1,13 +1,20 @@
 #include "Character.h"
 
+#include <fstream>
+
 #include "DialogueFile.h"
 #include "Project.h"
 #include "QNodeView.h"
 
-Character::Character(Project &ParentProject, QNodeView &NodeView/*, const std::string &Name*/) :
+#include <rapidjson\document.h>	
+#include <rapidjson\ostreamwrapper.h>
+#include <rapidjson\rapidjson.h>
+#include <rapidjson\writer.h>
+
+Character::Character(Project &ParentProject, QNodeView &NodeView, const std::string &Name) :
 	_parentProject(ParentProject),
-	_nodeView(NodeView)
-	//_name(Name)
+	_nodeView(NodeView),
+	_name(Name)
 {
 
 }
@@ -37,4 +44,38 @@ DialogueFile *Character::NewDialogueFile(const std::string &Filename)
 std::map<std::string, DialogueFile*> &Character::DialogueFiles()
 {
 	return _dialogueFiles;
+}
+
+bool Character::Save()
+{
+	return SaveAs();
+}
+
+bool Character::SaveAs(const std::string &Path)
+{
+	rapidjson::Document Doc;
+	Doc.SetObject();
+
+	// TODO: Implement Character comments.
+	rapidjson::Value Comment("", 0);
+	Doc.AddMember("comment", Comment, Doc.GetAllocator());
+
+	rapidjson::Value Name(_name.c_str(), _name.length(), Doc.GetAllocator());
+	Doc.AddMember("name", Name, Doc.GetAllocator());
+
+	rapidjson::Value DialogueFiles(rapidjson::kArrayType);
+	for (auto &CurFileIter : _dialogueFiles)
+	{
+		rapidjson::Value CurFile(rapidjson::kObjectType);
+		CurFileIter.second->Save(Doc, CurFile);
+
+		DialogueFiles.PushBack(CurFile, Doc.GetAllocator());
+	}
+	Doc.AddMember("files", DialogueFiles, Doc.GetAllocator());
+
+	std::ofstream OutStream(Path);
+	rapidjson::OStreamWrapper OutStreamWrapper(OutStream);
+	rapidjson::Writer<rapidjson::OStreamWrapper> Writer(OutStreamWrapper);
+
+	return Doc.Accept(Writer);
 }

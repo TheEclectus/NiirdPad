@@ -27,7 +27,7 @@ public:
 	Project(QNodeView &NodeView);
 
 	bool Save();
-	bool SaveAs(const std::string &Path);
+	bool SaveAs(const std::string &Path = "");
 
 	Character *NewCharacter(const std::string &Name);
 	std::map<std::string, Character*> &Characters();

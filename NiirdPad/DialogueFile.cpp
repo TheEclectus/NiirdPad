@@ -28,14 +28,34 @@ const std::string &DialogueFile::GetFilename() const
 	return _filename;
 }
 
-const std::map<std::string, NodeDialogue*> &DialogueFile::GetIndices() const
-{
-	return _indices;
-}
+//const std::map<std::string, NodeDialogue*> &DialogueFile::GetIndices() const
+//{
+//	return _indices;
+//}
 
 const std::vector<Node*> &DialogueFile::GetNodes() const
 {
 	return _nodes;
+}
+
+void DialogueFile::Save(rapidjson::Document &Doc, rapidjson::Value &Value) const
+{
+	// TODO: Implement DialogueFile comments.
+	rapidjson::Value Comment("", 0);
+	Value.AddMember("comment", Comment, Doc.GetAllocator());
+
+	rapidjson::Value Filename(_filename.c_str(), _filename.length());
+	Value.AddMember("filename", Filename, Doc.GetAllocator());
+
+	rapidjson::Value Nodes(rapidjson::kArrayType);
+	for (auto &CurNodeIter : _nodes)
+	{
+		rapidjson::Value CurNode(rapidjson::kObjectType);
+		CurNodeIter->Save(Doc, CurNode);
+
+		Nodes.PushBack(CurNode, Doc.GetAllocator());
+	}
+	Value.AddMember("nodes", Nodes, Doc.GetAllocator());
 }
 
 Node *DialogueFile::NewNode(const SDL_Point &Position)

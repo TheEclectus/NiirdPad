@@ -1,5 +1,6 @@
 #include "Node.h"
 
+#include <QByteArray>
 #include <QFile>
 
 #include "Character.h"
@@ -402,6 +403,27 @@ QByteArray &NodeDialogue::WindowState()
 	return _windowState;
 }
 
+void NodeDialogue::Save(rapidjson::Document &Doc, rapidjson::Value &Value) const
+{
+	rapidjson::Value Index(_reference.c_str(), _reference.length(), Doc.GetAllocator());
+	Value.AddMember("index", Index, Doc.GetAllocator());
+
+	rapidjson::Value Text(_dialogue.c_str(), _dialogue.length(), Doc.GetAllocator());
+	Value.AddMember("text", Text, Doc.GetAllocator());
+
+	std::string EditorWindowStateBase64 = _windowState.toBase64();
+	rapidjson::Value EditorWindowState(EditorWindowStateBase64.c_str(), EditorWindowStateBase64.length(), Doc.GetAllocator());
+	Value.AddMember("editorWindowState", EditorWindowState, Doc.GetAllocator());
+
+	rapidjson::Value FunctionLines(rapidjson::kArrayType);
+	for (auto &CurLineIter : _functionLines)
+	{
+		rapidjson::Value CurLine(CurLineIter.c_str(), CurLineIter.length(), Doc.GetAllocator());
+		FunctionLines.PushBack(CurLine, Doc.GetAllocator());
+	}
+	Value.AddMember("functionLines", FunctionLines, Doc.GetAllocator());
+}
+
 NubInput &NodeDialogue::Nub()
 {
 	return _nub;
@@ -541,6 +563,49 @@ QByteArray &NodeOption::WindowState()
 	return _windowState;
 }
 
+void NodeOption::Save(rapidjson::Document &Doc, rapidjson::Value &Value)
+{
+	rapidjson::Value Text(_option.c_str(), _option.length());
+	Value.AddMember("text", Text, Doc.GetAllocator());
+
+	std::string EditorWindowStateBase64 = _windowState.toBase64();
+	rapidjson::Value EditorWindowState(EditorWindowStateBase64.c_str(), EditorWindowStateBase64.length(), Doc.GetAllocator());
+	Value.AddMember("editorWindowState", EditorWindowState, Doc.GetAllocator());
+
+	rapidjson::Value VisibilityLines(rapidjson::kArrayType);
+	for (auto &CurLineIter : _visibilityScriptLines)
+	{
+		rapidjson::Value CurLine(CurLineIter.c_str(), CurLineIter.length());
+		VisibilityLines.PushBack(CurLine, Doc.GetAllocator());
+	}
+	Value.AddMember("visibilityLines", VisibilityLines, Doc.GetAllocator());
+
+	rapidjson::Value FunctionLines(rapidjson::kArrayType);
+	for (auto &CurLineIter : _functionLines)
+	{
+		rapidjson::Value CurLine(CurLineIter.c_str(), CurLineIter.length(), Doc.GetAllocator());
+		FunctionLines.PushBack(CurLine, Doc.GetAllocator());
+	}
+	Value.AddMember("functionLines", FunctionLines, Doc.GetAllocator());
+
+	rapidjson::Value Connections(rapidjson::kArrayType);
+	for (ConnectionOutput *CurConnection : _nub.Connections())
+	{
+		rapidjson::Value Connection(rapidjson::kObjectType);
+
+		const std::string &KeyName = CurConnection->KeyName();
+		rapidjson::Value BranchOption(KeyName.c_str(), KeyName.length(), Doc.GetAllocator());
+		Connection.AddMember("branchOption", BranchOption, Doc.GetAllocator());
+
+		std::string DestIndexStr = CurConnection->Connection() != nullptr ? CurConnection->Connection()->Parent().Parent().GetReference() : "";
+		rapidjson::Value DestIndex(DestIndexStr.c_str(), DestIndexStr.length(), Doc.GetAllocator());
+		Connection.AddMember("destIndex", DestIndex, Doc.GetAllocator());
+
+		Connections.PushBack(Connection, Doc.GetAllocator());
+	}
+	Value.AddMember("connections", Connections, Doc.GetAllocator());
+}
+
 NubOutput &NodeOption::Nub()
 {
 	return _nub;
@@ -595,6 +660,37 @@ void Node::SetComment(const std::string &Comment)
 const std::string &Node::GetComment() const
 {
 	return _comment;
+}
+
+void Node::Save(rapidjson::Document &Doc, rapidjson::Value &Value) const
+{
+	rapidjson::Value Comment(_comment.c_str(), _comment.length(), Doc.GetAllocator());
+	Value.AddMember("comment", Comment, Doc.GetAllocator());
+
+	rapidjson::Value Position(rapidjson::kObjectType);
+	Position.AddMember("x", rapidjson::Value(_position.x), Doc.GetAllocator());
+	Position.AddMember("y", rapidjson::Value(_position.y), Doc.GetAllocator());
+	Value.AddMember("scenePosition", Position, Doc.GetAllocator());
+
+	rapidjson::Value Dialogues(rapidjson::kArrayType);
+	for (auto &CurDiagIter : _dialogues)
+	{
+		rapidjson::Value CurDiag(rapidjson::kObjectType);
+		CurDiagIter->Save(Doc, CurDiag);
+
+		Dialogues.PushBack(CurDiag, Doc.GetAllocator());
+	}
+	Value.AddMember("dialogues", Dialogues, Doc.GetAllocator());
+
+	rapidjson::Value Options(rapidjson::kArrayType);
+	for (auto &CurOptIter : _options)
+	{
+		rapidjson::Value CurOpt(rapidjson::kObjectType);
+		CurOptIter->Save(Doc, CurOpt);
+
+		Options.PushBack(CurOpt, Doc.GetAllocator());
+	}
+	Value.AddMember("options", Options, Doc.GetAllocator());
 }
 
 NodeDialogue *Node::AddDialogue(const std::string &Reference)

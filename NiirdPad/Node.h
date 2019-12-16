@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include <rapidjson\document.h>
+#include <rapidjson\rapidjson.h>
 #include <SDL.h>
 
 #include "QNodeView.h"
@@ -173,6 +175,8 @@ public:
 	const std::vector<std::string> &GetFunctionLines() const;
 	QByteArray &WindowState();
 
+	void Save(rapidjson::Document &Doc, rapidjson::Value &Value) const;
+
 	NubInput &Nub();
 
 	GraphicsBlock_NodeInputBox *Graphics();
@@ -208,6 +212,8 @@ public:
 	const std::vector<std::string> &GetVisibilityScriptLines() const;
 	QByteArray &WindowState();
 
+	void Save(rapidjson::Document &Doc, rapidjson::Value &Value);
+
 	NubOutput &Nub();
 
 	GraphicsBlock_NodeOutputBox *Graphics();
@@ -238,6 +244,8 @@ public:
 
 	void SetComment(const std::string &Comment);
 	const std::string &GetComment() const;
+
+	void Save(rapidjson::Document &Doc, rapidjson::Value &Value) const;
 
 	// TODO: Make an AddDialogue where the user is prompted to create a new one
 	NodeDialogue *AddDialogue(const std::string &Reference);

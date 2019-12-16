@@ -62,9 +62,19 @@ Project::Project(QNodeView &NodeView) :
 
 }
 
+bool Project::Save()
+{
+	return SaveAs(_savePath);
+}
+
+bool Project::SaveAs(const std::string &Path)
+{
+	return false;
+}
+
 Character *Project::NewCharacter(const std::string &Name)
 {
-	Character *NewCharacter = new Character(*this, _NodeView);
+	Character *NewCharacter = new Character(*this, _NodeView, Name);
 	_Characters.insert({ Name, NewCharacter });
 
 	return NewCharacter;
