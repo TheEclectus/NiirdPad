@@ -7,6 +7,7 @@
 #include <rapidjson\rapidjson.h>
 #include <rapidjson\ostreamwrapper.h>
 #include <rapidjson\writer.h>
+#include <QFileDialog>
 
 #include "Character.h"
 #include "DialogueFile.h"
@@ -78,40 +79,59 @@ bool Project::Save()
 
 bool Project::SaveAs(const std::string &Path)
 {
-	if (Path == "" || !std::experimental::filesystem::exists(Path))
+	std::string DestPath = Path;
+
+	if (DestPath == "" || !std::experimental::filesystem::exists(DestPath))
 	{
 		// Have the user pick a destination here.
-		return false;
+		DestPath = QFileDialog::getSaveFileName(this->_NodeView.GetNiirdPad(), "Save Project As", QDir::homePath(), "NiirdPad Project File (*.niirdproj)").toStdString();
+		if(DestPath == "")
+			return false;
 	}
-	else
+
+	rapidjson::Document Doc;
+	Doc.SetObject();
+
+	// TODO: Implement project comment.
+	rapidjson::Value Comment("", 0);
+	Doc.AddMember("comment", Comment, Doc.GetAllocator());
+
+	// TODO: Ensure files with a blank version string are upgraded to the currently-loaded dataset's version.
+	const std::string &VersionString = _NodeView.GetNiirdPad()->ScriptEngine().VersionString();
+	rapidjson::Value Version(VersionString.c_str(), VersionString.length(), Doc.GetAllocator());
+	Doc.AddMember("version", Version, Doc.GetAllocator());
+
+	rapidjson::Value Characters(rapidjson::kArrayType);
+	for (auto CurChar : _Characters)
 	{
-		rapidjson::Document Doc;
-		Doc.SetObject();
-
-		// TODO: Implement project comment.
-		rapidjson::Value Comment("", 0);
-		Doc.AddMember("comment", Comment, Doc.GetAllocator());
-
-		// TODO: Ensure files with a blank version string are upgraded to the currently-loaded dataset's version.
-		const std::string &VersionString = _NodeView.GetNiirdPad()->ScriptEngine().VersionString();
-		rapidjson::Value Version(VersionString.c_str(), VersionString.length(), Doc.GetAllocator());
-		Doc.AddMember("version", Version, Doc.GetAllocator());
-
-		rapidjson::Value Characters(rapidjson::kArrayType);
-		for (auto CurChar : _Characters)
-		{
-			rapidjson::Value NewChar(rapidjson::kObjectType);
-			CurChar.second->Save(Doc, NewChar);
-			Characters.PushBack(NewChar, Doc.GetAllocator());
-		}
-		Doc.AddMember("characters", Characters, Doc.GetAllocator());
-
-		std::ofstream OutStream(Path);
-		rapidjson::OStreamWrapper OutStreamWrapper(OutStream);
-		rapidjson::Writer<rapidjson::OStreamWrapper> Writer(OutStreamWrapper);
-		
-		return Doc.Accept(Writer);
+		rapidjson::Value NewChar(rapidjson::kObjectType);
+		CurChar.second->Save(Doc, NewChar);
+		Characters.PushBack(NewChar, Doc.GetAllocator());
 	}
+	Doc.AddMember("characters", Characters, Doc.GetAllocator());
+
+	std::ofstream OutStream(DestPath);
+	rapidjson::OStreamWrapper OutStreamWrapper(OutStream);
+	rapidjson::Writer<rapidjson::OStreamWrapper> Writer(OutStreamWrapper);
+
+	bool bSuccess = Doc.Accept(Writer);
+	if (bSuccess)
+	{
+		_savePath = DestPath;
+		CleanChanges();
+	}
+
+	return bSuccess;
+}
+
+void Project::DirtyChanges()
+{
+	_bUnsavedChanges = true;
+}
+
+void Project::CleanChanges()
+{
+	_bUnsavedChanges = false;
 }
 
 Character *Project::NewCharacter(const std::string &Name)

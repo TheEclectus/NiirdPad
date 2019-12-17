@@ -174,7 +174,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionNew_Project">
    <property name="text">
-    <string>New</string>
+    <string>x New</string>
    </property>
   </action>
   <action name="actionNew_File">
@@ -184,7 +184,7 @@
   </action>
   <action name="actionOpen">
    <property name="text">
-    <string>Open...</string>
+    <string>x Open...</string>
    </property>
   </action>
   <action name="actionSave">
@@ -204,7 +204,7 @@
   </action>
   <action name="actionExport_Project">
    <property name="text">
-    <string>Export Project...</string>
+    <string>x Export Project...</string>
    </property>
   </action>
   <action name="actionEditReferenceWindowNew">
@@ -229,17 +229,17 @@
   </action>
   <action name="actionDatabase">
    <property name="text">
-    <string>View Database</string>
+    <string>x View Database</string>
    </property>
   </action>
   <action name="actionReload">
    <property name="text">
-    <string>Reload From File</string>
+    <string>x Reload From File</string>
    </property>
   </action>
   <action name="actionReload_2">
    <property name="text">
-    <string>Reload</string>
+    <string>x Reload</string>
    </property>
   </action>
   <action name="actionEditScriptWindow_Dialogue">

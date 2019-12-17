@@ -219,6 +219,14 @@ NiirdPad::NiirdPad(QWidget *parent) :
 		}*/
 	});
 
+	connect(ui.actionSave, &QAction::triggered, [this]() {
+		this->_loadedProject->Save();
+	});
+
+	connect(ui.actionSave_As, &QAction::triggered, [this]() {
+		this->_loadedProject->SaveAs("");
+	});
+
 	connect(ui.actionEditReferenceWindowNew, &QAction::triggered, [this]() {
 		std::string Res = "";
 		QReferenceEditWindow::NewReference(this, Res);

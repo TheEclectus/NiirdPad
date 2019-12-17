@@ -29,6 +29,11 @@ public:
 	bool Save();
 	bool SaveAs(const std::string &Path = "");
 
+	// Declares there are unsaved changes.
+	void DirtyChanges();
+	// Declares there are no longer any unsaved changes.
+	void CleanChanges();
+
 	Character *NewCharacter(const std::string &Name);
 	std::map<std::string, Character*> &Characters();
 };

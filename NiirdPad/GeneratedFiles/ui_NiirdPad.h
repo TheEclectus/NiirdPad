@@ -220,20 +220,20 @@ public:
     void retranslateUi(QMainWindow *NiirdPadClass)
     {
         NiirdPadClass->setWindowTitle(QApplication::translate("NiirdPadClass", "NiirdPad", nullptr));
-        actionNew_Project->setText(QApplication::translate("NiirdPadClass", "New", nullptr));
+        actionNew_Project->setText(QApplication::translate("NiirdPadClass", "x New", nullptr));
         actionNew_File->setText(QApplication::translate("NiirdPadClass", "New File", nullptr));
-        actionOpen->setText(QApplication::translate("NiirdPadClass", "Open...", nullptr));
+        actionOpen->setText(QApplication::translate("NiirdPadClass", "x Open...", nullptr));
         actionSave->setText(QApplication::translate("NiirdPadClass", "Save", nullptr));
         actionSave_As->setText(QApplication::translate("NiirdPadClass", "Save As...", nullptr));
         actionImportProject->setText(QApplication::translate("NiirdPadClass", "Import Project...", nullptr));
-        actionExport_Project->setText(QApplication::translate("NiirdPadClass", "Export Project...", nullptr));
+        actionExport_Project->setText(QApplication::translate("NiirdPadClass", "x Export Project...", nullptr));
         actionEditReferenceWindowNew->setText(QApplication::translate("NiirdPadClass", "New", nullptr));
         actionEditReferenceWindowEdit->setText(QApplication::translate("NiirdPadClass", "Edit", nullptr));
         actionImportConsole->setText(QApplication::translate("NiirdPadClass", "Import Console", nullptr));
         actionReference->setText(QApplication::translate("NiirdPadClass", "Syntax Reference", nullptr));
-        actionDatabase->setText(QApplication::translate("NiirdPadClass", "View Database", nullptr));
-        actionReload->setText(QApplication::translate("NiirdPadClass", "Reload From File", nullptr));
-        actionReload_2->setText(QApplication::translate("NiirdPadClass", "Reload", nullptr));
+        actionDatabase->setText(QApplication::translate("NiirdPadClass", "x View Database", nullptr));
+        actionReload->setText(QApplication::translate("NiirdPadClass", "x Reload From File", nullptr));
+        actionReload_2->setText(QApplication::translate("NiirdPadClass", "x Reload", nullptr));
         actionEditScriptWindow_Dialogue->setText(QApplication::translate("NiirdPadClass", "Dialogue Fragment", nullptr));
         actionEditScriptWindowDialogue->setText(QApplication::translate("NiirdPadClass", "Dialogue Fragment", nullptr));
         actionEditScriptWindowOption->setText(QApplication::translate("NiirdPadClass", "Option Fragment", nullptr));
