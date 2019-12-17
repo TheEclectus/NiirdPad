@@ -2,6 +2,7 @@
 
 #include <filesystem>
 
+#include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QProgressDialog>
@@ -164,6 +165,45 @@ void NiirdPad::ResetDialogueFileCombo()
 	}
 }
 
+void NiirdPad::SetWindowTitle()
+{
+	std::string WindowTitle = "NiirdPad v" NIIRDPAD_VERSION " - build " NIIRDPAD_BUILD_ID " - ";
+	if (_loadedProject->SavePath() != "")
+		WindowTitle += QFile(_loadedProject->SavePath().c_str()).fileName().toStdString();
+	else
+		WindowTitle += "Untitled Project";
+
+	if (_loadedProject->UnsavedChanges())
+		WindowTitle += "*";
+
+	this->setWindowTitle(WindowTitle.c_str());
+}
+
+void NiirdPad::closeEvent(QCloseEvent *Event)
+{
+	if (_loadedProject->UnsavedChanges())
+	{
+		QMessageBox::StandardButton Res = QMessageBox::warning(this, "Project Has Unsaved Changes", "Do you want to save changes to the current project?", QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+		if (Res == QMessageBox::StandardButton::Save)
+		{
+			if (_loadedProject->Save())
+				Event->accept();
+			else
+				Event->ignore();
+		}
+		else if (Res == QMessageBox::StandardButton::Discard)
+		{
+			Event->accept();
+		}
+		else
+		{
+			Event->ignore();
+		}
+	}
+	else
+		Event->accept();
+}
+
 void NiirdPad::ImportConfirmationMessageBox(std::vector<std::string> Warnings, RawProjectFile Files)
 {
 	if (Warnings.size() > 0)
@@ -220,11 +260,13 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	});
 
 	connect(ui.actionSave, &QAction::triggered, [this]() {
-		this->_loadedProject->Save();
+		if(this->_loadedProject->Save())
+			SetWindowTitle();
 	});
 
 	connect(ui.actionSave_As, &QAction::triggered, [this]() {
-		this->_loadedProject->SaveAs("");
+		if(this->_loadedProject->SaveAs(""))
+			SetWindowTitle();
 	});
 
 	connect(ui.actionEditReferenceWindowNew, &QAction::triggered, [this]() {
@@ -298,7 +340,8 @@ NiirdPad::NiirdPad(QWidget *parent) :
 
 	ResetCharacterCombo();
 
-	_loadedProject->SaveAs("./testoutput.json");
+	//_loadedProject->SaveAs("./testoutput.json");
+	SetWindowTitle();
 
 	//ui.widget->SetDialogueFile(NewDiag);
 }
@@ -321,4 +364,16 @@ QReferenceEditWindow *NiirdPad::ReferenceEditWindow()
 ScriptEngine &NiirdPad::ScriptEngine()
 {
 	return _scriptEngine;
+}
+
+void NiirdPad::DirtyProjectChanges()
+{
+	_loadedProject->DirtyChanges();
+	SetWindowTitle();
+}
+
+void NiirdPad::CleanProjectChanges()
+{
+	_loadedProject->CleanChanges();
+	SetWindowTitle();
 }

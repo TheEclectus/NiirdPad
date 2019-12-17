@@ -12,6 +12,12 @@
 
 #include "Project.h"
 
+#define NIIRDPAD_VERSION	"0.8.0"
+
+#ifndef NIIRDPAD_BUILD_ID
+	#define NIIRDPAD_BUILD_ID	"e7393050" //"BUILD ID UNDEFINED"
+#endif
+
 class NiirdPad : public QMainWindow
 {
 	Q_OBJECT
@@ -29,6 +35,8 @@ private:
 	void Import();
 	void ResetCharacterCombo();
 	void ResetDialogueFileCombo();
+	void SetWindowTitle();
+	void closeEvent(QCloseEvent *Event) override;
 
 public slots:
 	void ImportConfirmationMessageBox(std::vector<std::string> Warnings, RawProjectFile Files);
@@ -39,4 +47,7 @@ public:
 	QScriptEditWindow *ScriptEditWindow();
 	QReferenceEditWindow *ReferenceEditWindow();
 	ScriptEngine &ScriptEngine();
+
+	void DirtyProjectChanges();
+	void CleanProjectChanges();
 };

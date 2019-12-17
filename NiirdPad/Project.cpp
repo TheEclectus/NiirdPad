@@ -72,6 +72,11 @@ Project::Project(QNodeView &NodeView) :
 
 }
 
+const std::string &Project::SavePath() const
+{
+	return _savePath;
+}
+
 bool Project::Save()
 {
 	return SaveAs(_savePath);
@@ -122,6 +127,11 @@ bool Project::SaveAs(const std::string &Path)
 	}
 
 	return bSuccess;
+}
+
+bool Project::UnsavedChanges() const
+{
+	return _bUnsavedChanges;
 }
 
 void Project::DirtyChanges()
