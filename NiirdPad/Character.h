@@ -3,6 +3,9 @@
 #include <map>
 #include <string>
 
+#include <rapidjson\document.h>
+#include <rapidjson\rapidjson.h>
+
 // DialogueFile.h
 class DialogueFile;
 
@@ -28,6 +31,5 @@ public:
 	DialogueFile *NewDialogueFile(const std::string &Filename);
 	std::map<std::string, DialogueFile*> &DialogueFiles();
 
-	bool Save();
-	bool SaveAs(const std::string &Path = "");
+	void Save(rapidjson::Document &Doc, rapidjson::Value &Value) const;
 };

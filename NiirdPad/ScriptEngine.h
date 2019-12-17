@@ -18,6 +18,7 @@ class ScriptEngine
 private:
 	std::string _path;
 	sol::state _state;
+	std::string _TUScriptVersion;
 	std::map<std::string, sol::safe_function> _validationFunctions;
 	std::map<std::string, sol::safe_function> _visibilityConditions;
 
@@ -48,4 +49,6 @@ public:
 	/// </returns>
 	/// <param name="Script">The full line of script being validated.</param>
 	bool bVisConditionIsValid(const std::string &Script, std::string &ErrorString) const;
+
+	const std::string &VersionString() const;
 };

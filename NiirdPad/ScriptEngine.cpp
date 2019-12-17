@@ -50,6 +50,47 @@ bool ScriptEngine::ReloadFromFile()
 
 	sol::table ResultTable = LoadResult;
 
+	sol::object TUScriptVersion = ResultTable["Version"];
+	if (TUScriptVersion == sol::nil)
+	{
+		QMessageBox MsgBox;
+		MsgBox.setWindowTitle("Error");
+		MsgBox.setText("Table returned by file does not contain 'Version' string.");
+		MsgBox.setIcon(QMessageBox::Icon::Warning);
+		MsgBox.exec();
+
+		return false;
+	}
+	else
+	{
+		std::string TUScriptVerStr = TUScriptVersion.as<std::string>();
+		size_t DotPos = TUScriptVerStr.find('.');
+		if (DotPos == std::string::npos)
+		{
+			QMessageBox MsgBox;
+			MsgBox.setWindowTitle("Error");
+			MsgBox.setText("'Version' string is ill-formed.");
+			MsgBox.setIcon(QMessageBox::Icon::Warning);
+			MsgBox.exec();
+
+			return false;
+		}
+
+		std::string MinusDotStr = TUScriptVerStr.substr(0, DotPos) + TUScriptVerStr.substr(DotPos + 1);
+		if (MinusDotStr.find_first_not_of("1234567890") != MinusDotStr.npos)
+		{
+			QMessageBox MsgBox;
+			MsgBox.setWindowTitle("Error");
+			MsgBox.setText("'Version' string is ill-formed.");
+			MsgBox.setIcon(QMessageBox::Icon::Warning);
+			MsgBox.exec();
+
+			return false;
+		}
+
+		_TUScriptVersion = TUScriptVerStr;
+	}
+
 	sol::table DialogueTable = ResultTable["Dialogue"];
 	if (DialogueTable == sol::nil)
 	{
@@ -217,4 +258,9 @@ bool ScriptEngine::bVisConditionIsValid(const std::string &Script, std::string &
 	ErrorString = std::get<1>(Res);
 
 	return bIsValid;
+}
+
+const std::string &ScriptEngine::VersionString() const
+{
+	return _TUScriptVersion;
 }

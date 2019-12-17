@@ -81,6 +81,9 @@ end
 
 local Funcs = {}
 
+-- META DATA =============================================================================================
+Funcs.Version = "2.13"
+
 -- VISIBILITY CONDITIONS =================================================================================
 
 Funcs.Visibility = {}
@@ -852,4 +855,4 @@ function D.remove_location(args)
 	return true, nil, nil
 end
 
-return Funcs
+return Funcs, Meta

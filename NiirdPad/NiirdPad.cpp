@@ -290,7 +290,7 @@ NiirdPad::NiirdPad(QWidget *parent) :
 
 	ResetCharacterCombo();
 
-	NewChar->SaveAs("./testoutput.json");
+	_loadedProject->SaveAs("./testoutput.json");
 
 	//ui.widget->SetDialogueFile(NewDiag);
 }

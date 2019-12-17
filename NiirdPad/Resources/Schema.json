@@ -7,9 +7,13 @@
 				},
 				"destIndex": {
 					"type": "string",
-					"pattern": "([_a-z])+"
+					"pattern": "([_a-z]*)"
 				}
-			}
+			},
+			"required": [
+				"branchOptions",
+				"destIndex"
+			]
 		},
 		"dialogue": {
 			"properties": {
@@ -29,7 +33,13 @@
 						"type": "string"
 					}
 				}
-			}
+			},
+			"required": [
+				"index",
+				"text",
+				"editorWindowState",
+				"functionLines"
+			]
 		},
 		"option": {
 			"properties": {
@@ -57,7 +67,14 @@
 						"$ref": "#/definitions/connection"
 					}
 				}
-			}
+			},
+			"required": [
+				"text",
+				"editorWindowState",
+				"visibilityLines",
+				"functionLines",
+				"connections"
+			]
 		},
 		"position": {
 			"properties": {
@@ -67,7 +84,11 @@
 				"y": {
 					"type": "integer"
 				}
-			}
+			},
+			"required": [
+				"x",
+				"y"
+			]
 		},
 		"node": {
 			"properties": {
@@ -89,7 +110,13 @@
 						"$ref": "#/definitions/option"
 					}
 				}
-			}
+			},
+			"required": [
+				"comment",
+				"scenePosition",
+				"dialogues",
+				"options"
+			]
 		},
 		"file": {
 			"properties": {
@@ -105,7 +132,12 @@
 						"$ref": "#/definitions/node"
 					}
 				}
-			}
+			},
+			"required": [
+				"comment",
+				"filename",
+				"nodes"
+			]
 		},
 		"character": {
 			"properties": {
@@ -121,31 +153,34 @@
 						"$ref": "#/definitions/file"
 					}
 				}
-			}
-		},
-		"project": {
-			"properties": {
-				"comment": {
-					"type": "string"
-				},
-				"version": {
-					"type":  "string"
-				},
-				"characters": {
-					"type": "array",
-					"items": {
-						"$ref":  "#/definitions/character"
-					}
-				}
-			}
+			},
+			"required": [
+				"comment",
+				"name",
+				"files"
+			]
 		}
 	},
 	"type": "object",
 
 	"title": "Character File Schema 1.0",
 	"properties": {
-		"Test File": {
-			"$ref": "#/definitions/character"
+		"comment": {
+			"type": "string"
+		},
+		"version": {
+			"type": "string"
+		},
+		"characters": {
+			"type": "array",
+			"items": {
+				"$ref": "#/definitions/character"
+			}
 		}
-	}
+	},
+	"required": [
+		"comment",
+		"version",
+		"characters"
+	]
 }
