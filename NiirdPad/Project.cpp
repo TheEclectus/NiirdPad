@@ -184,6 +184,10 @@ bool Project::Load(const std::string &Path, std::string *ErrorMessage)
 			DialogueFile *NewDiagFile = NewChar->NewDialogueFile(NewDiagFileName);
 
 			SDL_Point CameraPos = { CurDiagFile["cameraPos"]["x"].GetInt(), CurDiagFile["cameraPos"]["y"].GetInt() };
+			// TODO: Implement per-dialogue file camera positions
+			this->_NodeView.GetCamera().ViewBox.x = CameraPos.x;
+			this->_NodeView.GetCamera().ViewBox.y = CameraPos.y;
+
 			// TODO: Dialogue file comments
 			for (auto &CurNode : CurDiagFile["nodes"].GetArray())
 			{

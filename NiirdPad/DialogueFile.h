@@ -8,15 +8,14 @@
 #include <rapidjson\rapidjson.h>
 #include <SDL.h>
 
+#include "Camera.h"
+
 // Character.h
 class Character;
 
 // Node.h
 class Node;
 class NodeDialogue;
-
-// QNodeView.h
-class QNodeViewCamera;
 
 // ReferenceDatabase.h
 class ReferenceDatabase;
@@ -28,7 +27,7 @@ private:
 	Character &_parentCharacter;
 	ReferenceDatabase *_referenceDatabase;
 	std::string _filename;
-	QNodeViewCamera _Camera;
+	//QNodeViewCamera _Camera;
 	//std::map<std::string, NodeDialogue*> _indices;	// non-owning NodeDialogue pointers
 	std::vector<Node*> _nodes;
 public:
@@ -38,7 +37,7 @@ public:
 
 	ReferenceDatabase &GetReferenceDatabase();
 	const std::string &GetFilename() const;
-	QNodeViewCamera &GetCamera();
+	//QNodeViewCamera &GetCamera();
 	//const std::map<std::string, NodeDialogue*> &GetIndices() const;
 	const std::vector<Node*> &GetNodes() const;
 

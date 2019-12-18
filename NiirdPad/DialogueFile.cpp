@@ -28,14 +28,10 @@ const std::string &DialogueFile::GetFilename() const
 	return _filename;
 }
 
-QNodeViewCamera &DialogueFile::GetCamera()
-{
-	return _Camera;
-}
-
-//const std::map<std::string, NodeDialogue*> &DialogueFile::GetIndices() const
+// TODO: Implement per-dialogue file camera positions
+//QNodeViewCamera &DialogueFile::GetCamera()
 //{
-//	return _indices;
+//	return _Camera;
 //}
 
 const std::vector<Node*> &DialogueFile::GetNodes() const

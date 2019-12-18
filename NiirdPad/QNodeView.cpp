@@ -974,8 +974,9 @@ void QNodeView::SetDialogueFile(DialogueFile *File)
 
 QNodeViewCamera &QNodeView::GetCamera()
 {
-	return this->_DialogueFile->GetCamera();
-	//return GetCamera();
+	// TODO: Implement per-dialogue file camera positions
+	//return this->_DialogueFile->GetCamera();
+	return _Camera;
 }
 
 void QNodeView::SetEngine(ScriptEngine *Engine)

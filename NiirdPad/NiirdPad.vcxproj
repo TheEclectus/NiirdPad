@@ -117,6 +117,7 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="DialogueFile.cpp" />
     <ClCompile Include="FontStore.cpp" />
@@ -158,6 +159,7 @@
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="core.h" />
     <ClInclude Include="DialogueFile.h" />
