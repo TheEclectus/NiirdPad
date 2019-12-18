@@ -24,11 +24,15 @@ private:
 	std::map<std::string, Character*> _Characters;
 	rapidjson::SchemaDocument *_ProjectSchema;
 
+	void Unload();	// Resets the Project to its default state.
+
 public:
 	/*Project(QNodeView &NodeView, const std::string &Path);
 	Project(QNodeView &NodeView, const RawProjectFile &ImportedProject);*/
 	Project(QNodeView &NodeView);
 	~Project();
+
+	void New();
 
 	const std::string &SavePath() const;
 	bool Save();
@@ -36,7 +40,6 @@ public:
 
 	bool Load(const std::string &Path, std::string *ErrorMessage = nullptr);
 	bool Load(const RawProjectFile &ImportedProject, std::string *ErrorMessage = nullptr);
-	void Unload();	// Resets the Project to its default state.
 
 	bool UnsavedChanges() const;
 	// Declares there are unsaved changes.

@@ -12,10 +12,10 @@
 
 #include "Project.h"
 
-#define NIIRDPAD_VERSION	"0.8.0"
+#define NIIRDPAD_VERSION	"0.9.1"
 
 #ifndef NIIRDPAD_BUILD_ID
-	#define NIIRDPAD_BUILD_ID	"e4b02c89" //"BUILD ID UNDEFINED"
+	#define NIIRDPAD_BUILD_ID	"999a2fec" //"BUILD ID UNDEFINED"
 #endif
 
 class NiirdPad : public QMainWindow

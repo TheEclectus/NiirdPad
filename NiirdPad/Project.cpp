@@ -51,6 +51,15 @@ Project::~Project()
 	Unload();
 }
 
+void Project::New()
+{
+	Unload();
+	// TODO: Check existing characters and make a new name if necessary / prompt the user for a name
+	Character *NewChar = NewCharacter("New Character"); // Legally distinct from Niirds™
+
+	DialogueFile *NewDiag = NewChar->NewDialogueFile("diag");
+}
+
 const std::string &Project::SavePath() const
 {
 	return _savePath;

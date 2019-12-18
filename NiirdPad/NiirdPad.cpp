@@ -259,6 +259,25 @@ NiirdPad::NiirdPad(QWidget *parent) :
 		}*/
 	});
 
+	connect(ui.actionNew_Project, &QAction::triggered, [this]() {
+		if (_loadedProject->UnsavedChanges())
+		{
+			QMessageBox::StandardButton Res = QMessageBox::warning(this, "Project Has Unsaved Changes", "Do you want to save changes to the current project?", QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+			if (Res == QMessageBox::StandardButton::Save)
+			{
+				if (!_loadedProject->Save())
+					return;
+			}
+			else if (Res == QMessageBox::StandardButton::Cancel)
+			{
+				return;
+			}
+		}
+		_loadedProject->New();
+		SetWindowTitle();
+		ResetCharacterCombo();
+	});
+
 	connect(ui.actionSave, &QAction::triggered, [this]() {
 		if(this->_loadedProject->Save())
 			SetWindowTitle();
@@ -343,32 +362,31 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	//this->setMouseTracking(true);
 
 	_loadedProject = new Project(*ui.widget);
+	_loadedProject->New();
 
-	Character *NewChar = _loadedProject->NewCharacter("NIIRB"); // Legally distinct from Niirds™
+	//Character *NewChar = _loadedProject->NewCharacter("NIIRB"); // Legally distinct from Niirds™
 
-	DialogueFile *NewDiag = NewChar->NewDialogueFile("diag");
-	Node *NewNode = NewDiag->NewNode();
-	NewNode->SetComment("Presenting, the Niirb");
+	//DialogueFile *NewDiag = NewChar->NewDialogueFile("diag");
+	//Node *NewNode = NewDiag->NewNode();
+	//NewNode->SetComment("Presenting, the Niirb");
 
-	auto *Dlg = NewNode->AddDialogue("b i r b");
-	Dlg->SetAll({ "give_money \"krats\" 20" }, "the niirb is a legally distinct creature from the Niird, which is copyright 2016-2019 Meandraco Entertainment");
-	auto *Opt = NewNode->AddOption();
-	Opt->SetAll({ "//showif.has_stat.charisma.8" }, { "give_money krats 80" }, "Test");
-	Opt->Nub().Connections()[0]->Connect(&Dlg->Nub().Connection());
+	//auto *Dlg = NewNode->AddDialogue("b i r b");
+	//Dlg->SetAll({ "give_money \"krats\" 20" }, "the niirb is a legally distinct creature from the Niird, which is copyright 2016-2019 Meandraco Entertainment");
+	//auto *Opt = NewNode->AddOption();
+	//Opt->SetAll({ "//showif.has_stat.charisma.8" }, { "give_money krats 80" }, "Test");
+	//Opt->Nub().Connections()[0]->Connect(&Dlg->Nub().Connection());
 
-	auto *Opt2 = NewNode->AddOption();
-	Opt2->SetAll({ "//showif.charisma.8" }, { "day_night_gate" }, "Test 2: Electric Boogaloo");
+	//auto *Opt2 = NewNode->AddOption();
+	//Opt2->SetAll({ "//showif.charisma.8" }, { "day_night_gate" }, "Test 2: Electric Boogaloo");
 
-	DialogueFile *NewDiag2 = NewChar->NewDialogueFile("diag 2");
-	Node *NewNode2 = NewDiag2->NewNode();
-	NewNode2->SetComment("Presenting, the Niirb 2");
+	//DialogueFile *NewDiag2 = NewChar->NewDialogueFile("diag 2");
+	//Node *NewNode2 = NewDiag2->NewNode();
+	//NewNode2->SetComment("Presenting, the Niirb 2");
 
-	auto *Dlg2 = NewNode2->AddDialogue("b i r b 2");
-	Dlg2->SetAll({ "give_money \"krats\" 80" }, "plz no sue");
+	//auto *Dlg2 = NewNode2->AddDialogue("b i r b 2");
+	//Dlg2->SetAll({ "give_money \"krats\" 80" }, "plz no sue");
 
 	ResetCharacterCombo();
-
-	//_loadedProject->SaveAs("./testoutput.json");
 	SetWindowTitle();
 
 	//ui.widget->SetDialogueFile(NewDiag);
