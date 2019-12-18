@@ -398,7 +398,12 @@ const std::vector<std::string> &NodeDialogue::GetFunctionLines() const
 	return _functionLines;
 }
 
-QByteArray &NodeDialogue::WindowState()
+void NodeDialogue::SetWindowState(const QByteArray &WindowState)
+{
+	_windowState = WindowState;
+}
+
+QByteArray &NodeDialogue::GetWindowState()
 {
 	return _windowState;
 }
@@ -558,7 +563,12 @@ const std::vector<std::string> &NodeOption::GetVisibilityScriptLines() const
 	return _visibilityScriptLines;
 }
 
-QByteArray &NodeOption::WindowState()
+void NodeOption::SetWindowState(const QByteArray &WindowState)
+{
+	_windowState = WindowState;
+}
+
+QByteArray &NodeOption::GetWindowState()
 {
 	return _windowState;
 }
@@ -730,6 +740,15 @@ void Node::RemoveDialogue(NodeDialogue *Dlg)
 const std::vector<NodeDialogue*> &Node::Dialogues() const
 {
 	return _dialogues;
+}
+
+bool Node::HasIndex(const std::string &Index) const
+{
+	auto DestConnRes = std::find_if(_dialogues.begin(), _dialogues.end(), [Index](NodeDialogue *Dlg) {
+		return Dlg->GetReference() == Index;
+	});
+
+	return (DestConnRes != _dialogues.end());
 }
 
 NodeOption *Node::AddOption()

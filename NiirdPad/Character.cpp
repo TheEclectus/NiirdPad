@@ -15,10 +15,10 @@ Character::Character(Project &ParentProject, QNodeView &NodeView, const std::str
 
 }
 
-//const std::string &Character::GetName() const
-//{
-//	return _name;
-//}
+const std::string &Character::GetName() const
+{
+	return _name;
+}
 
 QNodeView &Character::GetNodeView() const
 {

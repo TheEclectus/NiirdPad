@@ -25,7 +25,7 @@ private:
 public:
 	Character(Project &ParentProject, QNodeView &NodeView, const std::string &Name);
 
-	//const std::string &GetName() const;
+	const std::string &GetName() const;
 	QNodeView &GetNodeView() const;
 
 	DialogueFile *NewDialogueFile(const std::string &Filename);

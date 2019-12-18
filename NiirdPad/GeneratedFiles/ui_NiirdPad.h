@@ -222,7 +222,7 @@ public:
         NiirdPadClass->setWindowTitle(QApplication::translate("NiirdPadClass", "NiirdPad", nullptr));
         actionNew_Project->setText(QApplication::translate("NiirdPadClass", "x New", nullptr));
         actionNew_File->setText(QApplication::translate("NiirdPadClass", "New File", nullptr));
-        actionOpen->setText(QApplication::translate("NiirdPadClass", "x Open...", nullptr));
+        actionOpen->setText(QApplication::translate("NiirdPadClass", "Open...", nullptr));
         actionSave->setText(QApplication::translate("NiirdPadClass", "Save", nullptr));
         actionSave_As->setText(QApplication::translate("NiirdPadClass", "Save As...", nullptr));
         actionImportProject->setText(QApplication::translate("NiirdPadClass", "Import Project...", nullptr));

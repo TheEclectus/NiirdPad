@@ -82,6 +82,8 @@ public:
 	DialogueFile *GetDialogueFile();
 	void SetDialogueFile(DialogueFile *File);
 
+	QNodeViewCamera &GetCamera();
+
 	// HACK: So you can't miss the HACK label for setting a crucial pointer outside the constructor, fuckhead
 	void SetEngine(ScriptEngine *Engine);
 

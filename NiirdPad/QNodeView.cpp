@@ -49,8 +49,8 @@ void QNodeView::Input()
 
 				auto NodePos = CurNode->Position();
 				auto NodeBounds = CurNode->Graphics().GetBounds();
-				NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
-				NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
+				NodeBounds.x = (GetCamera().ViewBox.w / 2) - GetCamera().ViewBox.x + NodePos.x;
+				NodeBounds.y = (GetCamera().ViewBox.h / 2) - GetCamera().ViewBox.y + NodePos.y;
 
 				// A Node is found
 				if (SDL_PointInRect(&NewDownPos, &NodeBounds))
@@ -154,7 +154,7 @@ void QNodeView::Input()
 								DefaultConn->Disconnect();
 							});
 
-							QNodeViewCamera *Camera = &_Camera;
+							QNodeViewCamera *Camera = &GetCamera();
 							auto ActJumpTo = Context.addAction("Jump To Destination", [Camera, DefaultConn]() {
 								NodeDialogue &DestFrag = DefaultConn->Connection()->Parent().Parent();
 								Node &DestNode = DestFrag.Parent();
@@ -187,7 +187,7 @@ void QNodeView::Input()
 									CurConn->Disconnect();
 								});
 
-								QNodeViewCamera *Camera = &_Camera;
+								QNodeViewCamera *Camera = &GetCamera();
 								auto ActJumpTo = NewMenu->addAction("Jump To Destination", [Camera, CurConn]() {
 									NodeDialogue &DestFrag = CurConn->Connection()->Parent().Parent();
 									Node &DestNode = DestFrag.Parent();
@@ -223,7 +223,7 @@ void QNodeView::Input()
 								CurConn->Disconnect();
 							});
 
-							QNodeViewCamera *Camera = &_Camera;
+							QNodeViewCamera *Camera = &GetCamera();
 							auto ActJumpTo = NewMenu->addAction("Jump To Source", [Camera, CurConn]() {
 								NodeOption &DestFrag = CurConn->Parent().Parent();
 								Node &DestNode = DestFrag.Parent();
@@ -310,8 +310,8 @@ void QNodeView::Input()
 			{
 				auto NodePos = CurNode->Position();
 				auto NodeBounds = CurNode->Graphics().GetBounds();
-				NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
-				NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
+				NodeBounds.x = (GetCamera().ViewBox.w / 2) - GetCamera().ViewBox.x + NodePos.x;
+				NodeBounds.y = (GetCamera().ViewBox.h / 2) - GetCamera().ViewBox.y + NodePos.y;
 
 				// A Node is found
 				if (SDL_PointInRect(&ReleasePos, &NodeBounds))
@@ -398,7 +398,7 @@ void QNodeView::Input()
 			{
 				QMenu Context("Context Menu", this);
 				auto *NodesList = &_Nodes;
-				SDL_Point CreatePos = { ReleasePos.x + _Camera.ViewBox.x - (_Camera.ViewBox.w/2), ReleasePos.y + _Camera.ViewBox.y - (_Camera.ViewBox.h / 2) };
+				SDL_Point CreatePos = { ReleasePos.x + GetCamera().ViewBox.x - (GetCamera().ViewBox.w/2), ReleasePos.y + GetCamera().ViewBox.y - (GetCamera().ViewBox.h / 2) };
 
 				Context.addAction("Create Node", [this, CreatePos, NodesList]() {
 					// Use _DialogueFile->NewNode(), and add its return value to the front of _Nodes!
@@ -436,8 +436,8 @@ void QNodeView::Input()
 				}
 				
 
-				NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
-				NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
+				NodeBounds.x = (GetCamera().ViewBox.w / 2) - GetCamera().ViewBox.x + NodePos.x;
+				NodeBounds.y = (GetCamera().ViewBox.h / 2) - GetCamera().ViewBox.y + NodePos.y;
 
 				CurNubPos.x += NodeBounds.x;
 				CurNubPos.y += NodeBounds.y;
@@ -466,8 +466,8 @@ void QNodeView::Input()
 
 					auto NodePos = CurNode->Position();
 					SDL_Rect NodeBounds = CurNode->Graphics().GetBounds();
-					NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
-					NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
+					NodeBounds.x = (GetCamera().ViewBox.w / 2) - GetCamera().ViewBox.x + NodePos.x;
+					NodeBounds.y = (GetCamera().ViewBox.h / 2) - GetCamera().ViewBox.y + NodePos.y;
 
 					SDL_Rect NodePlusNubBounds = NodeBounds;
 					// TODO: either make a universal nub texture, or replace .x with NubInput texture size
@@ -564,8 +564,8 @@ void QNodeView::Input()
 			{
 				SDL_Point Delta = { reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2) };
 				//printf_s("%d %d\n", Delta.x, Delta.y);
-				_Camera.ViewBox.x -= Delta.x;
-				_Camera.ViewBox.y -= Delta.y;
+				GetCamera().ViewBox.x -= Delta.x;
+				GetCamera().ViewBox.y -= Delta.y;
 			}
 		}
 		#pragma endregion
@@ -580,8 +580,8 @@ void QNodeView::Input()
 			{
 				auto NodePos = CurNode->Position();
 				auto NodeBounds = CurNode->Graphics().GetBounds();
-				NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
-				NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
+				NodeBounds.x = (GetCamera().ViewBox.w / 2) - GetCamera().ViewBox.x + NodePos.x;
+				NodeBounds.y = (GetCamera().ViewBox.h / 2) - GetCamera().ViewBox.y + NodePos.y;
 
 				// A Node is found
 				if (SDL_PointInRect(&DoubleClickPos, &NodeBounds))
@@ -634,10 +634,10 @@ void QNodeView::Input()
 				int NewWidth = WinEvent.data1;
 				int NewHeight = WinEvent.data2;
 
-				_Camera.ViewBox.w = NewWidth;
-				_Camera.ViewBox.h = NewHeight;
+				GetCamera().ViewBox.w = NewWidth;
+				GetCamera().ViewBox.h = NewHeight;
 
-				printf_s("Camera adjusted to %dx%d.\n", _Camera.ViewBox.w, _Camera.ViewBox.h);
+				printf_s("Camera adjusted to %dx%d.\n", GetCamera().ViewBox.w, GetCamera().ViewBox.h);
 			}
 		}
 		else if (Event.type == SDL_EventType::SDL_RENDER_TARGETS_RESET)
@@ -690,22 +690,22 @@ void QNodeView::RenderBackground()
 
 	SDL_Renderer *Renderer = SDLRenderer();
 
-	SDL_Point TopLeft = { _Camera.ViewBox.x - (_Camera.ViewBox.w / 2), _Camera.ViewBox.y - (_Camera.ViewBox.h / 2) };
+	SDL_Point TopLeft = { GetCamera().ViewBox.x - (GetCamera().ViewBox.w / 2), GetCamera().ViewBox.y - (GetCamera().ViewBox.h / 2) };
 	int XStartOffset = TopLeft.x % GridSize;
 	int YStartOffset = TopLeft.y % GridSize;
 
 	SDL_SetRenderDrawColor(Renderer, _GridLineColor.r, _GridLineColor.g, _GridLineColor.b, _GridLineColor.a);
 	// TODO: Draw lines in batches with SDL_RenderDrawLines().
-	for (int i = 0; i <= _Camera.ViewBox.w / GridSize; i++)
+	for (int i = 0; i <= GetCamera().ViewBox.w / GridSize; i++)
 	{
 		int XPosition = (i * GridSize) - XStartOffset;
-		SDL_RenderDrawLine(Renderer, XPosition, 0, XPosition, _Camera.ViewBox.h);
+		SDL_RenderDrawLine(Renderer, XPosition, 0, XPosition, GetCamera().ViewBox.h);
 	}
 
-	for (int i = 0; i <= _Camera.ViewBox.h / GridSize; i++)
+	for (int i = 0; i <= GetCamera().ViewBox.h / GridSize; i++)
 	{
 		int YPosition = (i * GridSize) - YStartOffset;
-		SDL_RenderDrawLine(Renderer, 0, YPosition, _Camera.ViewBox.w, YPosition);
+		SDL_RenderDrawLine(Renderer, 0, YPosition, GetCamera().ViewBox.w, YPosition);
 	}
 }
 
@@ -713,7 +713,7 @@ void QNodeView::RenderBackground()
 
 void QNodeView::RenderForeground()
 {
-	SDL_Point TopLeft = { _Camera.ViewBox.x - (_Camera.ViewBox.w / 2), _Camera.ViewBox.y - (_Camera.ViewBox.h / 2) };
+	SDL_Point TopLeft = { GetCamera().ViewBox.x - (GetCamera().ViewBox.w / 2), GetCamera().ViewBox.y - (GetCamera().ViewBox.h / 2) };
 
 	SDL_Renderer *Renderer = SDLRenderer();
 
@@ -726,8 +726,8 @@ void QNodeView::RenderForeground()
 			SDL_Rect OutNodeBounds = Opt->Parent().Graphics().GetBounds();
 			SDL_Point OutNodePos = Opt->Parent().Position();
 
-			OutNodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + OutNodePos.x;
-			OutNodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + OutNodePos.y;
+			OutNodeBounds.x = (GetCamera().ViewBox.w / 2) - GetCamera().ViewBox.x + OutNodePos.x;
+			OutNodeBounds.y = (GetCamera().ViewBox.h / 2) - GetCamera().ViewBox.y + OutNodePos.y;
 
 			OutputNubPoint.x += OutNodeBounds.x;
 			OutputNubPoint.y += OutNodeBounds.y;
@@ -742,8 +742,8 @@ void QNodeView::RenderForeground()
 					SDL_Rect InputNodeBounds = EndFrag.Parent().Graphics().GetBounds();
 					SDL_Point InputNodePos = EndFrag.Parent().Position();
 
-					InputNodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + InputNodePos.x;
-					InputNodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + InputNodePos.y;
+					InputNodeBounds.x = (GetCamera().ViewBox.w / 2) - GetCamera().ViewBox.x + InputNodePos.x;
+					InputNodeBounds.y = (GetCamera().ViewBox.h / 2) - GetCamera().ViewBox.y + InputNodePos.y;
 
 					InputNubPoint.x += InputNodeBounds.x;
 					InputNubPoint.y += InputNodeBounds.y;
@@ -765,8 +765,8 @@ void QNodeView::RenderForeground()
 			SDL_Rect NodeBounds = CurOpt.Parent().Graphics().GetBounds();
 			SDL_Point NodePos = CurOpt.Parent().Position();
 
-			NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
-			NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
+			NodeBounds.x = (GetCamera().ViewBox.w / 2) - GetCamera().ViewBox.x + NodePos.x;
+			NodeBounds.y = (GetCamera().ViewBox.h / 2) - GetCamera().ViewBox.y + NodePos.y;
 
 			NubPoint.x += NodeBounds.x;
 			NubPoint.y += NodeBounds.y;
@@ -780,8 +780,8 @@ void QNodeView::RenderForeground()
 			SDL_Rect NodeBounds = CurDiag.Parent().Graphics().GetBounds();
 			SDL_Point NodePos = CurDiag.Parent().Position();
 
-			NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
-			NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
+			NodeBounds.x = (GetCamera().ViewBox.w / 2) - GetCamera().ViewBox.x + NodePos.x;
+			NodeBounds.y = (GetCamera().ViewBox.h / 2) - GetCamera().ViewBox.y + NodePos.y;
 
 			NubPoint.x += NodeBounds.x;
 			NubPoint.y += NodeBounds.y;
@@ -796,16 +796,16 @@ void QNodeView::RenderForeground()
 	{
 		SDL_Point NodePos = Node->Position();
 		SDL_Point BlockRenderPos = { 0, 0 };
-		BlockRenderPos.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
-		BlockRenderPos.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
+		BlockRenderPos.x = (GetCamera().ViewBox.w / 2) - GetCamera().ViewBox.x + NodePos.x;
+		BlockRenderPos.y = (GetCamera().ViewBox.h / 2) - GetCamera().ViewBox.y + NodePos.y;
 
 		// TODO: Only check the visibile
 		if (std::find(_InputState.SelectedNodes.begin(), _InputState.SelectedNodes.end(), Node) != _InputState.SelectedNodes.end())
 		{
 			SDL_Point NodePos = Node->Position();
 			SDL_Rect HighlightRect = Node->Graphics().GetBounds();
-			HighlightRect.x = ((_Camera.ViewBox.w / 2) - _Camera.ViewBox.x) - 2 + NodePos.x;
-			HighlightRect.y = ((_Camera.ViewBox.h / 2) - _Camera.ViewBox.y) - 2 + NodePos.y;
+			HighlightRect.x = ((GetCamera().ViewBox.w / 2) - GetCamera().ViewBox.x) - 2 + NodePos.x;
+			HighlightRect.y = ((GetCamera().ViewBox.h / 2) - GetCamera().ViewBox.y) - 2 + NodePos.y;
 			HighlightRect.w += 4;
 			HighlightRect.h += 4;
 
@@ -849,8 +849,8 @@ void QNodeView::RenderForeground()
 			SDL_Rect NodeBounds = CurOpt.Parent().Graphics().GetBounds();
 			SDL_Point NodePos = CurOpt.Parent().Position();
 
-			NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
-			NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
+			NodeBounds.x = (GetCamera().ViewBox.w / 2) - GetCamera().ViewBox.x + NodePos.x;
+			NodeBounds.y = (GetCamera().ViewBox.h / 2) - GetCamera().ViewBox.y + NodePos.y;
 
 			NubPoint.x += NodeBounds.x;
 			NubPoint.y += NodeBounds.y;
@@ -865,8 +865,8 @@ void QNodeView::RenderForeground()
 			SDL_Rect NodeBounds = CurDiag.Parent().Graphics().GetBounds();
 			SDL_Point NodePos = CurDiag.Parent().Position();
 
-			NodeBounds.x = (_Camera.ViewBox.w / 2) - _Camera.ViewBox.x + NodePos.x;
-			NodeBounds.y = (_Camera.ViewBox.h / 2) - _Camera.ViewBox.y + NodePos.y;
+			NodeBounds.x = (GetCamera().ViewBox.w / 2) - GetCamera().ViewBox.x + NodePos.x;
+			NodeBounds.y = (GetCamera().ViewBox.h / 2) - GetCamera().ViewBox.y + NodePos.y;
 
 			NubPoint.x += NodeBounds.x;
 			NubPoint.y += NodeBounds.y;
@@ -970,6 +970,12 @@ void QNodeView::SetDialogueFile(DialogueFile *File)
 	{
 		_Nodes = _DialogueFile->GetNodes();
 	}
+}
+
+QNodeViewCamera &QNodeView::GetCamera()
+{
+	return this->_DialogueFile->GetCamera();
+	//return GetCamera();
 }
 
 void QNodeView::SetEngine(ScriptEngine *Engine)

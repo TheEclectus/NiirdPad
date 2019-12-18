@@ -217,7 +217,7 @@ void QScriptEditWindow::dialogueFragment(NodeDialogue *Dialogue)
 	//TODO: save this to the NodeDialogue state
 	//int blorp = ui.splitter->saveState();
 
-	auto WindowState = Dialogue->WindowState();
+	auto WindowState = Dialogue->GetWindowState();
 	if (WindowState.size() > 0)
 		ui.splitter->restoreState(WindowState);
 	else
@@ -270,7 +270,7 @@ void QScriptEditWindow::optionFragment(NodeOption *Option)
 	ui.splitter->handle(1)->setEnabled(true);
 	ui.splitter->handle(1)->setVisible(true);
 
-	auto WindowState = Option->WindowState();
+	auto WindowState = Option->GetWindowState();
 	if (WindowState.size() > 0)
 		ui.splitter->restoreState(WindowState);
 	else
@@ -471,7 +471,7 @@ void QScriptEditWindow::FormAccepted()
 		}
 		strtk::remove_empty_strings(FunctionLines);
 
-		_dialogue->WindowState() = ui.splitter->saveState();
+		_dialogue->GetWindowState() = ui.splitter->saveState();
 
 		std::string DialogueText = this->ui.txtText->toPlainText().toStdString();
 		// TODO: remove trailing newlines?
@@ -497,7 +497,7 @@ void QScriptEditWindow::FormAccepted()
 		}
 		strtk::remove_empty_strings(VisLines);
 
-		_option->WindowState() = ui.splitter->saveState();
+		_option->GetWindowState() = ui.splitter->saveState();
 
 		std::string OptionText = this->ui.txtText->toPlainText().toStdString();
 

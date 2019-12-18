@@ -28,6 +28,11 @@ const std::string &DialogueFile::GetFilename() const
 	return _filename;
 }
 
+QNodeViewCamera &DialogueFile::GetCamera()
+{
+	return _Camera;
+}
+
 //const std::map<std::string, NodeDialogue*> &DialogueFile::GetIndices() const
 //{
 //	return _indices;
@@ -46,6 +51,12 @@ void DialogueFile::Save(rapidjson::Document &Doc, rapidjson::Value &Value) const
 
 	rapidjson::Value Filename(_filename.c_str(), _filename.length());
 	Value.AddMember("filename", Filename, Doc.GetAllocator());
+
+	rapidjson::Value CameraPos(rapidjson::kObjectType);
+	auto &ViewCamera = _parentCharacter.GetNodeView().GetCamera();
+	CameraPos.AddMember("x", ViewCamera.ViewBox.x, Doc.GetAllocator());
+	CameraPos.AddMember("y", ViewCamera.ViewBox.y, Doc.GetAllocator());
+	Value.AddMember("cameraPos", CameraPos, Doc.GetAllocator());
 
 	rapidjson::Value Nodes(rapidjson::kArrayType);
 	for (auto &CurNodeIter : _nodes)

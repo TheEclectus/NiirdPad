@@ -11,7 +11,7 @@
 				}
 			},
 			"required": [
-				"branchOptions",
+				"branchOption",
 				"destIndex"
 			]
 		},
@@ -126,6 +126,9 @@
 				"filename": {
 					"type": "string"
 				},
+				"cameraPos": {
+					"$ref": "#/definitions/position"
+				},
 				"nodes": {
 					"type": "array",
 					"items": {
@@ -136,6 +139,7 @@
 			"required": [
 				"comment",
 				"filename",
+				"cameraPos",
 				"nodes"
 			]
 		},

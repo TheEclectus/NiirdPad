@@ -173,7 +173,9 @@ public:
 	const std::string &GetReference() const;
 	const std::string &GetDialogue() const;
 	const std::vector<std::string> &GetFunctionLines() const;
-	QByteArray &WindowState();
+
+	void SetWindowState(const QByteArray &WindowState);
+	QByteArray &GetWindowState();
 
 	void Save(rapidjson::Document &Doc, rapidjson::Value &Value) const;
 
@@ -210,7 +212,9 @@ public:
 	const std::string &GetOption() const;
 	const std::vector<std::string> &GetFunctionLines() const;
 	const std::vector<std::string> &GetVisibilityScriptLines() const;
-	QByteArray &WindowState();
+
+	void SetWindowState(const QByteArray &WindowState);
+	QByteArray &GetWindowState();
 
 	void Save(rapidjson::Document &Doc, rapidjson::Value &Value);
 
@@ -251,6 +255,8 @@ public:
 	NodeDialogue *AddDialogue(const std::string &Reference);
 	void RemoveDialogue(NodeDialogue *Dlg);
 	const std::vector<NodeDialogue*> &Dialogues() const;
+
+	bool HasIndex(const std::string &Index) const;
 
 	NodeOption *AddOption();
 	void RemoveOption(NodeOption *Opt);
