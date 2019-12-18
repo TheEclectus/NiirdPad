@@ -87,6 +87,7 @@ public:
         actionSave_As->setObjectName(QString::fromUtf8("actionSave_As"));
         actionImportProject = new QAction(NiirdPadClass);
         actionImportProject->setObjectName(QString::fromUtf8("actionImportProject"));
+        actionImportProject->setEnabled(false);
         actionExport_Project = new QAction(NiirdPadClass);
         actionExport_Project->setObjectName(QString::fromUtf8("actionExport_Project"));
         actionEditReferenceWindowNew = new QAction(NiirdPadClass);
