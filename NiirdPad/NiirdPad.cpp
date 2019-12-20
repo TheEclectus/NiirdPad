@@ -223,11 +223,17 @@ void NiirdPad::ImportConfirmationMessageBox(std::vector<std::string> Warnings, R
 		Msg.setStandardButtons({ QMessageBox::StandardButton::Ok, QMessageBox::StandardButton::Cancel });
 		if (Msg.exec() == QMessageBox::Cancel)
 			return;
-
-		// TODO: Do the RawProjectFile -> ProjectFile conversion here
 	}
 
-	// Do the actual importing here.
+	// TODO: Do the RawProjectFile -> ProjectFile conversion here
+	std::string ErrorMsg = "";
+	if (!_loadedProject->Load(Files, &ErrorMsg))
+	{
+		QMessageBox::critical(this, "Failed To Load Project", std::string("Error: '" + ErrorMsg + "'").c_str(), QMessageBox::Ok);
+		return;
+	}
+	SetWindowTitle();
+	ResetCharacterCombo();
 }
 
 NiirdPad::NiirdPad(QWidget *parent) :
@@ -245,6 +251,20 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	ui.widget->ConnectToReferenceEditWindow();
 
 	connect(ui.actionImportProject, &QAction::triggered, [this]() {
+		if (_loadedProject->UnsavedChanges())
+		{
+			QMessageBox::StandardButton Res = QMessageBox::warning(this, "Project Has Unsaved Changes", "Do you want to save changes to the current project?", QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+			if (Res == QMessageBox::StandardButton::Save)
+			{
+				if (!_loadedProject->Save())
+					return;
+			}
+			else if (Res == QMessageBox::StandardButton::Cancel)
+			{
+				return;
+			}
+		}
+		
 		this->Import();
 
 		/*QFileDialog Dialog;

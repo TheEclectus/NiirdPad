@@ -199,7 +199,7 @@
   </action>
   <action name="actionImportProject">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>Import Project...</string>

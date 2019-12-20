@@ -3,3 +3,4 @@
 - Remove trailing whitespace from dialogue and option text(?)
 - Fix graphicsboxes outgrowing their parents
 - Make newlines obvious in editors
+- Space on newline?

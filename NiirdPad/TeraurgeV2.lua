@@ -530,7 +530,7 @@ D.sex_branch = D.sex_gate
 D.gender_gate = D.sex_gate
 
 -- rape_filter ([on], [off]) [IM]
-function D.sex_gate(args)
+function D.rape_filter(args)
 	if #args ~= 0 then return MakeFail("Expected 0 arguments, received " .. tostring(#args) .. ".") end
 
 	return true, {"Rape filter on", "Rape filter off"}, nil

@@ -321,10 +321,11 @@ bool Project::Load(const std::string &Path, std::string *ErrorMessage)
 bool Project::Load(const RawProjectFile &ImportedProject, std::string *ErrorMessage)
 {
 	// TODO: Finish implementing.
-	return false;	// Just so if it is called, nothing will happen.
+	//return false;	// Just so if it is called, nothing will happen.
+
+	Unload();
 
 	// TODO: Replace CurrentOffset with a proper layout algorithm.
-	int CurrentOffset = 0;
 	for (auto &CurrentCharacter : ImportedProject.Characters())
 	{
 		const std::string &CharacterName = CurrentCharacter.first;
@@ -333,6 +334,12 @@ bool Project::Load(const RawProjectFile &ImportedProject, std::string *ErrorMess
 		Character *NewChar = NewCharacter(CharacterName);
 		for (auto &CurrentFile : CharacterData.Files())
 		{
+			std::vector<std::tuple<NodeOption*, std::string, std::string>> PendingConnections;
+			// <0> - Source pointer
+			// <1> - Connection key name
+			// <2> - Destination index
+
+			int CurrentOffset = 0;
 			const std::string &FileName = CurrentFile.first;
 			auto &FileData = CurrentFile.second;
 
@@ -342,7 +349,7 @@ bool Project::Load(const RawProjectFile &ImportedProject, std::string *ErrorMess
 				Node *NewNode = NewFile->NewNode();
 				// HACK: Right here, see TODO above.
 				NewNode->SetPosition({ CurrentOffset, 0 });
-				CurrentOffset += 150;
+				CurrentOffset += 350;
 
 				const std::string &Comment = CurrentNode.Comment();
 				NewNode->SetComment(Comment);
@@ -357,6 +364,13 @@ bool Project::Load(const RawProjectFile &ImportedProject, std::string *ErrorMess
 				{
 					auto NewOpt = NewNode->AddOption();
 					NewOpt->SetAll(CurrentOption.VisibilityScripts(), CurrentOption.Functions(), CurrentOption.Text());
+
+					//CurrentFile.second.Nodes()[0].Dialogues()[0].
+					std::string KeyName = CurConn["branchOption"].GetString();
+					std::string DestIndex = CurConn["destIndex"].GetString();
+
+					auto NewTuple = std::make_tuple(NewOpt, KeyName, DestIndex);
+					PendingConnections.push_back(NewTuple);
 				}
 			}
 		}

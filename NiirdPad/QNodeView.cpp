@@ -747,7 +747,7 @@ void QNodeView::RenderForeground()
 					NodeDialogue &EndFrag = Conn->Connection()->Parent().Parent();
 
 					SDL_Point InputNubPoint = EndFrag.Graphics()->NubPoint();
-					fmt::print("{},{}", InputNubPoint.x, InputNubPoint.y);
+					//fmt::print("{},{}", InputNubPoint.x, InputNubPoint.y);
 					SDL_Rect InputNodeBounds = EndFrag.Parent().Graphics().GetBounds();
 					SDL_Point InputNodePos = EndFrag.Parent().Position();
 
