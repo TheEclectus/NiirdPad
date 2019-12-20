@@ -37,12 +37,19 @@ Project::Project(QNodeView &NodeView) :
 	if (SchemaFile.open(QIODevice::OpenModeFlag::ReadOnly))
 	{
 		std::string SchemaStr = SchemaFile.readAll().toStdString();
+		if (SchemaStr.length() == 0)
+			fmt::print("Unable to load schema file '{}'.", SchemaFile.fileName().toStdString());
+
 		rapidjson::StringStream InStringStream(SchemaStr.c_str());
 
 		rapidjson::Document SchemaDoc;
 		SchemaDoc.ParseStream(InStringStream);
 
 		_ProjectSchema = new rapidjson::SchemaDocument(SchemaDoc);
+	}
+	else
+	{
+		fmt::print("Unable to open file '{}'.", SchemaFile.fileName().toStdString());
 	}
 }
 
@@ -259,6 +266,10 @@ bool Project::Load(const std::string &Path, std::string *ErrorMessage)
 				NodeOption *SrcOpt = std::get<0>(CurConn);
 				std::string KeyName = std::get<1>(CurConn);
 				std::string DestIndex = std::get<2>(CurConn);
+
+				// Skip keys that aren't connected to anything.
+				if (DestIndex == "")
+					continue;
 
 				auto &OptConns = SrcOpt->Nub().Connections();
 				auto OutConnRes = std::find_if(OptConns.begin(), OptConns.end(), [KeyName](ConnectionOutput *Conn) {

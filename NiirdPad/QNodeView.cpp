@@ -637,17 +637,17 @@ void QNodeView::Input()
 				GetCamera().ViewBox.w = NewWidth;
 				GetCamera().ViewBox.h = NewHeight;
 
-				printf_s("Camera adjusted to %dx%d.\n", GetCamera().ViewBox.w, GetCamera().ViewBox.h);
+				//printf_s("Camera adjusted to %dx%d.\n", GetCamera().ViewBox.w, GetCamera().ViewBox.h);
 			}
 		}
 		else if (Event.type == SDL_EventType::SDL_RENDER_TARGETS_RESET)
 		{
-			printf_s("SuS\n");
+			//printf_s("SuS\n");
 			_FontStore.ResetFonts((SDL_EventType)Event.type);
 		}
 		else if (Event.type == SDL_EventType::SDL_RENDER_DEVICE_RESET)
 		{
-			printf_s("sUs\n");
+			//printf_s("sUs\n");
 			_FontStore.ResetFonts((SDL_EventType)Event.type);
 		}
 		#pragma endregion
@@ -739,6 +739,7 @@ void QNodeView::RenderForeground()
 					NodeDialogue &EndFrag = Conn->Connection()->Parent().Parent();
 
 					SDL_Point InputNubPoint = EndFrag.Graphics()->NubPoint();
+					fmt::print("{},{}", InputNubPoint.x, InputNubPoint.y);
 					SDL_Rect InputNodeBounds = EndFrag.Parent().Graphics().GetBounds();
 					SDL_Point InputNodePos = EndFrag.Parent().Position();
 
@@ -883,6 +884,8 @@ void QNodeView::RenderForeground()
 void QNodeView::DrawBezierCurve(const SDL_Point &StartPt, const SDL_Point &EndPt)
 {
 	#define GetPt(n1, n2, perc) ((int)(n1 + ((n2 - n1) * perc)))
+
+	//fmt::print("Bezier");
 
 	SDL_Point Ctrl1, Ctrl2;
 	if (StartPt.x <= EndPt.x)

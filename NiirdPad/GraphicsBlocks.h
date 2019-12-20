@@ -186,7 +186,7 @@ public:
 	void SetScript(const std::string &Text);
 	void SetDialogue(const std::string &Text);
 
-	const SDL_Point &NubPoint() const;
+	const SDL_Point NubPoint() const;
 };
 
 class GraphicsBlock_NodeInputBoxSection : public AGraphicsBlock
@@ -260,7 +260,7 @@ public:
 	void SetOption(const std::string &Text);
 	void SetScript(const std::string &Text);
 	
-	const SDL_Point &NubPoint() const;
+	const SDL_Point NubPoint() const;
 };
 
 class GraphicsBlock_NodeOutputBoxSection : public AGraphicsBlock

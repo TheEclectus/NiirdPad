@@ -311,7 +311,7 @@ void GraphicsBlock_NodeInputBox::SetDialogue(const std::string &Text)
 	_DialogueLabel->SetText(Text);
 }
 
-const SDL_Point &GraphicsBlock_NodeInputBox::NubPoint() const
+const SDL_Point GraphicsBlock_NodeInputBox::NubPoint() const
 {
 	auto TotalOffset = GetTotalOffset();
 	return { GetBounds().x - PADDING_LEFT - 1, TotalOffset.y + GetBounds().h / 2 };
@@ -533,7 +533,7 @@ void GraphicsBlock_NodeOutputBox::SetOption(const std::string &Text)
 	_OptionLabel->SetText(Text);
 }
 
-const SDL_Point &GraphicsBlock_NodeOutputBox::NubPoint() const
+const SDL_Point GraphicsBlock_NodeOutputBox::NubPoint() const
 {
 	auto TotalOffset = GetTotalOffset();
 	return { GetBounds().x + GetBounds().w + GraphicsBlock_NodeOutputBoxSection::PADDING_RIGHT, TotalOffset.y + GetBounds().h / 2 };

@@ -175,10 +175,20 @@ void ANub::LoadTextures(SDL_Renderer *Renderer)
 
 			//SDL_Surface *Temp = SDL_CreateRGBSurfaceFrom(Bytes.data(), 9, 15, 24, 9 * 3, 0x0000FF, 0x00FF00, 0xFF0000, 0x000000);
 			SDL_Surface *Temp = SDL_LoadBMP_RW(SDL_RWFromConstMem(Bytes.data(), Bytes.size()), 1);
+			if(Temp == nullptr)
+				fmt::format("SDL error loading surface from memory: {}", SDL_GetError());
+
 			SDL_SetColorKey(Temp, 1, 0x00FF00);
 			_NubTextureSize = { 0, 0, Temp->w, Temp->h };
 			_NubTextureDefault = SDL_CreateTextureFromSurface(Renderer, Temp);
 			SDL_FreeSurface(Temp);
+
+			if(_NubTextureDefault == nullptr)
+				fmt::format("SDL error creating texture: {}", SDL_GetError());
+		}
+		else
+		{
+			fmt::print("Unable to open file '{}'.", NubDefault.fileName().toStdString());
 		}
 	}
 
@@ -191,10 +201,20 @@ void ANub::LoadTextures(SDL_Renderer *Renderer)
 
 			//SDL_Surface *Temp = SDL_CreateRGBSurfaceFrom(Bytes.data(), 9, 15, 24, 9 * 3, 0x0000FF, 0x00FF00, 0xFF0000, 0x000000);
 			SDL_Surface *Temp = SDL_LoadBMP_RW(SDL_RWFromConstMem(Bytes.data(), Bytes.size()), 1);
+			if (Temp == nullptr)
+				fmt::format("SDL error loading surface from memory: {}", SDL_GetError());
+
 			SDL_SetColorKey(Temp, 1, 0x00FF00);
 			//_NubTextureSize = { 0, 0, Temp->w, Temp->h };
 			_NubTextureHighlighted = SDL_CreateTextureFromSurface(Renderer, Temp);
 			SDL_FreeSurface(Temp);
+
+			if (_NubTextureHighlighted == nullptr)
+				fmt::format("SDL error creating texture: {}", SDL_GetError());
+		}
+		else
+		{
+			fmt::print("Unable to open file '{}'.", NubHighlighted.fileName().toStdString());
 		}
 	}
 }

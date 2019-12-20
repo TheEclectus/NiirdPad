@@ -356,7 +356,7 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	});
 
 	// TODO: Hide debug menu and console when not launched with --debug flag
-	//ui.menuDebug->menuAction()->setVisible(false);
+	ui.menuDebug->menuAction()->setVisible(false);
 
 	//ui.widget->setFocus();
 	//this->setMouseTracking(true);
