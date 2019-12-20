@@ -1,0 +1,5 @@
+- Import single characters instead of an entire project
+- Finish up Lua file definitions (showif.<stat>.x)
+- Remove trailing whitespace from dialogue and option text(?)
+- Fix graphicsboxes outgrowing their parents
+- Make newlines obvious in editors

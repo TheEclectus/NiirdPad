@@ -150,8 +150,9 @@ void QNodeView::Input()
 						if (OutputConns.size() == 1 && OutputConns[0]->KeyName() == "__default__")
 						{
 							auto DefaultConn = OutputConns[0];
-							auto ActDisconnect = Context.addAction("Disconnect", [DefaultConn]() {
+							auto ActDisconnect = Context.addAction("Disconnect", [this, DefaultConn]() {
 								DefaultConn->Disconnect();
+								this->GetNiirdPad()->DirtyProjectChanges();
 							});
 
 							QNodeViewCamera *Camera = &GetCamera();
@@ -183,8 +184,9 @@ void QNodeView::Input()
 								std::string KeyName = CurConn->KeyName();
 								auto NewMenu = Context.addMenu(KeyName.c_str());
 
-								auto ActDisconnect = NewMenu->addAction("Disconnect", [CurConn]() {
+								auto ActDisconnect = NewMenu->addAction("Disconnect", [this, CurConn]() {
 									CurConn->Disconnect();
+									this->GetNiirdPad()->DirtyProjectChanges();
 								});
 
 								QNodeViewCamera *Camera = &GetCamera();
@@ -279,6 +281,7 @@ void QNodeView::Input()
 								std::string KeyName = (CurConn->Connection() != nullptr ? "*" : "") + CurConn->KeyName();
 								auto NewAction = Context.addAction(KeyName.c_str(), [this, CurConn, InputSide]() {
 									CurConn->Connect(&InputSide->Connection());
+									this->GetNiirdPad()->DirtyProjectChanges();
 								});
 								
 								if (CurConn->Connection() != nullptr)
@@ -353,6 +356,7 @@ void QNodeView::Input()
 									});
 									Context.addAction("Delete Dialogue", [this, CurNode, Dlg]() {
 										CurNode->RemoveDialogue(Dlg);
+										this->GetNiirdPad()->DirtyProjectChanges();
 									});
 									Context.addSeparator();
 									Context.addAction("Edit Index", [this, Dlg] {
@@ -369,6 +373,7 @@ void QNodeView::Input()
 									auto NewFrag = CurNode->AddOption();
 									this->_Parent->ScriptEditWindow()->optionFragment(NewFrag);
 									CurNode->Graphics().Dirty();
+									this->GetNiirdPad()->DirtyProjectChanges();
 								});
 								if (Opt)
 								{
@@ -377,6 +382,7 @@ void QNodeView::Input()
 									});
 									Context.addAction("Delete Option", [this, CurNode, Opt]() {
 										CurNode->RemoveOption(Opt);
+										this->GetNiirdPad()->DirtyProjectChanges();
 									});
 								}
 								Context.addSeparator();
@@ -389,7 +395,7 @@ void QNodeView::Input()
 						}
 
 						break;
-					}
+					}	
 				}
 			}
 			// No Node is found
@@ -401,8 +407,10 @@ void QNodeView::Input()
 				SDL_Point CreatePos = { ReleasePos.x + GetCamera().ViewBox.x - (GetCamera().ViewBox.w/2), ReleasePos.y + GetCamera().ViewBox.y - (GetCamera().ViewBox.h / 2) };
 
 				Context.addAction("Create Node", [this, CreatePos, NodesList]() {
-					// Use _DialogueFile->NewNode(), and add its return value to the front of _Nodes!
-					NodesList->insert(NodesList->begin(), this->_DialogueFile->NewNode(CreatePos));
+					Node *NewNode = this->_DialogueFile->NewNode(CreatePos);
+					NodesList->insert(NodesList->begin(), NewNode);
+
+					this->GetNiirdPad()->DirtyProjectChanges();
 				});
 				Context.exec(mapToGlobal(QPoint(ReleasePos.x, ReleasePos.y)));
 				return;

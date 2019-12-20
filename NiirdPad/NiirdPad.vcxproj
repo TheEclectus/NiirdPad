@@ -206,6 +206,7 @@
     <None Include="TeraurgeV2.lua" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Feature Ideas.txt" />
     <Text Include="User Docs.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

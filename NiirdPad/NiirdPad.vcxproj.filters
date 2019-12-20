@@ -205,5 +205,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="User Docs.txt" />
+    <Text Include="Feature Ideas.txt" />
   </ItemGroup>
 </Project>
