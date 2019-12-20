@@ -15,7 +15,7 @@
 #define NIIRDPAD_VERSION	"0.9.3"
 
 #ifndef NIIRDPAD_BUILD_ID
-	#define NIIRDPAD_BUILD_ID	"0d3a1c58" //"BUILD ID UNDEFINED"
+	#define NIIRDPAD_BUILD_ID	"3b5fd560" //"BUILD ID UNDEFINED"
 #endif
 
 class NiirdPad : public QMainWindow

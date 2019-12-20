@@ -564,6 +564,14 @@ void NodeOption::SetFunctions(const std::vector<std::string> &FunctionLines)
 
 void NodeOption::SetOption(const std::string &Dialogue)
 {
+	std::string FormattedDialogue = Dialogue;
+	size_t Pos = FormattedDialogue.find('\n');
+	while (Pos != std::string::npos)
+	{
+		FormattedDialogue.replace(Pos, 1, "<br>");
+		Pos = FormattedDialogue.find('\n');
+	}
+
 	_option = Dialogue;
 	_graphics->SetOption(Dialogue);
 }
