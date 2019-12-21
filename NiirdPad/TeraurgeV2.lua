@@ -84,6 +84,79 @@ local Funcs = {}
 -- META DATA =============================================================================================
 Funcs.Version = "2.13"
 
+-- Returns a list of keys and its destination index and nil, or nil and an error string
+-- Returns an empty list if it's not an IM function
+-- For importing!
+function Funcs.ExtractKeyPairs(funcName, args)
+	-- Index 1 - arg positions (for stripping out)
+	-- Index 2 - parsing function (or nil for raw strings) that returns destination indices. Return nil for failure
+	local ArgPos = {
+		-- Every IM function that takes textual reference arguments should be here
+		check_flag =		{{2, 3},		nil },
+		check_counter =		{{2, 3, 4},		nil },
+		check_discovery =	{{2, 3},		nil },
+		check_stat =		{{3},			function(arg)
+												return SplitString(arg, "-")
+											end},
+		sex_gate =			{{1, 2},		nil},
+		sex_branch =		{{1, 2},		nil},
+		gender_gate =		{{1, 2},		nil},
+		rape_filter =		{{1, 2},		nil},
+		feral_filter =		{{1, 2},		nil},
+		gore_filter =		{{1, 2},		nil},
+		chance =			{{2, 3},		nil},
+		random_ptr =		{{1},			function(arg)
+												local Keys = SplitString(arg, "-")
+												if #Keys > 10 then return nil end
+												return Keys
+											end},
+		day_night_gate =	{{1, 2},		nil},
+		morn_day_eve_night_gate =	{{1, 2, 3, 4},			nil},
+		start_combat =		{{1, 2},		nil},
+	}
+
+	if(Funcs.Dialogue[funcName] == nil) then
+		-- It's not a function at all.
+		return nil, "Function " .. funcName .. " not defined."
+	elseif(ArgPos[funcName] == nil) then
+		-- It's not an IM function, return gracefully.
+		return {}, nil
+	end
+
+	local Indices = {}
+	local ArgsPosIndex = ArgPos[funcName]
+
+	for i = 1,#ArgsPosIndex[1] do
+		local ArgIndex = ArgsPosIndex[1][i]
+		Indices[#Indices + 1] = args[ArgIndex]
+		args[ArgIndex] = nil
+	end
+
+	if(ArgsPosIndex[2] ~= nil) then -- Special function
+		local NewIndices = {}
+		for i = 1, #Indices do
+			local CurIndex = Indices[i]
+			local Results = ArgsPosIndex[2](CurIndex)
+			for i2 = 1, #Results do
+				NewIndices[#NewIndices + 1] = Results[i2]
+			end
+		end
+
+		Indices = NewIndices
+	end
+
+	print(funcName)
+	local Res, Keys, Err = Funcs.Dialogue[funcName](args)
+	if(not Res) then return nil, Err end
+
+	local ReturnPairs = {}
+	for i = 1, #Keys do
+		ReturnPairs[#ReturnPairs + 1] = {Keys[i], Indices[i] or ""}
+	end
+
+	return ReturnPairs
+end
+
 -- VISIBILITY CONDITIONS =================================================================================
 
 Funcs.Visibility = {}
@@ -524,7 +597,7 @@ end
 function D.sex_gate(args)
 	if #args ~= 0 then return MakeFail("Expected 0 arguments, received " .. tostring(#args) .. ".") end
 
-	return true, {tostring(place_name) .. " not discovered", tostring(place_name) .. " discovered"}, nil
+	return true, {"Sex filter on", "Sex filter off"}, nil
 end
 D.sex_branch = D.sex_gate
 D.gender_gate = D.sex_gate

@@ -19,6 +19,7 @@ private:
 	std::string _path;
 	sol::state _state;
 	std::string _TUScriptVersion;
+	sol::safe_function _extractKeysFromFunctionLine;
 	std::map<std::string, sol::safe_function> _validationFunctions;
 	std::map<std::string, sol::safe_function> _visibilityConditions;
 

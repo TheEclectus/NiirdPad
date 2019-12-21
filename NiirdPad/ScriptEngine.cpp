@@ -91,6 +91,19 @@ bool ScriptEngine::ReloadFromFile()
 		_TUScriptVersion = TUScriptVerStr;
 	}
 
+	sol::function ExtractKeysFromFunctionLine = ResultTable["ExtractKeyPairs"];
+	if (ExtractKeysFromFunctionLine == sol::nil)
+	{
+		QMessageBox MsgBox;
+		MsgBox.setWindowTitle("Error");
+		MsgBox.setText("Table returned by file does not contain 'ExtractKeyPairs' function.");
+		MsgBox.setIcon(QMessageBox::Icon::Warning);
+		MsgBox.exec();
+
+		return false;
+	}
+	_extractKeysFromFunctionLine = ExtractKeysFromFunctionLine;
+
 	sol::table DialogueTable = ResultTable["Dialogue"];
 	if (DialogueTable == sol::nil)
 	{
