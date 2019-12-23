@@ -248,8 +248,8 @@ void NiirdPad::ImportConfirmationMessageBox(std::vector<std::string> Warnings, R
 
 	QMessageBox PostMsg(this);
 	//QMessageBox *Msg = new QMessageBox(this);
-	PostMsg.setWindowTitle(fmt::format("Project Imported With {0} Warnings", Warnings.size()).c_str());
-	PostMsg.setText("Project successfully imported. See below for more details.");
+	PostMsg.setWindowTitle(fmt::format("Project Imported{}", ErrorMsg.length() > 0 ? " With Warnings" : "").c_str());
+	PostMsg.setText(fmt::format("Project successfully imported{}", ErrorMsg.length() > 0 ? ". See below for more details." : " with no warnings.").c_str());
 	PostMsg.setIcon(QMessageBox::Icon::Information);
 	PostMsg.setDetailedText(ErrorMsg.c_str());
 	PostMsg.setStandardButtons({ QMessageBox::StandardButton::Ok });

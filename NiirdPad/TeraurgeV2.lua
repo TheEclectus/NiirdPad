@@ -16,6 +16,7 @@
 -- TODO: Maybe just make a list of index-modifying functions? Maybe as another table?
 -- TODO: More-specific checks, like if an item or picture exists
 -- TODO: Implement below functions and add them into existing functions when ready.
+-- TODO: Implement add_timer
 
 -- Maybe disconnects should only happen when a function is changed?
 -- Otherwise maintain connections based on position
@@ -116,7 +117,7 @@ function Funcs.ExtractKeyPairs(funcName, args)
 		start_combat =		{{1, 2},		nil},
 	}
 
-	print("1")
+	--print("1")
 
 	if(Funcs.Dialogue[funcName] == nil) then
 		-- It's not a function at all.
@@ -126,7 +127,7 @@ function Funcs.ExtractKeyPairs(funcName, args)
 		return {}, nil, nil
 	end
 
-	print("2")
+	--print("2")
 
 	local Args = {}
 	for i = 1,#args do
@@ -142,7 +143,7 @@ function Funcs.ExtractKeyPairs(funcName, args)
 		Args[ArgIndex] = nil
 	end
 
-	print("3")
+	--print("3")
 
 	if(ArgsPosIndex[2] ~= nil) then -- Special function
 		local NewIndices = {}
@@ -157,9 +158,9 @@ function Funcs.ExtractKeyPairs(funcName, args)
 		Indices = NewIndices
 	end
 
-	print("4")
+	--print("4")
 
-	print(funcName)
+	--print(funcName)
 	local Res, Keys, Err = Funcs.Dialogue[funcName](Args)
 	if(not Res) then return nil, Err, nil end
 
@@ -441,7 +442,7 @@ function D.change_default_env_background(args)
 end
 
 -- add_default_env_layer (bkg img filename)
-function D.change_default_env_background(args)
+function D.add_default_env_layer(args)
 	if #args ~= 1 then return MakeFail("Expected 1 argument, received " .. tostring(#args) .. ".") end
 	
 	local bkg_image_filename = args[1]
@@ -596,11 +597,11 @@ function D.check_stat(args)
 	if #args ~= 2 then return MakeFail("Expected 2 arguments, received " .. tostring(#args) .. ".") end
 
 	local attribute = args[1]
-	print(attribute)
+	--print(attribute)
 	if not IsAttribute(attribute) then return MakeFail("Argument 1 must be a valid attribute.") end
 
 	local values = SplitString(args[2], "-")
-	print(#values .. " values")
+	--print(#values .. " values")
 
 	local keys = {"Check Failed"}
 	for i=1,#values do
@@ -762,12 +763,19 @@ function D.start_encounter(args)
 	if #args ~= 3 then return MakeFail("Expected 3 arguments, received " .. tostring(#args) .. ".") end
 
 	local environment = args[1]
-	if(not EnvironmentExists(environment)) then return MakeFail("Environment defined in argument 1 ['" .. environment .. "'] doesn't exist.") end
+	--if(not EnvironmentExists(environment)) then return MakeFail("Environment defined in argument 1 ['" .. environment .. "'] doesn't exist.") end
 
 	local character = args[2]
-	if(not CharacterExists(environment)) then return MakeFail("Character defined in argument 2 ['" .. character .. "'] doesn't exist.") end
+	--if(not CharacterExists(environment)) then return MakeFail("Character defined in argument 2 ['" .. character .. "'] doesn't exist.") end
 
 	local ptr = args[3]
+
+	return true, nil, nil
+end
+
+-- end_encounter
+function D.end_encounter(args)
+	if #args ~= 0 then return MakeFail("Expected 0 arguments, received " .. tostring(#args) .. ".") end
 
 	return true, nil, nil
 end
@@ -777,7 +785,7 @@ function D.set_map_location(args)
 	if #args ~= 1 then return MakeFail("Expected 1 argument, received " .. tostring(#args) .. ".") end
 
 	local location = args[1]
-	if(not EnvironmentExists(environment)) then return MakeFail("Environment defined in argument 1 ['" .. location .. "'] doesn't exist.") end
+	--if(not EnvironmentExists(environment)) then return MakeFail("Environment defined in argument 1 ['" .. location .. "'] doesn't exist.") end
 
 	return true, nil, nil
 end
@@ -872,14 +880,27 @@ function D.stop_music(args)
 	return true, nil, nil
 end
 
+-- play_sound (filename, volume)
+function D.play_sound(args)
+	if #args ~= 2 then return MakeFail("Expected 2 arguments, received " .. tostring(#args) .. ".") end
+
+	local filename = args[1]
+	local volume = tonumber(args[2]) or 0
+	if(volume < 1 or volume > 100) then return MakeFail("Argument 2 must be between 1 and 100.") end
+
+	return true, nil, nil
+end
+
 -- play_contsound (filename, volume, 1|2, fadein, fadeout)
 function D.play_contsound(args)
 	if #args ~= 5 then return MakeFail("Expected 5 arguments, received " .. tostring(#args) .. ".") end
 
 	local filename = args[1]
 	local volume = tonumber(args[2]) or 0
+	if(volume < 1 or volume > 100) then return MakeFail("Argument 2 must be between 1 and 100.") end
+
 	local channel = tonumber(args[3])
-	if(channel == nil and channel ~= 1 and channel ~= 2) then return MakeFail("Argument 2 must be one of [1, 2].") end
+	if(channel ~= nil and channel ~= 1 and channel ~= 2) then return MakeFail("Argument 3 must be one of [1, 2].") end
 
 	local fadein_seconds = tonumber(args[3]) or 0
 	local fadeout_seconds = tonumber(args[4]) or 0
@@ -895,6 +916,25 @@ function D.stop_contsound(args)
 	if(channel == nil and channel ~= 1 and channel ~= 2) then return MakeFail("Argument 2 must be one of [1, 2].") end
 
 	local fadeout_seconds = tonumber(args[2]) or 0
+
+	return true, nil, nil
+end
+
+-- change_env_sounds (filename.volume, filename.volume)
+function D.change_env_sounds(args)
+	if #args ~= 2 then return MakeFail("Expected 2 arguments, received " .. tostring(#args) .. ".") end
+
+	local chunk1 = SplitString(args[1], ".")
+	local chunk1_filename = chunk1[1]
+	local chunk1_volume = tonumber(chunk1[2])
+	if(chunk1_filename == nil or chunk1_volume == nil) then return MakeFail("Argument 1 must follow the format 'filename.volume'.") end
+	if(chunk1_volume < 1 or chunk1_volume > 100) then return MakeFail("Argument 1's second part must between 1 and 100.") end
+
+	local chunk2 = SplitString(args[2], ".")
+	local chunk2_filename = chunk2[1]
+	local chunk2_volume = tonumber(chunk2[2])
+	if(chunk2_filename == nil or chunk2_volume == nil) then return MakeFail("Argument 2 must follow the format 'filename.volume'.") end
+	if(chunk2_volume < 1 or chunk2_volume > 100) then return MakeFail("Argument 2's second part must between 1 and 100.") end
 
 	return true, nil, nil
 end
@@ -947,6 +987,10 @@ function D.remove_location(args)
 	if(not LocationExists(location)) then return MakeFail("Location defined in argument 1 ['" .. location .. "'] doesn't exist.") end
 
 	return true, nil, nil
+end
+
+for k,v in pairs(D) do
+	print(k)
 end
 
 return Funcs, Meta

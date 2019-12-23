@@ -382,7 +382,6 @@ bool Project::Load(const RawProjectFile &ImportedProject, std::string *ErrorMess
 							std::string ReassembledLine = "", Error = "";
 							bool Res = SE.ExtractKeyPairs(CurLine, TempKeyIndexPairs, ReassembledLine, Error);
 
-							bool _beep = ReassembledLine == "check_flag pc_hidden_hand";
 							if (Res)
 							{
 								if (TempKeyIndexPairs.size() > 0)
@@ -441,7 +440,7 @@ bool Project::Load(const RawProjectFile &ImportedProject, std::string *ErrorMess
 				if (OutConnRes == OptConns.end())
 				{
 					// Something's gone dreadfully, horribly, disgustingly wrong.
-					if (ErrorMessage != nullptr)	*ErrorMessage += NewChar->GetName() + " - " + NewFile->GetFilename() + " - Attempted to connect non-existent key '" + KeyName + "' to index '" + DestIndex + "'.\n";
+					if (ErrorMessage != nullptr)	*ErrorMessage += NewChar->GetName() + " - " + NewFile->GetFilename() + " - Attempted to connect non-existent key '" + KeyName + "' to index '" + DestIndex + "'.\n\n";
 					continue; //return false;
 				}
 
@@ -455,7 +454,7 @@ bool Project::Load(const RawProjectFile &ImportedProject, std::string *ErrorMess
 				if (DestNodeRes == DiagNodes.end())
 				{
 					// Something ELSE has gone dreadfully, horribly, disgustingly wrong.
-					if (ErrorMessage != nullptr)	*ErrorMessage += NewChar->GetName() + " - " + NewFile->GetFilename() + " - Attempted to connect key '" + KeyName + "' to non-existent index '" + DestIndex + "'.\n";
+					if (ErrorMessage != nullptr)	*ErrorMessage += NewChar->GetName() + " - " + NewFile->GetFilename() + " - Attempted to connect key '" + KeyName + "' to non-existent index '" + DestIndex + "'.\n\n";
 					continue; //return false;
 				}
 
@@ -466,7 +465,7 @@ bool Project::Load(const RawProjectFile &ImportedProject, std::string *ErrorMess
 				if (DestConnRes == DestNodeIndices.end())
 				{
 					// Something ELSE ELSE!!! has gone dreadfully, horribly, disgustingly wrong.
-					if (ErrorMessage != nullptr)	*ErrorMessage += NewChar->GetName() + " - " + NewFile->GetFilename() + " - Attempted to connect key '" + KeyName + "' to non-existent index '" + DestIndex + "'.\n";
+					if (ErrorMessage != nullptr)	*ErrorMessage += NewChar->GetName() + " - " + NewFile->GetFilename() + " - Attempted to connect key '" + KeyName + "' to non-existent index '" + DestIndex + "'.\n\n";
 					continue; //return false;
 				}
 

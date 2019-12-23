@@ -101,7 +101,7 @@ void ConnectionOutput::Connect(ConnectionInput *Destination)
 	// Set the destination as the active connection 
 	_connection = Destination;
 
-	fmt::print("Connected {} to {}.\n", fmt::ptr(this), fmt::ptr(Destination));
+	//fmt::print("Connected {} to {}.\n", fmt::ptr(this), fmt::ptr(Destination));
 }
 
 void ConnectionOutput::Disconnect()
@@ -110,7 +110,7 @@ void ConnectionOutput::Disconnect()
 	if (_connection == nullptr)
 		return;
 
-	fmt::print("Disconnected {} from {}", fmt::ptr(this), fmt::ptr(_connection));
+	//fmt::print("Disconnected {} from {}", fmt::ptr(this), fmt::ptr(_connection));
 
 	// Disconnect from the ConnectionInput side.
 	_connection->Disconnect(this);

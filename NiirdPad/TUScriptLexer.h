@@ -280,7 +280,7 @@ namespace TUScript
 		template< typename Input >
 		static void apply(const Input& in, State& v)
 		{
-			printf_s("%s\n", in.string().c_str());
+			//printf_s("%s\n", in.string().c_str());
 			v.PendingFragment.PendingOption.VisibilityScripts.push_back(in.string());
 		}
 	};
@@ -291,7 +291,7 @@ namespace TUScript
 		template< typename Input >
 		static void apply(const Input& in, State& v)
 		{
-			printf_s("\"%s\"\n", in.string().c_str());
+			//printf_s("\"%s\"\n", in.string().c_str());
 			v.PendingFragment.PendingOption.Text = in.string();
 		}
 	};
@@ -302,7 +302,7 @@ namespace TUScript
 		template< typename Input >
 		static void apply(const Input& in, State& v)
 		{
-			printf_s("- '%s'\n", in.string().c_str());
+			//printf_s("- '%s'\n", in.string().c_str());
 			v.PendingFragment.PendingOption.Functions.push_back(in.string());
 		}
 	};
@@ -313,7 +313,7 @@ namespace TUScript
 		template< typename Input >
 		static void apply(const Input& in, State& v)
 		{
-			printf_s("<%s>\n", in.string().c_str());
+			//printf_s("<%s>\n", in.string().c_str());
 			v.PendingFragment.PendingOption.Pointer = in.string();
 		}
 	};
@@ -325,7 +325,7 @@ namespace TUScript
 		static void apply(const Input& in, State& v)
 		{
 			v.PendingFragment.PushPendingOption();
-			printf_s("---------------\n");
+			//printf_s("---------------\n");
 		}
 	};
 
