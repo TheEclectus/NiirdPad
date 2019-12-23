@@ -197,7 +197,7 @@ namespace TUScript
 		{
 			auto line = in.input().line();
 			auto str = in.string();
-			printf("Debug.\n");
+			//printf("Debug.\n");
 		}
 	};
 #pragma endregion

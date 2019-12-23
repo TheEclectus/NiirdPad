@@ -166,7 +166,7 @@ function Funcs.ExtractKeyPairs(funcName, args)
 
 	local ReturnPairs = {}
 	for i = 1, #Keys do
-		print(Keys[i], Indices[i])
+		--print(Keys[i], Indices[i])
 		ReturnPairs[#ReturnPairs + 1] = {Keys[i], Indices[i]}
 	end
 
