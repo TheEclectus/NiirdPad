@@ -217,10 +217,21 @@ void NiirdPad::ImportConfirmationMessageBox(std::vector<std::string> Warnings, R
 		}
 		//QMessageBox *Msg = new QMessageBox(this);
 		Msg.setWindowTitle(fmt::format("{0} Warnings", Warnings.size()).c_str());
-		Msg.setText("Warnings were generated during import. Continue?");
+		Msg.setText("Warnings were generated during import. Continue?\nConnecting the imported Nodes will take some time, and the program may appear to freeze during the process.");
 		Msg.setIcon(QMessageBox::Icon::Warning);
 		Msg.setDetailedText(WarningString);
 		Msg.setStandardButtons({ QMessageBox::StandardButton::Ok, QMessageBox::StandardButton::Cancel });
+		if (Msg.exec() == QMessageBox::Cancel)
+			return;
+	}
+	else
+	{
+		QMessageBox Msg(this);
+		//QMessageBox *Msg = new QMessageBox(this);
+		Msg.setWindowTitle("Connect Nodes");
+		Msg.setText("Imported Nodes will now be connected. Connecting the imported nodes will take some time, and the program may appear to freeze during the process.");
+		Msg.setIcon(QMessageBox::Icon::Warning);
+		Msg.setStandardButtons({ QMessageBox::StandardButton::Ok });
 		if (Msg.exec() == QMessageBox::Cancel)
 			return;
 	}
@@ -234,6 +245,15 @@ void NiirdPad::ImportConfirmationMessageBox(std::vector<std::string> Warnings, R
 	}
 	SetWindowTitle();
 	ResetCharacterCombo();
+
+	QMessageBox PostMsg(this);
+	//QMessageBox *Msg = new QMessageBox(this);
+	PostMsg.setWindowTitle(fmt::format("Project Imported With {0} Warnings", Warnings.size()).c_str());
+	PostMsg.setText("Project successfully imported. See below for more details.");
+	PostMsg.setIcon(QMessageBox::Icon::Information);
+	PostMsg.setDetailedText(ErrorMsg.c_str());
+	PostMsg.setStandardButtons({ QMessageBox::StandardButton::Ok });
+	PostMsg.exec();
 }
 
 NiirdPad::NiirdPad(QWidget *parent) :
