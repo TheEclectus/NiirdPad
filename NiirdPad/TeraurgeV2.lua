@@ -86,6 +86,7 @@ Funcs.Version = "2.13"
 
 -- Returns a list of keys and its destination index and nil, or nil and an error string
 -- Returns an empty list if it's not an IM function
+-- Third return is a re-assembled function string with references stripped out. Nil if not an IM function or on error.
 -- For importing!
 function Funcs.ExtractKeyPairs(funcName, args)
 	-- Index 1 - arg positions (for stripping out)
@@ -115,12 +116,21 @@ function Funcs.ExtractKeyPairs(funcName, args)
 		start_combat =		{{1, 2},		nil},
 	}
 
+	print("1")
+
 	if(Funcs.Dialogue[funcName] == nil) then
 		-- It's not a function at all.
-		return nil, "Function " .. funcName .. " not defined."
+		return nil, "Function " .. funcName .. " not defined.", nil
 	elseif(ArgPos[funcName] == nil) then
 		-- It's not an IM function, return gracefully.
-		return {}, nil
+		return {}, nil, nil
+	end
+
+	print("2")
+
+	local Args = {}
+	for i = 1,#args do
+		Args[#Args+1] = args[i]
 	end
 
 	local Indices = {}
@@ -128,9 +138,11 @@ function Funcs.ExtractKeyPairs(funcName, args)
 
 	for i = 1,#ArgsPosIndex[1] do
 		local ArgIndex = ArgsPosIndex[1][i]
-		Indices[#Indices + 1] = args[ArgIndex]
-		args[ArgIndex] = nil
+		Indices[#Indices + 1] = Args[ArgIndex]
+		Args[ArgIndex] = nil
 	end
+
+	print("3")
 
 	if(ArgsPosIndex[2] ~= nil) then -- Special function
 		local NewIndices = {}
@@ -145,16 +157,24 @@ function Funcs.ExtractKeyPairs(funcName, args)
 		Indices = NewIndices
 	end
 
+	print("4")
+
 	print(funcName)
-	local Res, Keys, Err = Funcs.Dialogue[funcName](args)
-	if(not Res) then return nil, Err end
+	local Res, Keys, Err = Funcs.Dialogue[funcName](Args)
+	if(not Res) then return nil, Err, nil end
 
 	local ReturnPairs = {}
 	for i = 1, #Keys do
-		ReturnPairs[#ReturnPairs + 1] = {Keys[i], Indices[i] or ""}
+		print(Keys[i], Indices[i])
+		ReturnPairs[#ReturnPairs + 1] = {Keys[i], Indices[i]}
 	end
 
-	return ReturnPairs
+	local ReassembledLine = funcName
+	for i = 1, #Args do
+		ReassembledLine = ReassembledLine .. " " .. Args[i]
+	end
+
+	return ReturnPairs, nil, ReassembledLine
 end
 
 -- VISIBILITY CONDITIONS =================================================================================
@@ -852,12 +872,13 @@ function D.stop_music(args)
 	return true, nil, nil
 end
 
--- play_contsound (filename, 1|2, fadein, fadeout)
+-- play_contsound (filename, volume, 1|2, fadein, fadeout)
 function D.play_contsound(args)
-	if #args ~= 4 then return MakeFail("Expected 4 arguments, received " .. tostring(#args) .. ".") end
+	if #args ~= 5 then return MakeFail("Expected 5 arguments, received " .. tostring(#args) .. ".") end
 
 	local filename = args[1]
-	local channel = tonumber(args[2])
+	local volume = tonumber(args[2]) or 0
+	local channel = tonumber(args[3])
 	if(channel == nil and channel ~= 1 and channel ~= 2) then return MakeFail("Argument 2 must be one of [1, 2].") end
 
 	local fadein_seconds = tonumber(args[3]) or 0

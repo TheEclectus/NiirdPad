@@ -273,6 +273,62 @@ bool ScriptEngine::bVisConditionIsValid(const std::string &Script, std::string &
 	return bIsValid;
 }
 
+bool ScriptEngine::ExtractKeyPairs(const std::string &ScriptLine, std::unordered_map<std::string, std::string> &KeyPairs, std::string &ReassembledLine, std::string &ErrorString) const
+{
+	KeyPairs.clear();
+	ReassembledLine = "";
+
+	std::vector<std::string> Parts = {};
+	strtk::parse(ScriptLine, " ", Parts);
+
+	std::string FunctionName = Parts[0];
+	Parts.erase(Parts.begin());
+
+	// TODO: On saving, parse out everything valid but improper (basically just extra whitespace)
+	strtk::remove_empty_strings(Parts);
+
+	auto Res = _extractKeysFromFunctionLine(FunctionName, Parts);
+	if (!Res.valid())
+	{
+		sol::error Err = Res;
+		std::string ErrMsg = Err.what();
+	}
+
+	//std::tuple<sol::object, std::string> Res = _extractKeysFromFunctionLine(FunctionName, Parts);
+	//sol::table KeyPairsTable = std::get<0>(Res);
+	//std::string FuncErrorString = std::get<1>(Res);
+
+	sol::object KeyPairsObj = Res[0];
+	//sol::table KeyPairsTable = Res[0];
+	std::string FuncErrorString = Res[1];
+	std::string ReassembledString = Res[2];
+
+	bool bSuccessful = KeyPairsObj != sol::nil;
+	if (!bSuccessful)
+	{
+		ErrorString = FuncErrorString;
+		return false;
+	}
+
+	sol::table KeyPairsTable = KeyPairsObj;
+
+	// Key, Index pairs
+	if (KeyPairsTable.size() == 0)
+	{
+		ReassembledLine = ScriptLine;
+		return true;
+	}
+
+	ReassembledLine = ReassembledString;
+	for (auto CurIndex : KeyPairsTable)
+	{
+		sol::table CurTable = CurIndex.second;
+		
+		KeyPairs.insert({ CurTable[1].get<std::string>(), CurTable[2].get<std::string>() });
+	}
+	return true;
+}
+
 const std::string &ScriptEngine::VersionString() const
 {
 	return _TUScriptVersion;

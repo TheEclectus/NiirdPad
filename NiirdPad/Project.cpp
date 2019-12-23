@@ -363,15 +363,117 @@ bool Project::Load(const RawProjectFile &ImportedProject, std::string *ErrorMess
 				for (auto &CurrentOption : CurrentNode.Options())
 				{
 					auto NewOpt = NewNode->AddOption();
-					NewOpt->SetAll(CurrentOption.VisibilityScripts(), CurrentOption.Functions(), CurrentOption.Text());
+					
+					if (CurrentOption.Pointer() != "")
+					{
+						PendingConnections.push_back(std::make_tuple(NewOpt, "__default__", CurrentOption.Pointer()));
+						NewOpt->SetAll(CurrentOption.VisibilityScripts(), CurrentOption.Functions(), CurrentOption.Text());
+					}
+					else
+					{
+						bool bHasIMFunc = false;
+						std::vector<std::string> StrippedFunctions;
+						ScriptEngine &SE = _NodeView.GetNiirdPad()->ScriptEngine();
+						std::unordered_map<std::string, std::string> KeyIndexPairs;
 
-					//CurrentFile.second.Nodes()[0].Dialogues()[0].
-					std::string KeyName = CurConn["branchOption"].GetString();
-					std::string DestIndex = CurConn["destIndex"].GetString();
+						for (auto &CurLine : CurrentOption.Functions())
+						{
+							std::unordered_map<std::string, std::string> TempKeyIndexPairs;
+							std::string ReassembledLine = "", Error = "";
+							bool Res = SE.ExtractKeyPairs(CurLine, TempKeyIndexPairs, ReassembledLine, Error);
 
-					auto NewTuple = std::make_tuple(NewOpt, KeyName, DestIndex);
-					PendingConnections.push_back(NewTuple);
+							bool _beep = ReassembledLine == "check_flag pc_hidden_hand";
+							if (Res)
+							{
+								if (TempKeyIndexPairs.size() > 0)
+								{
+									// IM, success
+									if (!bHasIMFunc)
+									{
+										bHasIMFunc = true;
+										KeyIndexPairs = TempKeyIndexPairs;
+										StrippedFunctions.push_back(ReassembledLine);
+									}
+									else
+									{
+										KeyIndexPairs.clear();
+										break;
+									}
+								}
+								else
+								{
+									// Non-IM, success
+									StrippedFunctions.push_back(CurLine);
+								}
+							}
+							else
+							{
+								// IM, failure
+								StrippedFunctions.push_back(CurLine);
+							}
+						}
+
+						for (auto &CurKey : KeyIndexPairs)
+						{
+							PendingConnections.push_back(std::make_tuple(NewOpt, CurKey.first, CurKey.second));
+						}
+
+						NewOpt->SetAll(CurrentOption.VisibilityScripts(), StrippedFunctions, CurrentOption.Text());
+					}
 				}
+			}
+
+			// Connect PendingConnections here.
+			for (auto &CurConn : PendingConnections)
+			{
+				NodeOption *SrcOpt = std::get<0>(CurConn);
+				std::string KeyName = std::get<1>(CurConn);
+				std::string DestIndex = std::get<2>(CurConn);
+
+				// Skip keys that aren't connected to anything.
+				if (DestIndex == "")
+					continue;
+
+				auto &OptConns = SrcOpt->Nub().Connections();
+				auto OutConnRes = std::find_if(OptConns.begin(), OptConns.end(), [KeyName](ConnectionOutput *Conn) {
+					return Conn->KeyName() == KeyName;
+					});
+				if (OutConnRes == OptConns.end())
+				{
+					// Something's gone dreadfully, horribly, disgustingly wrong.
+					if (ErrorMessage != nullptr)	*ErrorMessage += "Attempted to connect non-existent key '" + KeyName + "' to index '" + DestIndex + "'.\n";
+					continue; //return false;
+				}
+
+				ConnectionOutput *SrcConnection = *OutConnRes;
+
+				// Now find the destination
+				auto DiagNodes = NewFile->GetNodes();
+				auto DestNodeRes = std::find_if(DiagNodes.begin(), DiagNodes.end(), [DestIndex](Node *Nd) {
+					return Nd->HasIndex(DestIndex);
+					});
+				if (DestNodeRes == DiagNodes.end())
+				{
+					// Something ELSE has gone dreadfully, horribly, disgustingly wrong.
+					if (ErrorMessage != nullptr)	*ErrorMessage += "Attempted to connect key '" + KeyName + "' to non-existent index '" + DestIndex + "'.\n";
+					continue; //return false;
+				}
+
+				auto &DestNodeIndices = (*DestNodeRes)->Dialogues();
+				auto DestConnRes = std::find_if(DestNodeIndices.begin(), DestNodeIndices.end(), [DestIndex](NodeDialogue *NdDlg) {
+					return (NdDlg->GetReference() == DestIndex);
+					});
+				if (DestConnRes == DestNodeIndices.end())
+				{
+					// Something ELSE ELSE!!! has gone dreadfully, horribly, disgustingly wrong.
+					if (ErrorMessage != nullptr)	*ErrorMessage += "Attempted to connect key '" + KeyName + "' to non-existent index '" + DestIndex + "'.\n";
+					continue; //return false;
+				}
+
+				ConnectionInput &DestConnection = (*DestConnRes)->Nub().Connection();
+
+				// Finally connect the fucking thing
+				SrcConnection->Connect(&DestConnection);
 			}
 		}
 	}

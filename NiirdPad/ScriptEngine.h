@@ -51,5 +51,10 @@ public:
 	/// <param name="Script">The full line of script being validated.</param>
 	bool bVisConditionIsValid(const std::string &Script, std::string &ErrorString) const;
 
+	// Returns true if ScriptLine does not contain an IM function
+	// Returns true if ScriptLine contains an IM function and is successfully extracted
+	// Returns false if ScriptLine contains an IM function and fails
+	bool ExtractKeyPairs(const std::string &ScriptLine, std::unordered_map<std::string, std::string> &KeyPairs, std::string &ReassembledLine, std::string &ErrorString) const;
+
 	const std::string &VersionString() const;
 };
