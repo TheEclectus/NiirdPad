@@ -46,7 +46,7 @@ void NiirdPad::Import()
 			break;
 	}*/
 
-	std::atomic<bool> bThreadFinished = false;
+	//std::atomic<bool> bThreadFinished = false;
 	QThread *ImportThread = new QThread(this);
 	ImportWorker *Worker = new ImportWorker(Dialog.directory().absolutePath().toStdString());
 	QProgressDialog *Prg = new QProgressDialog("", "Cancel", 0, 0, this);
@@ -251,6 +251,10 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	ui.widget->ConnectToReferenceEditWindow();
 
 	connect(ui.actionImportProject, &QAction::triggered, [this]() {
+		auto Confirmation = QMessageBox::information(this, "WIP Feature", "Project importing is still a WIP feature, and errors are to be expected. Currently there is no automatic layout algorithm, and Nodes must be arranged by hand. Erroneous Options will not be connected. Continue?", QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel);
+		if (Confirmation != QMessageBox::Yes)
+			return;
+
 		if (_loadedProject->UnsavedChanges())
 		{
 			QMessageBox::StandardButton Res = QMessageBox::warning(this, "Project Has Unsaved Changes", "Do you want to save changes to the current project?", QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
