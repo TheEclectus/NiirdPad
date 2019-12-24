@@ -666,7 +666,15 @@ Node::Node(DialogueFile &Parent, QNodeView &NodeView, SDL_Point Position) :
 
 Node::~Node()
 {
+	for (auto CurDiag : _dialogues)
+	{
+		RemoveDialogue(CurDiag);
+	}
 
+	for (auto CurOpt : _options)
+	{
+		RemoveOption(CurOpt);
+	}
 }
 
 GraphicsBlock_Node &Node::Graphics()

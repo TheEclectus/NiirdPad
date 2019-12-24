@@ -74,3 +74,13 @@ Node *DialogueFile::NewNode(const SDL_Point &Position)
 
 	return NewNode;
 }
+
+void DialogueFile::RemoveNode(Node *Nde)
+{
+	auto Res = std::find(_nodes.begin(), _nodes.end(), Nde);
+	if (Res != _nodes.end())
+	{
+		_nodes.erase(Res);
+		delete Nde;
+	}
+}

@@ -388,7 +388,15 @@ void QNodeView::Input()
 								Context.addSeparator();
 							}
 
-							Context.addAction("x Delete Node");
+							Context.addAction("Delete Node", [this, CurNode]() {
+								DialogueFile &ParentFile = CurNode->ParentFile();
+								ParentFile.RemoveNode(CurNode);
+								auto Res = std::find(_Nodes.begin(), _Nodes.end(), CurNode);
+								if (Res != _Nodes.end())
+								{
+									_Nodes.erase(Res);
+								}
+							});
 
 							Context.exec(mapToGlobal(QPoint(ReleasePos.x, ReleasePos.y)));
 							return;

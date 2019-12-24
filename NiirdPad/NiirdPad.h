@@ -50,4 +50,5 @@ public:
 
 	void DirtyProjectChanges();
 	void CleanProjectChanges();
+	Project *LoadedProject();
 };

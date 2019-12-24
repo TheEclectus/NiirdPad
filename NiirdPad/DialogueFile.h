@@ -44,4 +44,5 @@ public:
 	void Save(rapidjson::Document &Doc, rapidjson::Value &Value) const;
 
 	Node *NewNode(const SDL_Point &Position = { 0,0 });
+	void RemoveNode(Node *Nde);
 };

@@ -467,3 +467,8 @@ void NiirdPad::CleanProjectChanges()
 	_loadedProject->CleanChanges();
 	SetWindowTitle();
 }
+
+Project *NiirdPad::LoadedProject()
+{
+	return _loadedProject;
+}
