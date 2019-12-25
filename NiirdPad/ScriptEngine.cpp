@@ -12,7 +12,7 @@ ScriptEngine::ScriptEngine()
 	_path = "./TeraurgeV2.lua";
 
 	// Initialize the Lua state.
-	_state.open_libraries(sol::lib::base, sol::lib::math, sol::lib::string);
+	_state.open_libraries(sol::lib::base, sol::lib::math, sol::lib::string, sol::lib::table);
 
 	ReloadFromFile();
 }

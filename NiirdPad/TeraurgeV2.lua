@@ -270,6 +270,26 @@ function V.has_stat(args)
 	return true, nil
 end
 
+-- .has_state alternatives
+function MakeStatCheck(attribute)
+	if(not IsAttribute(attribute)) then return nil end
+
+	return function(args)
+		if #args ~= 1 then return VisFail("Expected 1 argument, received " .. tostring(#args) .. ".") end
+
+		if tonumber(args[1]) == nil or tonumber(args[1]) < 0 then return VisFail("Argument 1 must be a positive number.") end
+
+		return true, nil
+	end
+end
+V.charisma = MakeStatCheck("charisma")
+V.will = MakeStatCheck("will")
+V.intelligence = MakeStatCheck("intelligence")
+V.perception = MakeStatCheck("perception")
+V.agility = MakeStatCheck("agility")
+V.strength = MakeStatCheck("strength")
+V.endurance = MakeStatCheck("endurance")
+
 -- .rape_filter_off
 function V.rape_filter_off(args)
 	if #args ~= 0 then return VisFail("Expected 0 arguments, received " .. tostring(#args) .. ".") end

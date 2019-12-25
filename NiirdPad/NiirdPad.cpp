@@ -63,7 +63,7 @@ void NiirdPad::Import()
 	connect(Worker, &ImportWorker::SendError, [&](const std::string &Error)
 	{
 		if(Error != "") 
-			fmt::print("Encountered an error.\n");
+			fmt::print("Encountered an error: {}.\n", Error);
 	});
 	//connect(Worker, &ImportWorker::SendData, [&](std::vector<std::string> Warnings, RawProjectFile Files)
 	//{

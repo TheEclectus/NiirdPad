@@ -12,6 +12,8 @@ namespace pegtl = tao::pegtl;
 
 namespace TUScript
 {
+	// For now, assume that the imported files are correctly-formatted and validated.
+	// Recommend using Valid's tool beforehand until the lexer gets smarter?
 	struct State
 	{
 		struct Fragment
