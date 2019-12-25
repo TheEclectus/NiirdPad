@@ -431,6 +431,9 @@ void QNodeView::Input()
 		#pragma region EVENT_MOUSEMOVE
 		else if (Event.type == EVENT_MOUSEMOVE)
 		{
+			if (_bWarpingMouse)
+				return;
+
 			SDL_Point MousePos = GetMousePosition();
 			_InputState.Position = MousePos;// { reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2) };
 			//printf("MouseMove [%c%c%c] (%d, %d)\n", Event.user.code & Qt::MouseButton::LeftButton ? 'L' : ' ', Event.user.code & Qt::MouseButton::MiddleButton ? 'M' : ' ', Event.user.code & Qt::MouseButton::RightButton ? 'R' : ' ', reinterpret_cast<int>(Event.user.data1), reinterpret_cast<int>(Event.user.data2));
@@ -585,6 +588,20 @@ void QNodeView::Input()
 				//printf_s("%d %d\n", Delta.x, Delta.y);
 				GetCamera().ViewBox.x -= Delta.x;
 				GetCamera().ViewBox.y -= Delta.y;
+
+				int XDest = (MousePos.x > GetCamera().ViewBox.w) ? 1 : ((MousePos.x < 0) ? (GetCamera().ViewBox.w - 1) : -1);
+				int YDest = (MousePos.y > GetCamera().ViewBox.h) ? 1 : ((MousePos.y < 0) ? (GetCamera().ViewBox.h - 1) : -1);
+
+				if (XDest != -1 || YDest != -1)
+				{
+					if (XDest == -1) XDest = MousePos.x;
+					if (YDest == -1) YDest = MousePos.y;
+
+					_bWarpingMouse = true;
+					SDL_WarpMouseInWindow(_SDLWindow, XDest, YDest);
+					_InputState.DownPosition[2] = { XDest, YDest };
+					//_bWarpingMouse = false;
+				}
 			}
 		}
 		#pragma endregion

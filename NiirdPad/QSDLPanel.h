@@ -37,8 +37,6 @@ private:
 	SDL_Point _LastMousePosition = { INT32_MIN, INT32_MIN };
 
 	QTimer *_RefreshTimer = nullptr;
-	SDL_Window *_SDLWindow = nullptr;
-	SDL_Renderer *_SDLRenderer = nullptr;
 
 	void _RegisterEvents();
 
@@ -54,6 +52,11 @@ protected:
 
 	// .data1 = x, .data2 = y, .code = Qt::MouseButton
 	uint32_t EVENT_MOUSEDOUBLECLICK;
+
+	SDL_Window *_SDLWindow = nullptr;
+	SDL_Renderer *_SDLRenderer = nullptr;
+
+	bool _bWarpingMouse = false;	// Send a delta of zero with any mouse movement events
 
 	virtual void Input();
 	virtual void Logic();

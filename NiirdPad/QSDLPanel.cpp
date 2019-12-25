@@ -73,10 +73,12 @@ void QSDLPanel::mouseMoveEvent(QMouseEvent *event)
 	int DeltaX = event->x() - _LastMousePosition.x;
 	int DeltaY = event->y() - _LastMousePosition.y;
 
-	if (_LastMousePosition.x == INT32_MIN && _LastMousePosition.y == INT32_MIN)
+	if ((_LastMousePosition.x == INT32_MIN && _LastMousePosition.y == INT32_MIN) || _bWarpingMouse == true)
 	{
 		User.data1 = nullptr;
 		User.data2 = nullptr;
+
+		if (_bWarpingMouse) _bWarpingMouse = false;
 	}
 	else
 	{
