@@ -56,6 +56,8 @@ public:
     QVBoxLayout *verticalLayout;
     QHBoxLayout *horizontalLayout_3;
     QLabel *label;
+    QSpacerItem *horizontalSpacer_2;
+    QHBoxLayout *horizontalLayout_4;
     QPushButton *btnAddCharacter;
     QPushButton *btnDeleteCharacter;
     QPushButton *btnRenameCharacter;
@@ -82,7 +84,7 @@ public:
     {
         if (NiirdPadClass->objectName().isEmpty())
             NiirdPadClass->setObjectName(QString::fromUtf8("NiirdPadClass"));
-        NiirdPadClass->resize(1043, 644);
+        NiirdPadClass->resize(1098, 644);
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/NiirdPad/Resources/Icon2.ico"), QSize(), QIcon::Normal, QIcon::Off);
         NiirdPadClass->setWindowIcon(icon);
@@ -137,8 +139,8 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(frame->sizePolicy().hasHeightForWidth());
         frame->setSizePolicy(sizePolicy);
-        frame->setMinimumSize(QSize(200, 0));
-        frame->setMaximumSize(QSize(16777215, 16777215));
+        frame->setMinimumSize(QSize(175, 0));
+        frame->setMaximumSize(QSize(175, 16777215));
         frame->setSizeIncrement(QSize(0, 0));
         frame->setFrameShape(QFrame::Box);
         frame->setFrameShadow(QFrame::Plain);
@@ -158,6 +160,13 @@ public:
 
         horizontalLayout_3->addWidget(label);
 
+        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_3->addItem(horizontalSpacer_2);
+
+        horizontalLayout_4 = new QHBoxLayout();
+        horizontalLayout_4->setSpacing(0);
+        horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
         btnAddCharacter = new QPushButton(frame);
         btnAddCharacter->setObjectName(QString::fromUtf8("btnAddCharacter"));
         QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Fixed);
@@ -168,20 +177,23 @@ public:
         btnAddCharacter->setMinimumSize(QSize(23, 0));
         btnAddCharacter->setMaximumSize(QSize(23, 16777215));
 
-        horizontalLayout_3->addWidget(btnAddCharacter);
+        horizontalLayout_4->addWidget(btnAddCharacter);
 
         btnDeleteCharacter = new QPushButton(frame);
         btnDeleteCharacter->setObjectName(QString::fromUtf8("btnDeleteCharacter"));
         btnDeleteCharacter->setMinimumSize(QSize(23, 0));
         btnDeleteCharacter->setMaximumSize(QSize(23, 16777215));
 
-        horizontalLayout_3->addWidget(btnDeleteCharacter);
+        horizontalLayout_4->addWidget(btnDeleteCharacter);
 
         btnRenameCharacter = new QPushButton(frame);
         btnRenameCharacter->setObjectName(QString::fromUtf8("btnRenameCharacter"));
         btnRenameCharacter->setMinimumSize(QSize(45, 0));
 
-        horizontalLayout_3->addWidget(btnRenameCharacter);
+        horizontalLayout_4->addWidget(btnRenameCharacter);
+
+
+        horizontalLayout_3->addLayout(horizontalLayout_4);
 
         horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
@@ -267,7 +279,7 @@ public:
         NiirdPadClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(NiirdPadClass);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1043, 21));
+        menuBar->setGeometry(QRect(0, 0, 1098, 21));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
         menuDebug = new QMenu(menuBar);

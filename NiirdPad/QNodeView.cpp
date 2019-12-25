@@ -739,8 +739,49 @@ void QNodeView::RenderForeground()
 
 	SDL_Renderer *Renderer = SDLRenderer();
 
-	#pragma region Active Connection Beziers
+	#pragma region Connection Beziers
 	for (auto Node : _Nodes)
+	{
+		// TODO: weigh the pros and cons of doing a check for whether or not the Node is selected, for the purposes of drawin highlights.
+
+		for (auto Opt : Node->Options())
+		{
+			SDL_Point OutputNubPoint = Opt->Graphics()->NubPoint();
+			SDL_Rect OutNodeBounds = Opt->Parent().Graphics().GetBounds();
+			SDL_Point OutNodePos = Opt->Parent().Position();
+
+			OutNodeBounds.x = (GetCamera().ViewBox.w / 2) - GetCamera().ViewBox.x + OutNodePos.x;
+			OutNodeBounds.y = (GetCamera().ViewBox.h / 2) - GetCamera().ViewBox.y + OutNodePos.y;
+
+			OutputNubPoint.x += OutNodeBounds.x;
+			OutputNubPoint.y += OutNodeBounds.y;
+
+			for (auto Conn : Opt->Nub().Connections())
+			{
+				if (Conn->Connection() != nullptr)
+				{
+					NodeDialogue &EndFrag = Conn->Connection()->Parent().Parent();
+
+					SDL_Point InputNubPoint = EndFrag.Graphics()->NubPoint();
+					//fmt::print("{},{}", InputNubPoint.x, InputNubPoint.y);
+					SDL_Rect InputNodeBounds = EndFrag.Parent().Graphics().GetBounds();
+					SDL_Point InputNodePos = EndFrag.Parent().Position();
+
+					InputNodeBounds.x = (GetCamera().ViewBox.w / 2) - GetCamera().ViewBox.x + InputNodePos.x;
+					InputNodeBounds.y = (GetCamera().ViewBox.h / 2) - GetCamera().ViewBox.y + InputNodePos.y;
+
+					InputNubPoint.x += InputNodeBounds.x;
+					InputNubPoint.y += InputNodeBounds.y;
+
+					DrawBezierCurve(OutputNubPoint, InputNubPoint, _ConnectionDefaultColor);
+				}
+			}
+		}
+	}
+	#pragma endregion
+
+	#pragma region Highlighted Connection Beziers
+	for (auto Node : _InputState.SelectedNodes)
 	{
 		for (auto Opt : Node->Options())
 		{
@@ -771,7 +812,7 @@ void QNodeView::RenderForeground()
 					InputNubPoint.x += InputNodeBounds.x;
 					InputNubPoint.y += InputNodeBounds.y;
 
-					DrawBezierCurve(OutputNubPoint, InputNubPoint);
+					DrawBezierCurve(OutputNubPoint, InputNubPoint, _ConnectionHighlightColor);
 				}
 			}
 		}
@@ -794,7 +835,7 @@ void QNodeView::RenderForeground()
 			NubPoint.x += NodeBounds.x;
 			NubPoint.y += NodeBounds.y;
 
-			DrawBezierCurve(NubPoint, _InputState.Position);
+			DrawBezierCurve(NubPoint, _InputState.Position, _ConnectionHighlightColor);
 		}
 		else if (_InputState.DraggingNub->GetNubType() == ANub::NubType::Input)
 		{
@@ -809,7 +850,7 @@ void QNodeView::RenderForeground()
 			NubPoint.x += NodeBounds.x;
 			NubPoint.y += NodeBounds.y;
 
-			DrawBezierCurve(_InputState.Position, NubPoint);
+			DrawBezierCurve(_InputState.Position, NubPoint, _ConnectionHighlightColor);
 		}
 	}
 	#pragma endregion
@@ -903,7 +944,7 @@ void QNodeView::RenderForeground()
 	//SDL_RenderCopy(Renderer, _Nubs._OutputDefault, nullptr, &RenderTgt);
 }
 
-void QNodeView::DrawBezierCurve(const SDL_Point &StartPt, const SDL_Point &EndPt)
+void QNodeView::DrawBezierCurve(const SDL_Point &StartPt, const SDL_Point &EndPt, const SDL_Color &Color)
 {
 	#define GetPt(n1, n2, perc) ((int)(n1 + ((n2 - n1) * perc)))
 
@@ -958,7 +999,7 @@ void QNodeView::DrawBezierCurve(const SDL_Point &StartPt, const SDL_Point &EndPt
 		DrawThickLine(gra, Color, 2, Segments[i - 1], Segments[i]);
 	}*/
 
-	SDL_SetRenderDrawColor(this->SDLRenderer(), 255, 255, 255, 255);
+	SDL_SetRenderDrawColor(this->SDLRenderer(), Color.r, Color.g, Color.b, Color.a);
 	SDL_RenderDrawLines(this->SDLRenderer(), Segments, NumSegments + 1);
 
 	#undef GetPt

@@ -25,6 +25,9 @@ class QNodeView : public QSDLPanel
 {
 protected:
 	SDL_Color _GridLineColor = { 50, 50, 50, 0xFF };
+	const SDL_Color _ConnectionDefaultColor = { 150, 150, 150, 255 };
+	const SDL_Color _ConnectionHighlightColor = { 255, 255, 255, 255 };
+
 	QNodeViewCamera _Camera;
 	QNodeViewInputState _InputState;
 	FontStore _FontStore;
@@ -46,7 +49,7 @@ protected:
 	void RenderBackground();
 	void RenderForeground();
 
-	void DrawBezierCurve(const SDL_Point &Start, const SDL_Point &End);
+	void DrawBezierCurve(const SDL_Point &Start, const SDL_Point &End, const SDL_Color &Color);
 
 public:
 	QNodeView(QWidget *Parent);

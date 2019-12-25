@@ -137,6 +137,8 @@ QSDLPanel::QSDLPanel(QWidget *parent) :
 	_SDLWindow = SDL_CreateWindowFrom((const void*)WinID);
 	_SDLRenderer = SDL_CreateRenderer(_SDLWindow, -1, SDL_RENDERER_ACCELERATED);
 
+	SDL_SetRenderDrawBlendMode(_SDLRenderer, SDL_BlendMode::SDL_BLENDMODE_BLEND);
+
 	//SDL_SetRenderDrawColor(_SDLRenderer, 0, 127, 0, 255);
 	//SDL_RenderClear(_SDLRenderer);
 

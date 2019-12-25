@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+static uint8_t NODE_TRANSPARENCY = 235;
+
 #pragma region AGraphicsBlock
 
 AGraphicsBlock::AGraphicsBlock(SDL_Renderer *AssociatedRenderer, const SDL_Rect &MaximumSize, const SDL_Rect &MinimumSize) :
@@ -215,7 +217,7 @@ void GraphicsBlock_NodeHeader::Render(SDL_Renderer *SDLRenderer, SDL_Point Posit
 {
 	SDL_Rect DrawPos = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
 	//SDL_SetRenderDrawColor(SDLRenderer, 80, 80, 80, 255);
-	SDL_SetRenderDrawColor(SDLRenderer, 65, 65, 65, 255);
+	SDL_SetRenderDrawColor(SDLRenderer, 65, 65, 65, NODE_TRANSPARENCY);
 	SDL_RenderFillRect(SDLRenderer, &DrawPos);
 
 	AGraphicsBlock::Render(SDLRenderer, Position);
@@ -287,9 +289,8 @@ void GraphicsBlock_NodeInputBox::CalculateSize(int MaxWidthHint, int MaxHeightHi
 void GraphicsBlock_NodeInputBox::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 {
 	SDL_Rect DrawPos = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
-	SDL_SetRenderDrawColor(SDLRenderer, 80, 80, 80, 255);
-	//SDL_SetRenderDrawColor(SDLRenderer, 65, 65, 65, 255);
-	SDL_RenderFillRect(SDLRenderer, &DrawPos);
+	//SDL_SetRenderDrawColor(SDLRenderer, 80, 80, 80, 255);
+	//SDL_RenderFillRect(SDLRenderer, &DrawPos);
 	SDL_SetRenderDrawColor(SDLRenderer, 110, 110, 110, 255);
 	SDL_RenderDrawRect(SDLRenderer, &DrawPos);
 
@@ -380,7 +381,7 @@ void GraphicsBlock_NodeInputBoxSection::CalculateSize(int MaxWidthHint, int MaxH
 void GraphicsBlock_NodeInputBoxSection::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 {
 	SDL_Rect DrawPos = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
-	SDL_SetRenderDrawColor(SDLRenderer, 80, 80, 80, 255);
+	SDL_SetRenderDrawColor(SDLRenderer, 80, 80, 80, NODE_TRANSPARENCY);
 	SDL_RenderFillRect(SDLRenderer, &DrawPos);
 
 	AGraphicsBlock::Render(SDLRenderer, Position);
@@ -510,8 +511,8 @@ void GraphicsBlock_NodeOutputBox::CalculateSize(int MaxWidthHint, int MaxHeightH
 void GraphicsBlock_NodeOutputBox::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 {
 	SDL_Rect DrawPos = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
-	SDL_SetRenderDrawColor(SDLRenderer, 110, 110, 110, 255);
-	SDL_RenderFillRect(SDLRenderer, &DrawPos);
+	//SDL_SetRenderDrawColor(SDLRenderer, 110, 110, 110, 255);
+	//SDL_RenderFillRect(SDLRenderer, &DrawPos);
 	SDL_SetRenderDrawColor(SDLRenderer, 80, 80, 80, 255);
 	SDL_RenderDrawRect(SDLRenderer, &DrawPos);
 
@@ -613,7 +614,7 @@ void GraphicsBlock_NodeOutputBoxSection::CalculateSize(int MaxWidthHint, int Max
 void GraphicsBlock_NodeOutputBoxSection::Render(SDL_Renderer *SDLRenderer, SDL_Point Position)
 {
 	SDL_Rect DrawPos = { Position.x, Position.y, _CalculatedBounds.w, _CalculatedBounds.h };
-	SDL_SetRenderDrawColor(SDLRenderer, 110, 110, 110, 110);
+	SDL_SetRenderDrawColor(SDLRenderer, 110, 110, 110, NODE_TRANSPARENCY);
 	SDL_RenderFillRect(SDLRenderer, &DrawPos);
 
 	AGraphicsBlock::Render(SDLRenderer, Position);
