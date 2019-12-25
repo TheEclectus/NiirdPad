@@ -589,8 +589,8 @@ void QNodeView::Input()
 				GetCamera().ViewBox.x -= Delta.x;
 				GetCamera().ViewBox.y -= Delta.y;
 
-				int XDest = (MousePos.x > GetCamera().ViewBox.w) ? 1 : ((MousePos.x < 0) ? (GetCamera().ViewBox.w - 1) : -1);
-				int YDest = (MousePos.y > GetCamera().ViewBox.h) ? 1 : ((MousePos.y < 0) ? (GetCamera().ViewBox.h - 1) : -1);
+				int XDest = (MousePos.x >= GetCamera().ViewBox.w - 1) ? 1 : ((MousePos.x < 0) ? (GetCamera().ViewBox.w - 2) : -1);
+				int YDest = (MousePos.y >= GetCamera().ViewBox.h) ? 1 : ((MousePos.y < 0) ? (GetCamera().ViewBox.h - 1) : -1);
 
 				if (XDest != -1 || YDest != -1)
 				{
@@ -980,8 +980,11 @@ void QNodeView::DrawBezierCurve(const SDL_Point &StartPt, const SDL_Point &EndPt
 		float DiffMult = 1.5f;
 		int PtDiff = abs(EndPt.x - StartPt.x);
 
-		Ctrl1 = { StartPt.x + (int)((float)PtDiff * DiffMult), StartPt.y };
-		Ctrl2 = { EndPt.x - (int)((float)PtDiff * DiffMult), EndPt.y };
+		//Ctrl1 = { StartPt.x + (int)((float)PtDiff * DiffMult), StartPt.y };
+		//Ctrl2 = { EndPt.x - (int)((float)PtDiff * DiffMult), EndPt.y };
+		Ctrl1 = { StartPt.x + (std::min(PtDiff, 300) + (int)((float)PtDiff * 0.033f)), StartPt.y };
+		Ctrl2 = { EndPt.x - (std::min(PtDiff, 300) + (int)((float)PtDiff * 0.033f)), EndPt.y };
+
 	}
 
 	const size_t NumSegments = 20;

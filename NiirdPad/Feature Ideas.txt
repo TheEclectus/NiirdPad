@@ -24,7 +24,6 @@ Mige:
 - Word count display
 - Ability to reorder fragments within a node.
 (Interface)
-- Change the curves. The curving on them is too much, making the lines hard to read sometimes. It also has this quirk where it can curve way too far creating a mess https://gyazo.com/518aecc87d521d41eb2f517c76c5122b
 - Anti-alias the lines, since I hate jaggies.
 - Dark mode.
 (Bugs)
@@ -37,6 +36,7 @@ Mige:
 - Make the background of the fragment slightly transparent. It will make it a lot easier to see where connections are going.
 ! A nice subtle effect would be to highlight all the connections from a highlighted node. You could make all the connections grey and highlighted ones white for this.
 - Ability to pan the view without the cursor being stopped by the edge of the screen.
+! Change the curves. The curving on them is too much, making the lines hard to read sometimes. It also has this quirk where it can curve way too far creating a mess https://gyazo.com/518aecc87d521d41eb2f517c76c5122b
 
 
 =========== REJECTED ===========
