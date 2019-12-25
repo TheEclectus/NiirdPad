@@ -48,6 +48,7 @@ public:
 	void CleanChanges();
 
 	Character *NewCharacter(const std::string &Name);
+	void RenameCharacter(Character *EditChar, const std::string &Name);
 	bool DeleteCharacter(Character *DeleteChar);
 	std::map<std::string, Character*> &Characters();
 };

@@ -20,6 +20,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QVBoxLayout>
@@ -53,10 +54,20 @@ public:
     QHBoxLayout *horizontalLayout;
     QFrame *frame;
     QVBoxLayout *verticalLayout;
+    QHBoxLayout *horizontalLayout_3;
     QLabel *label;
+    QPushButton *btnAddCharacter;
+    QPushButton *btnDeleteCharacter;
+    QPushButton *btnRenameCharacter;
+    QSpacerItem *horizontalSpacer;
     QComboBox *cmbCharacter;
     QLabel *label_2;
     QComboBox *cmbDiag;
+    QFrame *line;
+    QLabel *label_3;
+    QHBoxLayout *horizontalLayout_2;
+    QComboBox *cmbJump;
+    QPushButton *btnJump;
     QSpacerItem *verticalSpacer;
     QNodeView *widget;
     QMenuBar *menuBar;
@@ -135,10 +146,49 @@ public:
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        horizontalLayout_3 = new QHBoxLayout();
+        horizontalLayout_3->setSpacing(6);
+        horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
         label = new QLabel(frame);
         label->setObjectName(QString::fromUtf8("label"));
+        QFont font;
+        font.setBold(true);
+        font.setWeight(75);
+        label->setFont(font);
 
-        verticalLayout->addWidget(label);
+        horizontalLayout_3->addWidget(label);
+
+        btnAddCharacter = new QPushButton(frame);
+        btnAddCharacter->setObjectName(QString::fromUtf8("btnAddCharacter"));
+        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Fixed);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(btnAddCharacter->sizePolicy().hasHeightForWidth());
+        btnAddCharacter->setSizePolicy(sizePolicy1);
+        btnAddCharacter->setMinimumSize(QSize(23, 0));
+        btnAddCharacter->setMaximumSize(QSize(23, 16777215));
+
+        horizontalLayout_3->addWidget(btnAddCharacter);
+
+        btnDeleteCharacter = new QPushButton(frame);
+        btnDeleteCharacter->setObjectName(QString::fromUtf8("btnDeleteCharacter"));
+        btnDeleteCharacter->setMinimumSize(QSize(23, 0));
+        btnDeleteCharacter->setMaximumSize(QSize(23, 16777215));
+
+        horizontalLayout_3->addWidget(btnDeleteCharacter);
+
+        btnRenameCharacter = new QPushButton(frame);
+        btnRenameCharacter->setObjectName(QString::fromUtf8("btnRenameCharacter"));
+        btnRenameCharacter->setMinimumSize(QSize(45, 0));
+
+        horizontalLayout_3->addWidget(btnRenameCharacter);
+
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_3->addItem(horizontalSpacer);
+
+
+        verticalLayout->addLayout(horizontalLayout_3);
 
         cmbCharacter = new QComboBox(frame);
         cmbCharacter->setObjectName(QString::fromUtf8("cmbCharacter"));
@@ -155,6 +205,48 @@ public:
 
         verticalLayout->addWidget(cmbDiag);
 
+        line = new QFrame(frame);
+        line->setObjectName(QString::fromUtf8("line"));
+        QSizePolicy sizePolicy2(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(line->sizePolicy().hasHeightForWidth());
+        line->setSizePolicy(sizePolicy2);
+        line->setMinimumSize(QSize(0, 1));
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
+
+        verticalLayout->addWidget(line);
+
+        label_3 = new QLabel(frame);
+        label_3->setObjectName(QString::fromUtf8("label_3"));
+
+        verticalLayout->addWidget(label_3);
+
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setSpacing(6);
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        cmbJump = new QComboBox(frame);
+        cmbJump->setObjectName(QString::fromUtf8("cmbJump"));
+        QSizePolicy sizePolicy3(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+        sizePolicy3.setHorizontalStretch(0);
+        sizePolicy3.setVerticalStretch(0);
+        sizePolicy3.setHeightForWidth(cmbJump->sizePolicy().hasHeightForWidth());
+        cmbJump->setSizePolicy(sizePolicy3);
+
+        horizontalLayout_2->addWidget(cmbJump);
+
+        btnJump = new QPushButton(frame);
+        btnJump->setObjectName(QString::fromUtf8("btnJump"));
+        sizePolicy1.setHeightForWidth(btnJump->sizePolicy().hasHeightForWidth());
+        btnJump->setSizePolicy(sizePolicy1);
+        btnJump->setMaximumSize(QSize(50, 16777215));
+
+        horizontalLayout_2->addWidget(btnJump);
+
+
+        verticalLayout->addLayout(horizontalLayout_2);
+
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         verticalLayout->addItem(verticalSpacer);
@@ -164,11 +256,11 @@ public:
 
         widget = new QNodeView(centralWidget);
         widget->setObjectName(QString::fromUtf8("widget"));
-        QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        sizePolicy1.setHorizontalStretch(20);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(widget->sizePolicy().hasHeightForWidth());
-        widget->setSizePolicy(sizePolicy1);
+        QSizePolicy sizePolicy4(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy4.setHorizontalStretch(20);
+        sizePolicy4.setVerticalStretch(0);
+        sizePolicy4.setHeightForWidth(widget->sizePolicy().hasHeightForWidth());
+        widget->setSizePolicy(sizePolicy4);
 
         horizontalLayout->addWidget(widget);
 
@@ -228,6 +320,9 @@ public:
         actionSave_As->setText(QApplication::translate("NiirdPadClass", "Save As...", nullptr));
         actionImportProject->setText(QApplication::translate("NiirdPadClass", "Import Project...", nullptr));
         actionExport_Project->setText(QApplication::translate("NiirdPadClass", "x Export Project...", nullptr));
+#ifndef QT_NO_TOOLTIP
+        actionExport_Project->setToolTip(QApplication::translate("NiirdPadClass", "x Export Project", nullptr));
+#endif // QT_NO_TOOLTIP
         actionEditReferenceWindowNew->setText(QApplication::translate("NiirdPadClass", "New", nullptr));
         actionEditReferenceWindowEdit->setText(QApplication::translate("NiirdPadClass", "Edit", nullptr));
         actionImportConsole->setText(QApplication::translate("NiirdPadClass", "Import Console", nullptr));
@@ -240,7 +335,21 @@ public:
         actionEditScriptWindowOption->setText(QApplication::translate("NiirdPadClass", "Option Fragment", nullptr));
         actionDump_Reference_Database->setText(QApplication::translate("NiirdPadClass", "Dump Reference Database For Current File", nullptr));
         label->setText(QApplication::translate("NiirdPadClass", "Character", nullptr));
+#ifndef QT_NO_TOOLTIP
+        btnAddCharacter->setToolTip(QApplication::translate("NiirdPadClass", "Create New Character", nullptr));
+#endif // QT_NO_TOOLTIP
+        btnAddCharacter->setText(QApplication::translate("NiirdPadClass", "+", nullptr));
+#ifndef QT_NO_TOOLTIP
+        btnDeleteCharacter->setToolTip(QApplication::translate("NiirdPadClass", "Delete Character", nullptr));
+#endif // QT_NO_TOOLTIP
+        btnDeleteCharacter->setText(QApplication::translate("NiirdPadClass", "-", nullptr));
+#ifndef QT_NO_TOOLTIP
+        btnRenameCharacter->setToolTip(QApplication::translate("NiirdPadClass", "Rename Character", nullptr));
+#endif // QT_NO_TOOLTIP
+        btnRenameCharacter->setText(QApplication::translate("NiirdPadClass", "Ren", nullptr));
         label_2->setText(QApplication::translate("NiirdPadClass", "Dialogue File", nullptr));
+        label_3->setText(QApplication::translate("NiirdPadClass", "Jump to Index", nullptr));
+        btnJump->setText(QApplication::translate("NiirdPadClass", "Jump", nullptr));
         menuFile->setTitle(QApplication::translate("NiirdPadClass", "File", nullptr));
         menuDebug->setTitle(QApplication::translate("NiirdPadClass", "Debug", nullptr));
         menuEdit_Reference_Window->setTitle(QApplication::translate("NiirdPadClass", "Edit Reference Window", nullptr));

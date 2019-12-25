@@ -43,7 +43,7 @@ void QNodeView::Input()
 			auto KeyboardMods = SDL_GetModState();
 			bool bNodeFound = false;
 			// TODO: Only look through the list of VISIBILE nodes (see TODO about occlusion culling)
-			for (auto CurNodeIter = _Nodes.begin(); CurNodeIter != _Nodes.end(); CurNodeIter++)
+			for (auto CurNodeIter = _Nodes.rbegin(); CurNodeIter != _Nodes.rend(); CurNodeIter++)
 			{
 				auto CurNode = *CurNodeIter;
 
@@ -72,7 +72,7 @@ void QNodeView::Input()
 						}
 						
 						// Brings last-clicked Node to the top
-						_Nodes.erase(CurNodeIter);
+						_Nodes.erase(std::next(CurNodeIter).base());	// https://stackoverflow.com/questions/1830158/how-to-call-erase-with-a-reverse-iterator
 						_Nodes.insert(_Nodes.end(), CurNode);
 
 						bNodeFound = true;
@@ -309,8 +309,11 @@ void QNodeView::Input()
 
 			bool bNodeFound = false;
 			// TODO: Only look through the list of VISIBILE nodes (see TODO about occlusion culling)
-			for (auto CurNode : _Nodes)
+			//for (auto CurNode : _Nodes)
+			for (auto CurNodeIter = _Nodes.rbegin(); CurNodeIter != _Nodes.rend(); CurNodeIter++)
 			{
+				auto CurNode = (*CurNodeIter);
+
 				auto NodePos = CurNode->Position();
 				auto NodeBounds = CurNode->Graphics().GetBounds();
 				NodeBounds.x = (GetCamera().ViewBox.w / 2) - GetCamera().ViewBox.x + NodePos.x;
@@ -592,8 +595,11 @@ void QNodeView::Input()
 
 			bool bNodeFound = false;
 			// TODO: Only look through the list of VISIBILE nodes (see TODO about occlusion culling)
-			for (auto CurNode : _Nodes)
+			//for (auto CurNode : _Nodes)
+			for (auto CurNodeIter = _Nodes.rbegin(); CurNodeIter != _Nodes.rend(); CurNodeIter++)
 			{
+				auto CurNode = (*CurNodeIter);
+
 				auto NodePos = CurNode->Position();
 				auto NodeBounds = CurNode->Graphics().GetBounds();
 				NodeBounds.x = (GetCamera().ViewBox.w / 2) - GetCamera().ViewBox.x + NodePos.x;
@@ -998,6 +1004,29 @@ QNodeViewCamera &QNodeView::GetCamera()
 	return _Camera;
 }
 
+void QNodeView::JumpTo(NodeDialogue *Dlg)
+{
+	if (Dlg == nullptr)
+		return;
+
+	NodeDialogue &DestFrag = *Dlg;
+	Node &DestNode = DestFrag.Parent();
+	if (std::find(_Nodes.begin(), _Nodes.end(), &DestNode) == _Nodes.end())
+	{
+		return;
+	}
+
+	auto NodePos = DestNode.Position();
+	//auto NodeBounds = DestNode.Graphics().GetBounds();
+
+	auto FragPos = DestFrag.Graphics()->GetTotalOffset();
+	NodePos.x += FragPos.x + 30;
+	NodePos.y += FragPos.y + DestFrag.Graphics()->NubPoint().y;
+
+	_Camera.ViewBox.x = NodePos.x;
+	_Camera.ViewBox.y = NodePos.y;
+}
+
 void QNodeView::SetEngine(ScriptEngine *Engine)
 {
 	_Engine = Engine;
@@ -1019,6 +1048,7 @@ void QNodeView::ConnectToReferenceEditWindow()
 		if (Destination != nullptr)
 		{
 			auto NewDlg = Destination->AddDialogue(Reference);
+			this->GetNiirdPad()->ResetIndexCombo();
 			this->_Parent->ScriptEditWindow()->dialogueFragment(NewDlg);
 		}
 		else

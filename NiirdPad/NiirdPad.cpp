@@ -163,6 +163,44 @@ void NiirdPad::ResetDialogueFileCombo()
 			ui.cmbDiag->addItem(CurDiag.first.c_str(), QVariant::fromValue((void*)CurDiag.second));
 		}
 	}
+
+	ResetIndexCombo();
+}
+
+void NiirdPad::ResetIndexCombo()
+{
+	ui.cmbJump->clear();
+
+	if (_loadedProject && ui.cmbCharacter->count() > 0 && ui.cmbDiag->count() > 0)
+	{
+		std::vector<std::pair<std::string, void*>> ListItems;
+		DialogueFile *SelectedDiag = (DialogueFile*)ui.cmbDiag->currentData().value<void*>();
+
+		for (auto &CurNode : SelectedDiag->GetNodes())
+		{
+			for (auto CurDlg : CurNode->Dialogues())
+			{
+				//ui.cmbJump->addItem(CurDlg->GetReference().c_str(), QVariant::fromValue((void*)CurDlg));
+				ListItems.push_back({ CurDlg->GetReference(), (void*)CurDlg });
+			}
+		}
+
+		std::sort(ListItems.begin(), ListItems.end());
+
+		for (auto CurPair : ListItems)
+		{
+			ui.cmbJump->addItem(CurPair.first.c_str(), QVariant::fromValue(CurPair.second));
+		}
+	}
+
+	if (ui.cmbJump->count() > 0)
+	{
+		ui.btnJump->setEnabled(true);
+	}
+	else
+	{
+		ui.btnJump->setEnabled(false);
+	}
 }
 
 void NiirdPad::SetWindowTitle()
@@ -259,6 +297,7 @@ void NiirdPad::ImportConfirmationMessageBox(std::vector<std::string> Warnings, R
 NiirdPad::NiirdPad(QWidget *parent) :
 	QMainWindow(parent),
 	_scriptEngine(),
+	_characterWindow(new QCharacterWindow(this)),
 	_commentEditWindow(new QCommentEditWindow(this)),
 	_scriptEditWindow(new QScriptEditWindow(this, _scriptEngine, false)),
 	_referenceEditWindow(new QReferenceEditWindow(this))
@@ -269,6 +308,43 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	ui.widget->SetEngine(&_scriptEngine);
 	ui.widget->SetNiirdPad(this);
 	ui.widget->ConnectToReferenceEditWindow();
+
+	connect(_characterWindow, &QCharacterWindow::NameAdded, [this](std::string NewName) {
+		this->ResetCharacterCombo();
+
+		ui.cmbCharacter->setCurrentIndex(ui.cmbCharacter->findText(NewName.c_str()));
+		auto VB = this->ui.widget->GetCamera().ViewBox;
+		this->ui.widget->GetCamera().ViewBox = { 0, 0, VB.w, VB.h };
+	});
+
+	connect(_characterWindow, &QCharacterWindow::NameEdited, [this](std::string NewName) {
+		this->ResetCharacterCombo();
+
+		ui.cmbCharacter->setCurrentIndex(ui.cmbCharacter->findText(NewName.c_str()));
+	});
+
+	connect(ui.btnAddCharacter, &QPushButton::pressed, [this]() {
+		this->_characterWindow->NewCharacter(this->_loadedProject);
+	});
+
+	connect(ui.btnRenameCharacter, &QPushButton::pressed, [this]() {
+		this->_characterWindow->EditCharacter(this->_loadedProject, (Character*)ui.cmbCharacter->currentData().value<void*>());
+	});
+
+	connect(ui.btnDeleteCharacter, &QPushButton::pressed, [this]() {
+		if (ui.cmbCharacter->count() > 1)
+		{
+			if (QMessageBox::warning(this, "Warning", "Deleting a character cannot be undone. Continue?", QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel) != QMessageBox::Yes)
+				return;
+
+			_loadedProject->DeleteCharacter((Character*)ui.cmbCharacter->currentData().value<void*>());
+			ResetCharacterCombo();
+		}
+		else
+		{
+			QMessageBox::warning(this, "Cannot Delete Character", "Cannot delete final character.");
+		}
+	});
 
 	connect(ui.actionImportProject, &QAction::triggered, [this]() {
 		auto Confirmation = QMessageBox::information(this, "WIP Feature", "Project importing is still a WIP feature, and errors are to be expected. Currently there is no automatic layout algorithm, and Nodes must be arranged by hand. Erroneous Options will not be connected. Continue?", QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel);
@@ -397,6 +473,15 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	connect(ui.cmbDiag, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int index) {
 		DialogueFile *DiagFile = (DialogueFile*)ui.cmbDiag->itemData(index).value<void*>();
 		this->ui.widget->SetDialogueFile(DiagFile);
+		this->ResetIndexCombo();
+	});
+	connect(ui.cmbCharacter, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int index) {
+		//NodeDialogue *Dlg = (NodeDialogue*)ui.cmbDiag->itemData(index).value<void*>();
+		//this->ui.widget->JumpTo(Dlg);
+	});
+	connect(ui.btnJump, &QPushButton::pressed, [this]() {
+		NodeDialogue *Dlg = (NodeDialogue*)ui.cmbJump->currentData().value<void*>();
+		this->ui.widget->JumpTo(Dlg);
 	});
 
 	// TODO: Hide debug menu and console when not launched with --debug flag

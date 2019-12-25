@@ -16,6 +16,7 @@ class DialogueFile;
 class Node;
 class ANub;
 class NubOutput;
+class NodeDialogue;
 
 // NiirdPad.h
 class NiirdPad;
@@ -55,6 +56,9 @@ public:
 	void SetDialogueFile(DialogueFile *File);
 
 	QNodeViewCamera &GetCamera();
+
+	//void JumpTo(ConnectionOutput *OutConn);
+	void JumpTo(NodeDialogue *Dlg);
 
 	// HACK: So you can't miss the HACK label for setting a crucial pointer outside the constructor, fuckhead
 	void SetEngine(ScriptEngine *Engine);

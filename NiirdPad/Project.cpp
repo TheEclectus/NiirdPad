@@ -62,9 +62,9 @@ void Project::New()
 {
 	Unload();
 	// TODO: Check existing characters and make a new name if necessary / prompt the user for a name
-	Character *NewChar = NewCharacter("New Character"); // Legally distinct from Niirds™
+	Character *NewChar = NewCharacter("new_character"); // Legally distinct from Niirds™
 
-	DialogueFile *NewDiag = NewChar->NewDialogueFile("diag");
+	DialogueFile *NewDiag = NewChar->NewDialogueFile("diag.txt");
 }
 
 const std::string &Project::SavePath() const
@@ -511,9 +511,21 @@ void Project::CleanChanges()
 Character *Project::NewCharacter(const std::string &Name)
 {
 	Character *NewCharacter = new Character(*this, _NodeView, Name);
+	//NewCharacter->NewDialogueFile("diag.txt");
 	_Characters.insert({ Name, NewCharacter });
 
 	return NewCharacter;
+}
+
+void Project::RenameCharacter(Character *EditChar, const std::string &Name)
+{
+	auto &Res = _Characters.find(EditChar->GetName());
+	if (Res != _Characters.end())
+	{
+		std::pair<const std::string, Character*> NewPair = { Name, EditChar };
+		_Characters.erase(Res);
+		_Characters.insert(NewPair);
+	}
 }
 
 bool Project::DeleteCharacter(Character *DeleteChar)

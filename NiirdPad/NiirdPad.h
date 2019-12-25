@@ -5,6 +5,7 @@
 #include "ui_NiirdPad.h"
 
 #include "ImportWorker.h"
+#include "QCharacterWindow.h"
 #include "QCommentEditWindow.h"
 #include "QReferenceEditWindow.h"
 #include "QScriptEditWindow.h"
@@ -12,7 +13,7 @@
 
 #include "Project.h"
 
-#define NIIRDPAD_VERSION	"0.9.3"
+#define NIIRDPAD_VERSION	"0.9.12"
 
 #ifndef NIIRDPAD_BUILD_ID
 	#define NIIRDPAD_BUILD_ID	"67660deb" //"BUILD ID UNDEFINED"
@@ -26,6 +27,7 @@ private:
 	Ui::NiirdPadClass ui;
 	//QMessageBox *_importMessageBox;
 	ScriptEngine _scriptEngine;
+	QCharacterWindow *_characterWindow;
 	QCommentEditWindow *_commentEditWindow;
 	QScriptEditWindow *_scriptEditWindow;
 	QReferenceEditWindow *_referenceEditWindow;
@@ -33,8 +35,6 @@ private:
 	Project *_loadedProject;
 
 	void Import();
-	void ResetCharacterCombo();
-	void ResetDialogueFileCombo();
 	void SetWindowTitle();
 	void closeEvent(QCloseEvent *Event) override;
 
@@ -47,6 +47,10 @@ public:
 	QScriptEditWindow *ScriptEditWindow();
 	QReferenceEditWindow *ReferenceEditWindow();
 	ScriptEngine &ScriptEngine();
+
+	void ResetCharacterCombo();
+	void ResetDialogueFileCombo();
+	void ResetIndexCombo();
 
 	void DirtyProjectChanges();
 	void CleanProjectChanges();

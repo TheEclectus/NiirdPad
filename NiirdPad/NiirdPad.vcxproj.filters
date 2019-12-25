@@ -102,6 +102,9 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="QCharacterWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="NiirdPad.h">
@@ -125,6 +128,9 @@
     <QtMoc Include="QCommentEditWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="QCharacterWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="NiirdPad.ui">
@@ -140,6 +146,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="QCommentEditWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="QCharacterWindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

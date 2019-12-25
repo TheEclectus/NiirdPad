@@ -6,8 +6,7 @@
 					"type": "string"
 				},
 				"destIndex": {
-					"type": "string",
-					"pattern": "([_a-z]*)"
+					"type": "string"
 				}
 			},
 			"required": [
@@ -18,8 +17,7 @@
 		"dialogue": {
 			"properties": {
 				"index": {
-					"type": "string",
-					"pattern": "([_a-z])+"
+					"type": "string"
 				},
 				"text": {
 					"type": "string"
