@@ -105,6 +105,9 @@
     <ClCompile Include="QCharacterWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TUScriptLexer_Exp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="NiirdPad.h">
@@ -204,6 +207,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TUScriptLexer_Exp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

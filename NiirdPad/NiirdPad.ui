@@ -326,6 +326,7 @@
     <addaction name="menuEdit_Reference_Window"/>
     <addaction name="menuEditScriptWindow"/>
     <addaction name="actionDump_Reference_Database"/>
+    <addaction name="actionExperimental_TUScript_Parser"/>
    </widget>
    <widget class="QMenu" name="menuTUScript">
     <property name="title">
@@ -434,6 +435,11 @@
   <action name="actionDump_Reference_Database">
    <property name="text">
     <string>Dump Reference Database For Current File</string>
+   </property>
+  </action>
+  <action name="actionExperimental_TUScript_Parser">
+   <property name="text">
+    <string>Experimental TUScript Parser</string>
    </property>
   </action>
  </widget>

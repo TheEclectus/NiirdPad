@@ -50,6 +50,7 @@ public:
     QAction *actionEditScriptWindowDialogue;
     QAction *actionEditScriptWindowOption;
     QAction *actionDump_Reference_Database;
+    QAction *actionExperimental_TUScript_Parser;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
     QFrame *frame;
@@ -125,6 +126,8 @@ public:
         actionEditScriptWindowOption->setObjectName(QString::fromUtf8("actionEditScriptWindowOption"));
         actionDump_Reference_Database = new QAction(NiirdPadClass);
         actionDump_Reference_Database->setObjectName(QString::fromUtf8("actionDump_Reference_Database"));
+        actionExperimental_TUScript_Parser = new QAction(NiirdPadClass);
+        actionExperimental_TUScript_Parser->setObjectName(QString::fromUtf8("actionExperimental_TUScript_Parser"));
         centralWidget = new QWidget(NiirdPadClass);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         horizontalLayout = new QHBoxLayout(centralWidget);
@@ -309,6 +312,7 @@ public:
         menuDebug->addAction(menuEdit_Reference_Window->menuAction());
         menuDebug->addAction(menuEditScriptWindow->menuAction());
         menuDebug->addAction(actionDump_Reference_Database);
+        menuDebug->addAction(actionExperimental_TUScript_Parser);
         menuEdit_Reference_Window->addAction(actionEditReferenceWindowNew);
         menuEdit_Reference_Window->addAction(actionEditReferenceWindowEdit);
         menuEditScriptWindow->addAction(actionEditScriptWindowOption);
@@ -346,6 +350,7 @@ public:
         actionEditScriptWindowDialogue->setText(QApplication::translate("NiirdPadClass", "Dialogue Fragment", nullptr));
         actionEditScriptWindowOption->setText(QApplication::translate("NiirdPadClass", "Option Fragment", nullptr));
         actionDump_Reference_Database->setText(QApplication::translate("NiirdPadClass", "Dump Reference Database For Current File", nullptr));
+        actionExperimental_TUScript_Parser->setText(QApplication::translate("NiirdPadClass", "Experimental TUScript Parser", nullptr));
         label->setText(QApplication::translate("NiirdPadClass", "Character", nullptr));
 #ifndef QT_NO_TOOLTIP
         btnAddCharacter->setToolTip(QApplication::translate("NiirdPadClass", "Create New Character", nullptr));

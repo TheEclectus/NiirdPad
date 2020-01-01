@@ -157,6 +157,7 @@
     <ClCompile Include="ReferenceDatabase.cpp" />
     <ClCompile Include="SDL_FontCache.c" />
     <ClCompile Include="ScriptEngine.cpp" />
+    <ClCompile Include="TUScriptLexer_Exp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="NiirdPad.h" />
@@ -186,6 +187,7 @@
     <ClInclude Include="format.h" />
     <ClInclude Include="GraphicsBlocks.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="TUScriptLexer_Exp.h" />
     <QtMoc Include="ImportWorker.h">
     </QtMoc>
     <ClInclude Include="Project.h" />

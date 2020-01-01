@@ -20,6 +20,8 @@
 #include "DialogueFile.h"
 #include "Node.h"
 
+#include "TUScriptLexer_Exp.h"
+
 void NiirdPad::Import()
 {
 	QFileDialog Dialog;
@@ -309,6 +311,11 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	ui.widget->SetNiirdPad(this);
 	ui.widget->ConnectToReferenceEditWindow();
 
+	connect(ui.actionExperimental_TUScript_Parser, &QAction::triggered, []() {
+		TUScriptParser PS;
+		PS.Parse();
+	});
+
 	connect(_characterWindow, &QCharacterWindow::NameAdded, [this](std::string NewName) {
 		this->ResetCharacterCombo();
 
@@ -485,7 +492,7 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	});
 
 	// TODO: Hide debug menu and console when not launched with --debug flag
-	ui.menuDebug->menuAction()->setVisible(false);
+	//ui.menuDebug->menuAction()->setVisible(false);
 
 	//ui.widget->setFocus();
 	//this->setMouseTracking(true);
