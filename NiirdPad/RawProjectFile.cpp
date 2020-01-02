@@ -98,6 +98,11 @@ RawProjectFile_ScriptFile::RawProjectFile_ScriptFile(TUScript::State &State)
 	}
 }
 
+RawProjectFile_ScriptFile::RawProjectFile_ScriptFile()
+{
+
+}
+
 const std::vector<RawProjectFile_Node> &RawProjectFile_ScriptFile::Nodes() const
 {
 	return _Nodes;

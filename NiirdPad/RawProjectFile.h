@@ -28,6 +28,7 @@ public:
 
 class RawProjectFile_Option
 {
+	friend class TUScriptParser;
 private:
 	std::string _Pointer;
 	// VisScripts don't have leading slashes
@@ -45,6 +46,7 @@ public:
 class RawProjectFile_Node
 {
 	friend class RawProjectFile_ScriptFile;
+	friend class TUScriptParser;
 private:
 	std::string _Comment;
 	std::vector<RawProjectFile_Dialogue> _Dialogues;
@@ -58,16 +60,19 @@ public:
 
 class RawProjectFile_ScriptFile
 {
+	friend class TUScriptParser;
 private:
 	std::vector<RawProjectFile_Node> _Nodes;
 
 public:
 	RawProjectFile_ScriptFile(TUScript::State &State);
+	RawProjectFile_ScriptFile();
 	const std::vector<RawProjectFile_Node> &Nodes() const;
 };
 
 class RawProjectFile_Character
 {
+	friend class TUScriptParser;
 private:
 	std::map<std::string, RawProjectFile_ScriptFile> _Files;
 

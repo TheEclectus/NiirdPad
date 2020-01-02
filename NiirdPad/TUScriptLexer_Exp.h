@@ -26,6 +26,7 @@ public:
 
 private:
 	const std::string _Whitespace = " \t";
+	std::vector<std::string> _scriptLines;
 	std::stack<ParserState> _parserState;
 
 	RawProjectFile_ScriptFile _outFile;
@@ -38,9 +39,10 @@ private:
 	std::string _errorMessage = "";
 
 public:
-	TUScriptParser();
+	TUScriptParser(const std::string &FilePath);
 
 	void MakeError(const std::string &Message);
+	const std::string &GetError();
 
 	void Parse();
 

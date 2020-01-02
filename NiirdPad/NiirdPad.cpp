@@ -312,8 +312,22 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	ui.widget->ConnectToReferenceEditWindow();
 
 	connect(ui.actionExperimental_TUScript_Parser, &QAction::triggered, []() {
-		TUScriptParser PS;
+		std::string InFile = QFileDialog::getOpenFileName(nullptr, "Test Parser", QString(), "Text File(*.txt)").toStdString();
+
+		if (InFile.length() == 0)
+			return;
+
+		TUScriptParser PS(InFile);
 		PS.Parse();
+
+		if (PS.GetError().length() > 0)
+		{
+			QMessageBox::warning(nullptr, "Error parsing", PS.GetError().c_str());
+		}
+		else
+		{
+			QMessageBox::information(nullptr, "Parsed Successfully!", "No errors.");
+		}
 	});
 
 	connect(_characterWindow, &QCharacterWindow::NameAdded, [this](std::string NewName) {

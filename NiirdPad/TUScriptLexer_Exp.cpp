@@ -4,63 +4,150 @@
 
 #include "format.h"
 
+std::string TestDiag = R"(NOTES
+This is where some random-ass notes gonna go
+					wheeeeeeeeeeee I'm over here
+   now I'm back over here whatcha gonna do
+NOTES
+
+|| >> test comment
+{start | hide_character, counter falmilen_anger + 0} You are standing at the entrance of a cave. If you listen closely, whistling echoing sounds can occasionally be heard from the inside.
+	[test_option] And here's an option.
+||)";
+
 //std::string TestDiag = R"(NOTES
 //This is where some random-ass notes gonna go
 //					wheeeeeeeeeeee I'm over here
 //   now I'm back over here whatcha gonna do
-//NOTES
-//
-//||
-//{start | hide_character, counter falmilen_anger + 0} You are standing at the entrance of a cave. If you listen closely, whistling echoing sounds can occasionally be heard from the inside.
-//	[test_option] And here's an option.
-//||)";
-std::string TestDiag = "	[blap] You are standing at the entrance, of a cave. If you listen closely, whistling echoing sounds can occasionally, be heard from the inside.";
+//NOTES)";
 
-TUScriptParser::TUScriptParser()
+TUScriptParser::TUScriptParser(const std::string &FilePath)
 {
-	RawProjectFile_ScriptFile()
+	strtk::for_each_line(FilePath, [this](const std::string &Line) {
+		std::string NewLine = Line;
+		strtk::remove_trailing(_Whitespace, NewLine);
+
+		//bool hold = NewLine == "||>>witch talks";
+
+		//std::string NewLineNoWhitespace = NewLine;
+		//strtk::remove_leading_trailing(_Whitespace, NewLineNoWhitespace);
+		//if(NewLineNoWhitespace.length() > 0)
+		this->_scriptLines.push_back(NewLine);
+	});
+
+	//strtk::remove_empty_strings(_scriptLines);
 }
 
 void TUScriptParser::MakeError(const std::string &Message)
 {
 	if (_errorMessage.length() > 0)
 		_errorMessage += "\n";
-	_errorMessage = fmt::format("{}:{}: {}", _lineNum, _cursorPos, Message);
+	_errorMessage = fmt::format("{}:{}: {}", _lineNum + 1, _cursorPos, Message);
+}
+
+const std::string & TUScriptParser::GetError()
+{
+	return _errorMessage;
 }
 
 void TUScriptParser::Parse()
 {
-	// Split the file into lines.
-	std::vector<std::string> Parts = {};
-	strtk::parse(TestDiag, "\n", Parts);
-
-	//strtk::remove_empty_strings(Parts);
-
 	_parserState.push(ParserState::Base);
 
-	while (_lineNum <= Parts.size() - 1)
+	while (_lineNum <= _scriptLines.size() - 1)
 	{
-		_currentLine = Parts[_lineNum];
+		_currentLine = _scriptLines[_lineNum];
 		_cursorPos = 0u;
 
-		// Valid branch states should be Notes or Node
-		if (_parserState.top() == ParserState::Base)
+		std::string CurrentLineCopyNoWhitespace = _currentLine;
+		strtk::remove_leading_trailing(_Whitespace, CurrentLineCopyNoWhitespace);
+		if (CurrentLineCopyNoWhitespace.length() == 0)
 		{
+			_lineNum++;
+			continue;
+		}
+
+		switch (_parserState.top())
+		{
+		case ParserState::Base:
 			if (_currentLine.find("NOTES") == 0u)
 			{
-				ConsumeNotes();
-			}
+				if (!ConsumeString("NOTES"))
+					return;
 
+				OptConsumeWhitespace();
+
+				_parserState.push(ParserState::Notes);
+			}
+			else if (_currentLine.find("||") == 0u)
+			{
+				if (!ConsumeNode())
+					return;
+
+				_parserState.push(ParserState::Node);
+			}
+			else
+			{
+				MakeError("Invalid root definition.");
+				return;
+			}
+			break;
+
+		case ParserState::Notes:
+			if (_currentLine.find("NOTES") == 0u)
+			{
+				if (!ConsumeString("NOTES"))
+					return;
+
+				OptConsumeWhitespace();
+
+				_parserState.pop();
+			}
+			else
+			{
+				if (!ConsumeNotes())
+					return;
+			}
+			break;
+
+		case ParserState::Node:
 			if (_currentLine.find("||") == 0u)
 			{
+				if (/*_pendingNode.Comment().length() != 0 ||*/ _pendingNode.Dialogues().size() != 0 || _pendingNode.Options().size() != 0)
+				{
+					_outFile._Nodes.push_back(_pendingNode);
+					_pendingNode = RawProjectFile_Node();
+				}
 
+				if (!ConsumeNode())
+					return;
 			}
+			else if (_currentLine.find("NOTES") == 0u)
+			{
+				if (!ConsumeString("NOTES"))
+					return;
 
-			if (_currentLine.find('{') == 0u)
-				ConsumeDialogue();
+				OptConsumeWhitespace();
 
-			if (_currentLine.find('\t') == 0u)
-				ConsumeOption();
+				_parserState.push(ParserState::Notes);
+			}
+			else if (_currentLine.find('{') == 0u)
+			{
+				if (_parserState.top() == ParserState::Option)
+				{
+					MakeError("Dialogue defined after final Option definition.");
+					return;
+				}
+
+				if (!ConsumeDialogue())
+					return;
+			}
+			else if (_currentLine.find('\t') == 0u)
+			{
+				if (!ConsumeOption())
+					return;
+			}
+			break;
 		}
 
 
@@ -70,6 +157,15 @@ void TUScriptParser::Parse()
 			return;
 		}
 		_lineNum++;
+	}
+
+	if (_parserState.top() == ParserState::Node && (/*_pendingNode.Comment().length() != 0 ||*/ _pendingNode.Dialogues().size() != 0 || _pendingNode.Options().size() != 0))
+	{
+		MakeError("Missing '||' after Node declaration.");
+	}
+	else if (_parserState.top() == ParserState::Notes)
+	{
+		MakeError("Unclosed NOTES section.");
 	}
 }
 
@@ -115,8 +211,8 @@ bool TUScriptParser::ConsumeString(const std::string &Str)
 	}
 	else
 	{
-		std::string GotStr = LineFromCursor().substr(Str.length());
-		MakeError(fmt::format("Expected literal '{}', got {}.", Str, GotStr));
+		std::string GotStr = (LineFromCursor().length() == 0) ? "<EOL>" : (LineFromCursor().substr(0, Str.length()));
+		MakeError(fmt::format("Expected literal '{}', got '{}'.", Str, GotStr));
 		return false;
 	}
 }
@@ -250,7 +346,34 @@ bool TUScriptParser::ConsumeList(const std::string& Sep, const std::string& End,
 
 bool TUScriptParser::ConsumeNotes()
 {
+	OptConsumeWhitespace();
 
+	std::string NoteLine = "";
+	ConsumeRemainder(NoteLine);
+
+	return true;
+}
+
+bool TUScriptParser::ConsumeNode()
+{
+	if (!ConsumeString("||"))
+		return false;
+
+	OptConsumeWhitespace();
+
+	std::string CommentLine = "";
+	if (LineFromCursor().find(">>") == 0u)
+	{
+		if (!ConsumeString(">>"))
+			return false;
+
+		OptConsumeWhitespace();
+		ConsumeRemainder(CommentLine);
+
+		_pendingNode._Comment = CommentLine;
+	}
+
+	return true;
 }
 
 bool TUScriptParser::ConsumeDialogue(/*RawProjectFile_Dialogue &Dest*/)
@@ -276,6 +399,10 @@ bool TUScriptParser::ConsumeDialogue(/*RawProjectFile_Dialogue &Dest*/)
 		{
 			return false;
 		}
+		else
+		{
+			strtk::remove_leading_trailing(_Whitespace, Index);
+		}
 
 		if (!ConsumeWhitespace())
 		{
@@ -300,6 +427,9 @@ bool TUScriptParser::ConsumeDialogue(/*RawProjectFile_Dialogue &Dest*/)
 
 	std::string DialogueText = "";
 	ConsumeRemainder(DialogueText);
+
+	RawProjectFile_Dialogue NewDlg(Index, Functions, DialogueText);
+	_pendingNode._Dialogues.push_back(NewDlg);
 	
 	return true;
 }
@@ -358,6 +488,8 @@ bool TUScriptParser::ConsumeOption(/*RawProjectFile_Dialogue &Dest*/)
 
 	OptConsumeWhitespace();	// Don't know if there's going to be a space or not, so just to be sure.
 
+	RawProjectFile_Option NewOpt("", {}, {}, "");
+
 	std::string OptionText = "";
 	if (LineFromCursor().find("//") != std::string::npos)
 	{
@@ -365,9 +497,11 @@ bool TUScriptParser::ConsumeOption(/*RawProjectFile_Dialogue &Dest*/)
 		if (!ConsumeUntil("//", FirstVisScript))
 			return false;
 
-		std::vector<std::string> Functions = { FirstVisScript };
-		if (!ConsumeList("//", "", Functions))
+		std::vector<std::string> VisScripts = { FirstVisScript };
+		if (!ConsumeList("//", "", VisScripts))
 			return false;
+
+		NewOpt._VisibilityScripts = VisScripts;
 	}
 	else
 	{
@@ -376,6 +510,10 @@ bool TUScriptParser::ConsumeOption(/*RawProjectFile_Dialogue &Dest*/)
 
 	std::string DialogueText = "";
 	ConsumeRemainder(DialogueText);
+
+	NewOpt._Pointer = Index;
+	NewOpt._Text = DialogueText;
+	NewOpt._Functions = Functions;
 
 	return true;
 }
