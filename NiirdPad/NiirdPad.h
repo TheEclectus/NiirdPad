@@ -35,6 +35,8 @@ private:
 	Project *_loadedProject;
 
 	void Import();
+	bool ImportExperimental();
+
 	void SetWindowTitle();
 	void closeEvent(QCloseEvent *Event) override;
 

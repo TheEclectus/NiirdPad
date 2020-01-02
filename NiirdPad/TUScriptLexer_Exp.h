@@ -15,13 +15,8 @@ class TUScriptParser
 public:
 	enum class ParserState
 	{
-		Base,
-
 		Notes,
-
-		Node,
-			Dialogue,
-			Option
+		Node
 	};
 
 private:
@@ -41,6 +36,8 @@ private:
 public:
 	TUScriptParser(const std::string &FilePath);
 
+	RawProjectFile_ScriptFile &GetScriptFile();
+
 	void MakeError(const std::string &Message);
 	const std::string &GetError();
 
@@ -58,6 +55,7 @@ public:
 	bool ConsumeList(const std::string& Sep, const std::string& End, std::vector<std::string>& Out);
 
 	bool ConsumeNotes();
+	bool ConsumeComment();
 	bool ConsumeNode();	// Consumes || and any trailing comments
 	bool ConsumeDialogue(/*RawProjectFile_Dialogue &Dest*/);
 	bool ConsumeOption(/*RawProjectFile_Option &Dest*/);

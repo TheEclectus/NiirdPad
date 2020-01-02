@@ -137,6 +137,114 @@ void NiirdPad::Import()
 	}*/
 }
 
+bool NiirdPad::ImportExperimental()
+{
+	QFileDialog Dialog;
+	Dialog.setWindowTitle("Select /Teraurge/database/ folder...");
+	Dialog.setFileMode(QFileDialog::Directory);
+	Dialog.setOption(QFileDialog::ShowDirsOnly);
+
+	if (Dialog.exec() != QDialog::Accepted)
+		return false;
+
+	RawProjectFile LoadedProject;
+	std::string CharactersPath = Dialog.directory().absolutePath().toStdString();
+	std::vector<std::string> Warnings;
+	std::string Error = "";
+
+	namespace fs = std::experimental::filesystem;
+	if (!(fs::is_directory(CharactersPath)))
+	{
+		Error = fmt::format("Characters directory '{0}' not found.", CharactersPath);
+		return false;
+	}
+
+	// TODO: Check for and load from character_list.txt
+	std::vector<fs::path> CharacterPathList;
+	for (auto CurFolder : fs::directory_iterator(CharactersPath))
+	{
+		if (!fs::is_directory(CurFolder))
+			continue;
+
+		std::string CharacterName = CurFolder.path().stem().u8string();
+
+		// Skip template_ folders
+		if (CharacterName.find(u8"template_") == 0u)
+			continue;
+
+		bool bDirectoryHadDiagTxt = false;
+		for (auto CurFile : fs::directory_iterator(CurFolder))
+		{
+			if (fs::is_regular_file(CurFile) && CurFile.path().filename() == "diag.txt")
+			{
+				bDirectoryHadDiagTxt = true;
+				break;
+			}
+		}
+
+		if (!bDirectoryHadDiagTxt)
+		{
+			Warnings.push_back(fmt::format("Character '{0}' skipped, no diag.txt found.", CharacterName));
+		}
+		else
+		{
+			CharacterPathList.push_back(CurFolder);
+		}
+	}
+
+	int CurCharacterCount = 0;
+	for (auto CurCharacterPath : CharacterPathList)
+	{
+		/*if (_Cancelled)
+		{
+			_Error = "Operation cancelled.";
+			return false;
+		}*/
+
+		RawProjectFile_Character NewCharacter;
+		std::string CharacterName = CurCharacterPath.stem().u8string();
+
+		for (auto CurFile : fs::directory_iterator(CurCharacterPath))
+		{
+			std::string Filename = CurFile.path().filename().u8string();
+			std::string Extension = CurFile.path().extension().u8string();
+			if (fs::is_regular_file(CurFile) && Filename.find(u8"diag") == 0u && Extension == u8".txt")
+			{
+				TUScriptParser PS(CurFile.path().u8string());
+				PS.Parse();
+
+				if (PS.GetError().length() > 0)
+				{
+					Warnings.push_back(fmt::format("{0}/{1}: File skipped (parser error: '{2}')", CharacterName, CurFile.path().filename().u8string(), PS.GetError()));
+				}
+				else
+				{
+					NewCharacter.AddFile(Filename, PS.GetScriptFile());
+				}
+			}
+		}
+
+		LoadedProject.AddCharacter(CharacterName, NewCharacter);
+
+		CurCharacterCount++;
+		//SetProgress(CurCharacterCount);
+	}
+
+	ImportConfirmationMessageBox(Warnings, LoadedProject);
+
+	/*TUScriptParser PS(InFile);
+	PS.Parse();
+
+	if (PS.GetError().length() > 0)
+	{
+		QMessageBox::warning(nullptr, "Error parsing", PS.GetError().c_str());
+	}
+	else
+	{
+		QMessageBox::information(nullptr, "Parsed Successfully!", "No errors.");
+	}*/
+}
+
 void NiirdPad::ResetCharacterCombo()
 {
 	ui.cmbCharacter->clear();
@@ -311,23 +419,8 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	ui.widget->SetNiirdPad(this);
 	ui.widget->ConnectToReferenceEditWindow();
 
-	connect(ui.actionExperimental_TUScript_Parser, &QAction::triggered, []() {
-		std::string InFile = QFileDialog::getOpenFileName(nullptr, "Test Parser", QString(), "Text File(*.txt)").toStdString();
-
-		if (InFile.length() == 0)
-			return;
-
-		TUScriptParser PS(InFile);
-		PS.Parse();
-
-		if (PS.GetError().length() > 0)
-		{
-			QMessageBox::warning(nullptr, "Error parsing", PS.GetError().c_str());
-		}
-		else
-		{
-			QMessageBox::information(nullptr, "Parsed Successfully!", "No errors.");
-		}
+	connect(ui.actionExperimental_TUScript_Parser, &QAction::triggered, [this]() {
+		this->ImportExperimental();
 	});
 
 	connect(_characterWindow, &QCharacterWindow::NameAdded, [this](std::string NewName) {
