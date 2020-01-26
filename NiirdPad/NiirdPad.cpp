@@ -408,9 +408,11 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	QMainWindow(parent),
 	_scriptEngine(),
 	_characterWindow(new QCharacterWindow(this)),
+	_characterSelectionWindow(new QCharacterSelectionWindow(this)),
 	_commentEditWindow(new QCommentEditWindow(this)),
 	_scriptEditWindow(new QScriptEditWindow(this, _scriptEngine, false)),
-	_referenceEditWindow(new QReferenceEditWindow(this))
+	_referenceEditWindow(new QReferenceEditWindow(this)),
+	_dialogueFileWindow(new QDialogueFileWindow(this))
 {
 	ui.setupUi(this);
 
@@ -423,6 +425,11 @@ NiirdPad::NiirdPad(QWidget *parent) :
 		this->ImportExperimental();
 	});
 
+	connect(ui.actionCharacter_Selection_Window, &QAction::triggered, [this]() {
+		_characterSelectionWindow->show();
+	});
+
+	// Adding a character
 	connect(_characterWindow, &QCharacterWindow::NameAdded, [this](std::string NewName) {
 		this->ResetCharacterCombo();
 
@@ -431,12 +438,35 @@ NiirdPad::NiirdPad(QWidget *parent) :
 		this->ui.widget->GetCamera().ViewBox = { 0, 0, VB.w, VB.h };
 	});
 
+	// Editing a character's name
 	connect(_characterWindow, &QCharacterWindow::NameEdited, [this](std::string NewName) {
 		this->ResetCharacterCombo();
 
 		ui.cmbCharacter->setCurrentIndex(ui.cmbCharacter->findText(NewName.c_str()));
 	});
 
+	// Adding a dialogue file to a character
+	connect(_dialogueFileWindow, &QDialogueFileWindow::FileAdded, [this](std::string NewFile) {
+		this->ResetDialogueFileCombo();
+
+		ui.cmbDiag->setCurrentIndex(ui.cmbDiag->findText(NewFile.c_str()));
+		auto VB = this->ui.widget->GetCamera().ViewBox;
+		this->ui.widget->GetCamera().ViewBox = { 0, 0, VB.w, VB.h };
+	});
+
+	// Editing a character's dialogue file's name
+	connect(_dialogueFileWindow, &QDialogueFileWindow::FileEdited, [this](std::string NewFile) {
+		this->ResetDialogueFileCombo();
+
+		ui.cmbDiag->setCurrentIndex(ui.cmbDiag->findText(NewFile.c_str()));
+	});
+
+	/*
+		Character buttons
+		- Add
+		- Rename
+		- Remove
+	*/
 	connect(ui.btnAddCharacter, &QPushButton::pressed, [this]() {
 		this->_characterWindow->NewCharacter(this->_loadedProject);
 	});
@@ -457,6 +487,42 @@ NiirdPad::NiirdPad(QWidget *parent) :
 		else
 		{
 			QMessageBox::warning(this, "Cannot Delete Character", "Cannot delete final character.");
+		}
+	});
+
+	/*
+		Dialogue buttons
+		- Add
+		- Rename
+		- Remove
+	*/
+	connect(ui.btnAddDiagFile, &QPushButton::pressed, [this]() {
+		//this->_characterWindow->NewCharacter(this->_loadedProject);
+		Character *Char = (Character*)ui.cmbCharacter->currentData().value<void*>();
+		this->_dialogueFileWindow->NewDialogueFile(Char);
+	});
+
+	connect(ui.btnRenameDiagFile, &QPushButton::pressed, [this]() {
+		//this->_characterWindow->EditCharacter(this->_loadedProject, (Character*)ui.cmbCharacter->currentData().value<void*>());
+
+		Character *Char = (Character*)ui.cmbCharacter->currentData().value<void*>();
+		DialogueFile *Diag = (DialogueFile*)ui.cmbDiag->currentData().value<void*>();
+
+		this->_dialogueFileWindow->EditDialogueFile(Char, Diag);
+	});
+
+	connect(ui.btnDeleteDiagFile, &QPushButton::pressed, [this]() {
+		if (ui.cmbDiag->count() > 1)
+		{
+			if (QMessageBox::warning(this, "Warning", "Deleting a dialogue file cannot be undone. Continue?", QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel) != QMessageBox::Yes)
+				return;
+
+			_loadedProject->DeleteCharacter((Character*)ui.cmbDiag->currentData().value<void*>());
+			ResetCharacterCombo();
+		}
+		else
+		{
+			QMessageBox::warning(this, "Cannot Delete Dialogue File", "Cannot delete final dialogue file.");
 		}
 	});
 

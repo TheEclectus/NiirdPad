@@ -522,6 +522,7 @@ void Project::RenameCharacter(Character *EditChar, const std::string &Name)
 	auto &Res = _Characters.find(EditChar->GetName());
 	if (Res != _Characters.end())
 	{
+		EditChar->_name = Name;
 		std::pair<const std::string, Character*> NewPair = { Name, EditChar };
 		_Characters.erase(Res);
 		_Characters.insert(NewPair);

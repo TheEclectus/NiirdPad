@@ -51,6 +51,7 @@ public:
     QAction *actionEditScriptWindowOption;
     QAction *actionDump_Reference_Database;
     QAction *actionExperimental_TUScript_Parser;
+    QAction *actionCharacter_Selection_Window;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
     QFrame *frame;
@@ -62,9 +63,14 @@ public:
     QPushButton *btnAddCharacter;
     QPushButton *btnDeleteCharacter;
     QPushButton *btnRenameCharacter;
-    QSpacerItem *horizontalSpacer;
     QComboBox *cmbCharacter;
+    QHBoxLayout *horizontalLayout_5;
     QLabel *label_2;
+    QSpacerItem *horizontalSpacer_4;
+    QHBoxLayout *horizontalLayout_7;
+    QPushButton *btnAddDiagFile;
+    QPushButton *btnDeleteDiagFile;
+    QPushButton *btnRenameDiagFile;
     QComboBox *cmbDiag;
     QFrame *line;
     QLabel *label_3;
@@ -128,6 +134,8 @@ public:
         actionDump_Reference_Database->setObjectName(QString::fromUtf8("actionDump_Reference_Database"));
         actionExperimental_TUScript_Parser = new QAction(NiirdPadClass);
         actionExperimental_TUScript_Parser->setObjectName(QString::fromUtf8("actionExperimental_TUScript_Parser"));
+        actionCharacter_Selection_Window = new QAction(NiirdPadClass);
+        actionCharacter_Selection_Window->setObjectName(QString::fromUtf8("actionCharacter_Selection_Window"));
         centralWidget = new QWidget(NiirdPadClass);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         horizontalLayout = new QHBoxLayout(centralWidget);
@@ -142,7 +150,7 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(frame->sizePolicy().hasHeightForWidth());
         frame->setSizePolicy(sizePolicy);
-        frame->setMinimumSize(QSize(175, 0));
+        frame->setMinimumSize(QSize(185, 0));
         frame->setMaximumSize(QSize(175, 16777215));
         frame->setSizeIncrement(QSize(0, 0));
         frame->setFrameShape(QFrame::Box);
@@ -198,10 +206,6 @@ public:
 
         horizontalLayout_3->addLayout(horizontalLayout_4);
 
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout_3->addItem(horizontalSpacer);
-
 
         verticalLayout->addLayout(horizontalLayout_3);
 
@@ -210,10 +214,49 @@ public:
 
         verticalLayout->addWidget(cmbCharacter);
 
+        horizontalLayout_5 = new QHBoxLayout();
+        horizontalLayout_5->setSpacing(6);
+        horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
         label_2 = new QLabel(frame);
         label_2->setObjectName(QString::fromUtf8("label_2"));
+        label_2->setFont(font);
 
-        verticalLayout->addWidget(label_2);
+        horizontalLayout_5->addWidget(label_2);
+
+        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_5->addItem(horizontalSpacer_4);
+
+        horizontalLayout_7 = new QHBoxLayout();
+        horizontalLayout_7->setSpacing(0);
+        horizontalLayout_7->setObjectName(QString::fromUtf8("horizontalLayout_7"));
+        btnAddDiagFile = new QPushButton(frame);
+        btnAddDiagFile->setObjectName(QString::fromUtf8("btnAddDiagFile"));
+        sizePolicy1.setHeightForWidth(btnAddDiagFile->sizePolicy().hasHeightForWidth());
+        btnAddDiagFile->setSizePolicy(sizePolicy1);
+        btnAddDiagFile->setMinimumSize(QSize(23, 0));
+        btnAddDiagFile->setMaximumSize(QSize(23, 16777215));
+
+        horizontalLayout_7->addWidget(btnAddDiagFile);
+
+        btnDeleteDiagFile = new QPushButton(frame);
+        btnDeleteDiagFile->setObjectName(QString::fromUtf8("btnDeleteDiagFile"));
+        btnDeleteDiagFile->setMinimumSize(QSize(23, 0));
+        btnDeleteDiagFile->setMaximumSize(QSize(23, 16777215));
+
+        horizontalLayout_7->addWidget(btnDeleteDiagFile);
+
+        btnRenameDiagFile = new QPushButton(frame);
+        btnRenameDiagFile->setObjectName(QString::fromUtf8("btnRenameDiagFile"));
+        btnRenameDiagFile->setMinimumSize(QSize(45, 0));
+
+        horizontalLayout_7->addWidget(btnRenameDiagFile);
+
+
+        horizontalLayout_5->addLayout(horizontalLayout_7);
+
+
+        verticalLayout->addLayout(horizontalLayout_5);
 
         cmbDiag = new QComboBox(frame);
         cmbDiag->setObjectName(QString::fromUtf8("cmbDiag"));
@@ -313,6 +356,7 @@ public:
         menuDebug->addAction(menuEditScriptWindow->menuAction());
         menuDebug->addAction(actionDump_Reference_Database);
         menuDebug->addAction(actionExperimental_TUScript_Parser);
+        menuDebug->addAction(actionCharacter_Selection_Window);
         menuEdit_Reference_Window->addAction(actionEditReferenceWindowNew);
         menuEdit_Reference_Window->addAction(actionEditReferenceWindowEdit);
         menuEditScriptWindow->addAction(actionEditScriptWindowOption);
@@ -351,6 +395,7 @@ public:
         actionEditScriptWindowOption->setText(QApplication::translate("NiirdPadClass", "Option Fragment", nullptr));
         actionDump_Reference_Database->setText(QApplication::translate("NiirdPadClass", "Dump Reference Database For Current File", nullptr));
         actionExperimental_TUScript_Parser->setText(QApplication::translate("NiirdPadClass", "Experimental TUScript Parser", nullptr));
+        actionCharacter_Selection_Window->setText(QApplication::translate("NiirdPadClass", "Character Selection Window", nullptr));
         label->setText(QApplication::translate("NiirdPadClass", "Character", nullptr));
 #ifndef QT_NO_TOOLTIP
         btnAddCharacter->setToolTip(QApplication::translate("NiirdPadClass", "Create New Character", nullptr));
@@ -364,7 +409,19 @@ public:
         btnRenameCharacter->setToolTip(QApplication::translate("NiirdPadClass", "Rename Character", nullptr));
 #endif // QT_NO_TOOLTIP
         btnRenameCharacter->setText(QApplication::translate("NiirdPadClass", "Ren", nullptr));
-        label_2->setText(QApplication::translate("NiirdPadClass", "Dialogue File", nullptr));
+        label_2->setText(QApplication::translate("NiirdPadClass", "Diag File", nullptr));
+#ifndef QT_NO_TOOLTIP
+        btnAddDiagFile->setToolTip(QApplication::translate("NiirdPadClass", "Create New Character", nullptr));
+#endif // QT_NO_TOOLTIP
+        btnAddDiagFile->setText(QApplication::translate("NiirdPadClass", "+", nullptr));
+#ifndef QT_NO_TOOLTIP
+        btnDeleteDiagFile->setToolTip(QApplication::translate("NiirdPadClass", "Delete Character", nullptr));
+#endif // QT_NO_TOOLTIP
+        btnDeleteDiagFile->setText(QApplication::translate("NiirdPadClass", "-", nullptr));
+#ifndef QT_NO_TOOLTIP
+        btnRenameDiagFile->setToolTip(QApplication::translate("NiirdPadClass", "Rename Character", nullptr));
+#endif // QT_NO_TOOLTIP
+        btnRenameDiagFile->setText(QApplication::translate("NiirdPadClass", "Ren", nullptr));
         label_3->setText(QApplication::translate("NiirdPadClass", "Jump to Index", nullptr));
         btnJump->setText(QApplication::translate("NiirdPadClass", "Jump", nullptr));
         menuFile->setTitle(QApplication::translate("NiirdPadClass", "File", nullptr));

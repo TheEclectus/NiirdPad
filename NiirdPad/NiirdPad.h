@@ -6,7 +6,9 @@
 
 #include "ImportWorker.h"
 #include "QCharacterWindow.h"
+#include "QCharacterSelectionWindow.h"
 #include "QCommentEditWindow.h"
+#include "QDialogueFileWindow.h"
 #include "QReferenceEditWindow.h"
 #include "QScriptEditWindow.h"
 #include "ScriptEngine.h"
@@ -27,10 +29,13 @@ private:
 	Ui::NiirdPadClass ui;
 	//QMessageBox *_importMessageBox;
 	ScriptEngine _scriptEngine;
+
 	QCharacterWindow *_characterWindow;
+	QCharacterSelectionWindow *_characterSelectionWindow;
 	QCommentEditWindow *_commentEditWindow;
 	QScriptEditWindow *_scriptEditWindow;
 	QReferenceEditWindow *_referenceEditWindow;
+	QDialogueFileWindow *_dialogueFileWindow;
 
 	Project *_loadedProject;
 

@@ -17,6 +17,7 @@ class Project;
 
 class Character
 {
+	friend class Project;
 private:
 	Project &_parentProject;
 	QNodeView &_nodeView;	// Used in Node constructor for DialogueFiles.
@@ -29,6 +30,7 @@ public:
 	QNodeView &GetNodeView() const;
 
 	DialogueFile *NewDialogueFile(const std::string &Filename);
+	void RenameDialogueFile(DialogueFile *Dlg, const std::string &Name);
 	std::map<std::string, DialogueFile*> &DialogueFiles();
 
 	void Save(rapidjson::Document &Doc, rapidjson::Value &Value) const;

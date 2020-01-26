@@ -146,8 +146,10 @@
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="ImportWorker.cpp" />
     <ClCompile Include="Project.cpp" />
+    <ClCompile Include="QCharacterSelectionWindow.cpp" />
     <ClCompile Include="QCharacterWindow.cpp" />
     <ClCompile Include="QCommentEditWindow.cpp" />
+    <ClCompile Include="QDialogueFileWindow.cpp" />
     <ClCompile Include="RawProjectFile.cpp" />
     <ClCompile Include="QNodeView.cpp" />
     <ClCompile Include="QReferenceEditWindow.cpp" />
@@ -164,8 +166,10 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="NiirdPad.ui" />
+    <QtUic Include="QCharacterSelectionWindow.ui" />
     <QtUic Include="QCharacterWindow.ui" />
     <QtUic Include="QCommentEditWindow.ui" />
+    <QtUic Include="QDialogueFileWindow.ui" />
     <QtUic Include="QReferenceEditWindow.ui" />
     <QtUic Include="QScriptEditWindow.ui" />
     <QtUic Include="QTUScriptDatabase.ui" />
@@ -187,6 +191,8 @@
     <ClInclude Include="format.h" />
     <ClInclude Include="GraphicsBlocks.h" />
     <ClInclude Include="Node.h" />
+    <QtMoc Include="QCharacterSelectionWindow.h" />
+    <QtMoc Include="QDialogueFileWindow.h" />
     <ClInclude Include="TUScriptLexer_Exp.h" />
     <QtMoc Include="ImportWorker.h">
     </QtMoc>

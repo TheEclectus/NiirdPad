@@ -108,6 +108,12 @@
     <ClCompile Include="TUScriptLexer_Exp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="QCharacterSelectionWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QDialogueFileWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="NiirdPad.h">
@@ -134,6 +140,12 @@
     <QtMoc Include="QCharacterWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="QCharacterSelectionWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="QDialogueFileWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="NiirdPad.ui">
@@ -152,6 +164,12 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="QCharacterWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="QCharacterSelectionWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="QDialogueFileWindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

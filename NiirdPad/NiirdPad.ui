@@ -44,7 +44,7 @@
       </property>
       <property name="minimumSize">
        <size>
-        <width>175</width>
+        <width>185</width>
         <height>0</height>
        </size>
       </property>
@@ -168,8 +168,31 @@
            </item>
           </layout>
          </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QComboBox" name="cmbCharacter"/>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <property name="spacing">
+          <number>6</number>
+         </property>
          <item>
-          <spacer name="horizontalSpacer">
+          <widget class="QLabel" name="label_2">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Diag File</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_4">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -181,17 +204,80 @@
            </property>
           </spacer>
          </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QPushButton" name="btnAddDiagFile">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>23</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>23</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Create New Character</string>
+             </property>
+             <property name="text">
+              <string>+</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnDeleteDiagFile">
+             <property name="minimumSize">
+              <size>
+               <width>23</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>23</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Delete Character</string>
+             </property>
+             <property name="text">
+              <string>-</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnRenameDiagFile">
+             <property name="minimumSize">
+              <size>
+               <width>45</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Rename Character</string>
+             </property>
+             <property name="text">
+              <string>Ren</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
         </layout>
-       </item>
-       <item>
-        <widget class="QComboBox" name="cmbCharacter"/>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Dialogue File</string>
-         </property>
-        </widget>
        </item>
        <item>
         <widget class="QComboBox" name="cmbDiag"/>
@@ -327,6 +413,7 @@
     <addaction name="menuEditScriptWindow"/>
     <addaction name="actionDump_Reference_Database"/>
     <addaction name="actionExperimental_TUScript_Parser"/>
+    <addaction name="actionCharacter_Selection_Window"/>
    </widget>
    <widget class="QMenu" name="menuTUScript">
     <property name="title">
@@ -440,6 +527,11 @@
   <action name="actionExperimental_TUScript_Parser">
    <property name="text">
     <string>Experimental TUScript Parser</string>
+   </property>
+  </action>
+  <action name="actionCharacter_Selection_Window">
+   <property name="text">
+    <string>Character Selection Window</string>
    </property>
   </action>
  </widget>

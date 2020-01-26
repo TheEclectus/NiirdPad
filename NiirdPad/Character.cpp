@@ -37,6 +37,18 @@ DialogueFile *Character::NewDialogueFile(const std::string &Filename)
 	return NewFile;
 }
 
+void Character::RenameDialogueFile(DialogueFile *Dlg, const std::string &Name)
+{
+	auto Res = _dialogueFiles.find(Dlg->GetFilename());
+	if (Res != _dialogueFiles.end())
+	{
+		Dlg->_filename = Name;
+		std::pair<std::string, DialogueFile*> NewPair = { Name, Dlg };
+		_dialogueFiles.erase(Res);
+		_dialogueFiles.insert(NewPair);
+	}
+}
+
 std::map<std::string, DialogueFile*> &Character::DialogueFiles()
 {
 	return _dialogueFiles;

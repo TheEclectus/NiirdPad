@@ -23,6 +23,7 @@ class ReferenceDatabase;
 // TODO: Store camera information
 class DialogueFile
 {
+	friend class Character;
 private:
 	Character &_parentCharacter;
 	ReferenceDatabase *_referenceDatabase;
