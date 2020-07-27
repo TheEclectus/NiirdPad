@@ -11,6 +11,7 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QHBoxLayout>
@@ -44,9 +45,12 @@ public:
     QLabel *lblExisting;
     QSpacerItem *horizontalSpacer_4;
     QTreeWidget *treeExisting;
+    QCheckBox *chkClearExisting;
     QHBoxLayout *horizontalLayout_3;
-    QPushButton *btnExisting_SelectAll;
-    QPushButton *btnExisting_DeselectAll;
+    QHBoxLayout *horizontalLayout_6;
+    QSpacerItem *horizontalSpacer_5;
+    QPushButton *btnAccept;
+    QPushButton *btnCancel;
 
     void setupUi(QDialog *QCharacterSelectionWindow)
     {
@@ -154,19 +158,14 @@ public:
 
         verticalLayout_3->addWidget(treeExisting);
 
+        chkClearExisting = new QCheckBox(QCharacterSelectionWindow);
+        chkClearExisting->setObjectName(QString::fromUtf8("chkClearExisting"));
+
+        verticalLayout_3->addWidget(chkClearExisting);
+
         horizontalLayout_3 = new QHBoxLayout();
         horizontalLayout_3->setSpacing(6);
         horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
-        btnExisting_SelectAll = new QPushButton(QCharacterSelectionWindow);
-        btnExisting_SelectAll->setObjectName(QString::fromUtf8("btnExisting_SelectAll"));
-
-        horizontalLayout_3->addWidget(btnExisting_SelectAll);
-
-        btnExisting_DeselectAll = new QPushButton(QCharacterSelectionWindow);
-        btnExisting_DeselectAll->setObjectName(QString::fromUtf8("btnExisting_DeselectAll"));
-
-        horizontalLayout_3->addWidget(btnExisting_DeselectAll);
-
 
         verticalLayout_3->addLayout(horizontalLayout_3);
 
@@ -175,6 +174,35 @@ public:
 
 
         verticalLayout->addLayout(horizontalLayout);
+
+        horizontalLayout_6 = new QHBoxLayout();
+        horizontalLayout_6->setSpacing(6);
+        horizontalLayout_6->setObjectName(QString::fromUtf8("horizontalLayout_6"));
+        horizontalSpacer_5 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_6->addItem(horizontalSpacer_5);
+
+        btnAccept = new QPushButton(QCharacterSelectionWindow);
+        btnAccept->setObjectName(QString::fromUtf8("btnAccept"));
+        QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(btnAccept->sizePolicy().hasHeightForWidth());
+        btnAccept->setSizePolicy(sizePolicy);
+        btnAccept->setMaximumSize(QSize(100, 16777215));
+
+        horizontalLayout_6->addWidget(btnAccept);
+
+        btnCancel = new QPushButton(QCharacterSelectionWindow);
+        btnCancel->setObjectName(QString::fromUtf8("btnCancel"));
+        sizePolicy.setHeightForWidth(btnCancel->sizePolicy().hasHeightForWidth());
+        btnCancel->setSizePolicy(sizePolicy);
+        btnCancel->setMaximumSize(QSize(100, 16777215));
+
+        horizontalLayout_6->addWidget(btnCancel);
+
+
+        verticalLayout->addLayout(horizontalLayout_6);
 
 
         retranslateUi(QCharacterSelectionWindow);
@@ -189,8 +217,12 @@ public:
         btnSelection_SelectAll->setText(QApplication::translate("QCharacterSelectionWindow", "Select All", nullptr));
         btnSelection_DeselectAll->setText(QApplication::translate("QCharacterSelectionWindow", "Deselect All", nullptr));
         lblExisting->setText(QApplication::translate("QCharacterSelectionWindow", "Existing Characters", nullptr));
-        btnExisting_SelectAll->setText(QApplication::translate("QCharacterSelectionWindow", "Select All", nullptr));
-        btnExisting_DeselectAll->setText(QApplication::translate("QCharacterSelectionWindow", "Deselect All", nullptr));
+#ifndef QT_NO_TOOLTIP
+        chkClearExisting->setToolTip(QApplication::translate("QCharacterSelectionWindow", "Should existing characters be deleted before importing the new ones?", nullptr));
+#endif // QT_NO_TOOLTIP
+        chkClearExisting->setText(QApplication::translate("QCharacterSelectionWindow", "Clear Existing Characters", nullptr));
+        btnAccept->setText(QApplication::translate("QCharacterSelectionWindow", "Accept", nullptr));
+        btnCancel->setText(QApplication::translate("QCharacterSelectionWindow", "Cancel", nullptr));
     } // retranslateUi
 
 };

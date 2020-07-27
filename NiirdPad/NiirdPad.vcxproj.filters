@@ -114,6 +114,9 @@
     <ClCompile Include="QDialogueFileWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ResourceDiscriminator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="NiirdPad.h">
@@ -144,6 +147,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="QDialogueFileWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ResourceDiscriminator.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

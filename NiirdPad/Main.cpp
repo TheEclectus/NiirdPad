@@ -9,6 +9,8 @@
 
 #include "TUScriptLexer.h"
 
+#include "ResourceDiscriminator.h"
+
 //#include "DialogueFile.h"
 
 const std::string DemoScript = R"(
@@ -65,7 +67,11 @@ int main(int argc, char *argv[])
 {
 	qRegisterMetaType<std::vector<std::string>>("std::vector<std::string>");
 	qRegisterMetaType<RawProjectFile>("RawProjectFile");
+	qRegisterMetaType<ResourceDiscriminator::Results>("Results");
 	//qRegisterMetaType<DialogueFile*>("DialogueFile");
+
+	//ResourceDiscriminator::Results::Character TestChar("Z:\\Teraurge\\Teraurge\\database\\characters\\braq_m");
+	//ResourceDiscriminator TestRes({ "Z:\\Teraurge\\Teraurge\\database" }, ResourceDiscriminator::SelectionType::FullDatabaseFolder);
 
 	std::ifstream InFile{ "Z:\\Teraurge\\Teraurge\\database\\characters\\braq_m\\diag.txt" };
 	std::string SrcString{ std::istreambuf_iterator<char>(InFile), std::istreambuf_iterator<char>() };

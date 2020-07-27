@@ -1,7 +1,15 @@
 #pragma once
 
+#include <map>
+
 #include <QDialog>
+
 #include "ui_QCharacterSelectionWindow.h"
+
+#include "ResourceDiscriminator.h"
+
+// Project.h
+class Project;
 
 class QCharacterSelectionWindow : public QDialog
 {
@@ -9,6 +17,11 @@ class QCharacterSelectionWindow : public QDialog
 
 private:
 	Ui::QCharacterSelectionWindow ui;
+
+	// K = characters, V = paths to diag files
+	std::multimap<std::string, std::string> _targets = {};
+	std::string _charactersPath = "";
+	Project *_existingProject = nullptr;
 
 	/*
 		CUSTOM TRI-STATE IMPLEMENTATION
@@ -36,6 +49,21 @@ private:
 public:
 	QCharacterSelectionWindow(QWidget *parent = Q_NULLPTR);
 	~QCharacterSelectionWindow();
+	void closeEvent(QCloseEvent *event) override;
+
+	void ResetForm();
+	void FormAccepted();
+	void Close();
+
+	const std::multimap<std::string, std::string> &GetTargets() const;
+	void ClearTargets();
 
 	void UpdateChecks();
+
+	void SelectCharacters(const std::string &CharactersPath, Project *Proj);
+	void SelectCharacters(const ResourceDiscriminator::Results &Results, Project *Proj);
+
+signals:
+	// Indicates that 
+	void Ready();
 };

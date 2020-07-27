@@ -1,5 +1,12 @@
 #include "QCharacterSelectionWindow.h"
 
+#include <QTextBlock>
+
+#include "Character.h"
+#include "Project.h"
+
+#include "ResourceDiscriminator.h"
+
 void QCharacterSelectionWindow::SetCheckState(QTreeWidgetItem *Item, Qt::CheckState State)
 {
 	Item->treeWidget()->blockSignals(true);
@@ -165,117 +172,13 @@ QCharacterSelectionWindow::QCharacterSelectionWindow(QWidget *parent) :
 		}
 		//this->ui.treeSelection->clearSelection();
 	});
-	connect(ui.btnExisting_SelectAll, &QPushButton::pressed, [this]() {
-		return;
-		
-		for (int i = 0; i < this->ui.treeExisting->topLevelItemCount(); i++)
-		{
-			auto x = this->ui.treeExisting->topLevelItem(i);
-			x->setCheckState(0, Qt::CheckState::Checked);
-		}
-		//this->ui.treeExisting->selectAll();
-	});
-	connect(ui.btnExisting_DeselectAll, &QPushButton::pressed, [this]() {
-		return;
-		
-		for (int i = 0; i < this->ui.treeExisting->topLevelItemCount(); i++)
-		{
-			auto x = this->ui.treeExisting->topLevelItem(i);
-			x->setCheckState(0, Qt::CheckState::Unchecked);
-		}
-		//this->ui.treeExisting->clearSelection();
-	});
+	
 	connect(ui.treeSelection, &QTreeWidget::itemChanged, [this](QTreeWidgetItem *Item, int Column) {
-		
 		ProcessCheck(Item, Item->checkState(0));
+	});
 
-		//if (Item->parent() == nullptr)
-		//{
-		//	// Routine for a top-level item.
-
-		//	QTreeWidgetItem *FoundTLItem = nullptr;
-		//	QString ItemText = Item->text(0);
-		//	int ExistingTopLevelItems = ui.treeExisting->topLevelItemCount();
-		//	for (int i = 0; i < ExistingTopLevelItems; i++)
-		//	{
-		//		auto *CurTLItem = ui.treeExisting->topLevelItem(i);
-		//		if (CurTLItem->text(0) == ItemText)
-		//		{
-		//			FoundTLItem = CurTLItem;
-		//			break;
-		//		}
-		//	}
-
-		//	if (FoundTLItem == nullptr)
-		//		return;
-
-		//	QFont ItemFont = FoundTLItem->font(0);
-		//	switch (Item->checkState(0))
-		//	{
-		//	case Qt::CheckState::Checked:
-		//		ItemFont.setStrikeOut(true);
-		//	case Qt::CheckState::PartiallyChecked:
-		//		ItemFont.setItalic(true);
-		//		break;
-		//	case Qt::CheckState::Unchecked:
-		//		ItemFont.setStrikeOut(false);
-		//		ItemFont.setItalic(false);
-		//		break;
-		//	}
-
-		//	FoundTLItem->setFont(0, ItemFont);
-
-		//	// Now iterate through all the top-level's children and set them to the same state.
-		//}
-		//else
-		//{
-		//	// Child item
-		//	QString ItemText = Item->text(0);
-		//	QString ParentText = Item->parent()->text(0);
-
-		//	// Existing side item
-		//	QTreeWidgetItem *FoundTLItem = nullptr;
-		//	int ExistingTopLevelItems = ui.treeExisting->topLevelItemCount();
-		//	for (int i = 0; i < ExistingTopLevelItems; i++)
-		//	{
-		//		auto *CurTLItem = ui.treeExisting->topLevelItem(i);
-		//		auto CurTLItemText = CurTLItem->text(0);
-		//		if (CurTLItemText == ParentText)
-		//		{
-		//			FoundTLItem = CurTLItem;
-		//			break;
-		//		}
-		//	}
-
-		//	if (FoundTLItem != nullptr)
-		//	{
-		//		QTreeWidgetItem *FoundChildItem = nullptr;
-		//		for (int i = 0; i < FoundTLItem->childCount(); i++)
-		//		{
-		//			FoundChildItem = FoundTLItem->child(i);
-		//			auto FoundChildItemText = FoundChildItem->text(0);
-		//			if (FoundChildItemText == ItemText)
-		//			{
-		//				QFont ItemFont = FoundChildItem->font(0);
-		//				switch (Item->checkState(0))
-		//				{
-		//				case Qt::CheckState::Checked:
-		//					ItemFont.setStrikeOut(true);
-		//					ItemFont.setItalic(true);
-		//					break;
-		//				case Qt::CheckState::Unchecked:
-		//					ItemFont.setStrikeOut(false);
-		//					ItemFont.setItalic(false);
-		//					break;
-		//				}
-		//				FoundChildItem->setFont(0, ItemFont);
-		//				break;
-		//			}
-		//		}
-		//	}
-		//}
-
-		//ui.treeSelection->blockSignals(false);
+	connect(ui.btnAccept, &QPushButton::pressed, [this]() {
+		accept();
 	});
 
 	QList<QTreeWidgetItem*> Items;
@@ -326,8 +229,127 @@ QCharacterSelectionWindow::~QCharacterSelectionWindow()
 
 }
 
+void QCharacterSelectionWindow::closeEvent(QCloseEvent *event)
+{
+	event->ignore();
+	Close();
+}
+
+void QCharacterSelectionWindow::ResetForm()
+{
+	ui.treeSelection->clear();
+	ui.treeExisting->clear();
+}
+
+void QCharacterSelectionWindow::FormAccepted()
+{
+	ClearTargets();
+
+	for (int i = 0; i < ui.treeSelection->topLevelItemCount(); i++)
+	{
+		auto CurItem = ui.treeSelection->topLevelItem(i);
+		std::string CurCharName = CurItem->text(0).toStdString();
+
+		for (int x = 0; x < CurItem->childCount(); i++)
+		{
+			auto CurChild = CurItem->child(i);
+		}
+	}
+}
+
+void QCharacterSelectionWindow::Close()
+{
+	ResetForm();
+	reject();
+}
+
+void QCharacterSelectionWindow::ClearTargets()
+{
+	_targets.clear();
+}
+
 void QCharacterSelectionWindow::UpdateChecks()
 {
 	//for(auto CurRootIrem : ui.treeSelection->item)
 	//ui.treeSelection->item
+}
+
+void QCharacterSelectionWindow::SelectCharacters(const std::string &CharactersPath, Project *Proj)
+{
+	if (!Proj)
+		return;
+
+	ResetForm();
+
+	//_charactersPath = CharactersPath;
+	_existingProject = Proj;
+
+	// Fill the existing side first, might as well.
+	for (auto CurChar : _existingProject->Characters())
+	{
+		std::string CharacterName = CurChar.first;
+		QTreeWidgetItem *CharacterItem = new QTreeWidgetItem((QTreeWidget*)nullptr, QStringList(CharacterName.c_str()));
+
+		for (auto CurDiag : CurChar.second->DialogueFiles())
+		{
+			std::string DiagName = CurDiag.first;
+			QTreeWidgetItem *DiagItem = new QTreeWidgetItem((QTreeWidget*)nullptr, QStringList(DiagName.c_str()));
+			CharacterItem->addChild(DiagItem);
+		}
+
+		ui.treeExisting->addTopLevelItem(CharacterItem);
+	}
+
+	this->show();
+}
+
+void QCharacterSelectionWindow::SelectCharacters(const ResourceDiscriminator::Results &Results, Project *Proj)
+{
+	if (!Proj)
+		return;
+
+	ResetForm();
+
+	//_charactersPath = CharactersPath;
+	_existingProject = Proj;
+
+	// Fill the existing side first, might as well.
+	for (auto CurChar : _existingProject->Characters())
+	{
+		std::string CharacterName = CurChar.first;
+		QTreeWidgetItem *CharacterItem = new QTreeWidgetItem((QTreeWidget*)nullptr, QStringList(CharacterName.c_str()));
+
+		for (auto CurDiag : CurChar.second->DialogueFiles())
+		{
+			std::string DiagName = CurDiag.first;
+			QTreeWidgetItem *DiagItem = new QTreeWidgetItem((QTreeWidget*)nullptr, QStringList(DiagName.c_str()));
+			CharacterItem->addChild(DiagItem);
+		}
+
+		ui.treeExisting->addTopLevelItem(CharacterItem);
+	}
+
+	// Now the import side.
+	for (auto CurChar : Results.Characters)
+	{
+		std::string CharacterName = CurChar.first;
+		QTreeWidgetItem *CharacterItem = new QTreeWidgetItem((QTreeWidget*)nullptr, QStringList(CharacterName.c_str()));
+
+		for (auto CurDiag : CurChar.second.DialogueFiles)
+		{
+			std::string DiagName = CurDiag.string();
+			QTreeWidgetItem *DiagItem = new QTreeWidgetItem((QTreeWidget*)nullptr, QStringList(DiagName.c_str()));
+			CharacterItem->addChild(DiagItem);
+		}
+
+		ui.treeSelection->addTopLevelItem(CharacterItem);
+	}
+
+	for (int i = 0; i < this->ui.treeSelection->topLevelItemCount(); i++)
+	{
+		auto x = this->ui.treeSelection->topLevelItem(i);
+		x->setCheckState(0, Qt::CheckState::Checked);
+	}
+
+	this->show();
 }

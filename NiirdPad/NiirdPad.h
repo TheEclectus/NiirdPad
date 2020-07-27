@@ -14,6 +14,7 @@
 #include "ScriptEngine.h"
 
 #include "Project.h"
+#include "ResourceDiscriminator.h"
 
 #define NIIRDPAD_VERSION	"0.9.15"
 
@@ -47,6 +48,7 @@ private:
 
 public slots:
 	void ImportConfirmationMessageBox(std::vector<std::string> Warnings, RawProjectFile Files);
+	void ResourceSelectionFollowup(ResourceDiscriminator::Results Results, std::vector<std::string> Warnings);
 
 public:
 	NiirdPad(QWidget *parent = Q_NULLPTR);

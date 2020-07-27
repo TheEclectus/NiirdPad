@@ -64,7 +64,7 @@ void NiirdPad::Import()
 	connect(ImportThread, &QThread::started, Worker, &ImportWorker::Start);
 	connect(Worker, &ImportWorker::SendError, [&](const std::string &Error)
 	{
-		if(Error != "") 
+		if(Error != "")
 			fmt::print("Encountered an error: {}.\n", Error);
 	});
 	//connect(Worker, &ImportWorker::SendData, [&](std::vector<std::string> Warnings, RawProjectFile Files)
@@ -89,14 +89,10 @@ void NiirdPad::Import()
 	//	}
 	//});
 	connect(Worker, &ImportWorker::SendData, this, &NiirdPad::ImportConfirmationMessageBox);
-	connect(Worker, &ImportWorker::Finished, [&]()
-	{
-		//Worker->deleteLater();
-		//ImportThread->quit();
-	});
+
 	connect(Worker, &ImportWorker::Finished, ImportThread, &QThread::quit);
 	connect(Worker, &ImportWorker::Finished, Worker, &ImportWorker::deleteLater);
-	connect(Worker, &ImportWorker::Finished, Prg, &QProgressBar::deleteLater);
+	connect(Worker, &ImportWorker::Finished, Prg, &QProgressDialog::deleteLater);
 
 	connect(Worker, &ImportWorker::SetTotal, Prg, &QProgressDialog::setMaximum);
 	connect(Worker, &ImportWorker::SetProgress, Prg, &QProgressDialog::setValue);
@@ -231,18 +227,6 @@ bool NiirdPad::ImportExperimental()
 	}
 
 	ImportConfirmationMessageBox(Warnings, LoadedProject);
-
-	/*TUScriptParser PS(InFile);
-	PS.Parse();
-
-	if (PS.GetError().length() > 0)
-	{
-		QMessageBox::warning(nullptr, "Error parsing", PS.GetError().c_str());
-	}
-	else
-	{
-		QMessageBox::information(nullptr, "Parsed Successfully!", "No errors.");
-	}*/
 }
 
 void NiirdPad::ResetCharacterCombo()
@@ -404,6 +388,11 @@ void NiirdPad::ImportConfirmationMessageBox(std::vector<std::string> Warnings, R
 	PostMsg.exec();
 }
 
+void NiirdPad::ResourceSelectionFollowup(ResourceDiscriminator::Results Results, std::vector<std::string> Warnings)
+{
+	_characterSelectionWindow->SelectCharacters(Results, _loadedProject);
+}
+
 NiirdPad::NiirdPad(QWidget *parent) :
 	QMainWindow(parent),
 	_scriptEngine(),
@@ -426,7 +415,46 @@ NiirdPad::NiirdPad(QWidget *parent) :
 	});
 
 	connect(ui.actionCharacter_Selection_Window, &QAction::triggered, [this]() {
-		_characterSelectionWindow->show();
+		//_characterSelectionWindow->show();
+
+		QFileDialog Dialog;
+		Dialog.setWindowTitle("Select /Teraurge/database/ folder...");
+		Dialog.setFileMode(QFileDialog::Directory);
+		Dialog.setOption(QFileDialog::ShowDirsOnly);
+
+		if (Dialog.exec() != QDialog::Accepted)
+			return;
+
+		QThread *ResourceWorkerThread = new QThread(this);
+		ResourceDiscriminator *ResDisc = new ResourceDiscriminator({ Dialog.directory().absolutePath().toStdString() }, ResourceDiscriminator::SelectionType::FullDatabaseFolder);
+		QProgressDialog *Prg = new QProgressDialog("", "Cancel", 0, 0, this);
+		Prg->resize(300, Prg->height());
+		Prg->setWindowTitle(fmt::format("Reading '{0}'", Dialog.directory().absolutePath().toStdString()).c_str());
+		Prg->setWindowModality(Qt::WindowModality::ApplicationModal);
+		Prg->setModal(true);
+		Prg->show();
+
+		ResDisc->moveToThread(ResourceWorkerThread);
+
+		connect(ResourceWorkerThread, &QThread::started, ResDisc, &ResourceDiscriminator::Start);
+
+		connect(ResDisc, &ResourceDiscriminator::SendData, this, &NiirdPad::ResourceSelectionFollowup);
+
+		connect(ResDisc, &ResourceDiscriminator::Finished, ResourceWorkerThread, &QThread::quit);
+		connect(ResDisc, &ResourceDiscriminator::Finished, ResDisc, &ResourceDiscriminator::deleteLater);
+		connect(ResDisc, &ResourceDiscriminator::Finished, Prg, &QProgressDialog::deleteLater);
+		//connect(ResDisc, &ResourceDiscriminator::Finished, [this, ResourceWorkerThread, ResDisc, Prg](ResourceDiscriminator::Results Results, std::vector<std::string> Warnings) {
+		//	ResourceWorkerThread->quit();
+		//	ResDisc->deleteLater();
+		//	Prg->deleteLater();
+
+		//	//this->_characterSelectionWindow->SelectCharacters(Results, this->_loadedProject);
+		//});
+		
+
+		ResourceWorkerThread->start();
+
+		//_characterSelectionWindow->SelectCharacters(Dialog.directory().absolutePath().toStdString(), this->_loadedProject);
 	});
 
 	// Adding a character

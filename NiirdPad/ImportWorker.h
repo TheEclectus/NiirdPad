@@ -9,6 +9,8 @@
 #include "RawProjectFile.h"
 #include "TUScriptLexer.h"
 
+#include "TUScriptLexer_Exp.h"
+
 class ImportWorker : public QObject
 {
 	Q_OBJECT
